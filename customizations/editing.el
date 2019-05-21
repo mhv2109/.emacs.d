@@ -67,3 +67,7 @@
     (quit nil)))
 
 (setq electric-indent-mode nil)
+
+;; enable company-mode globally
+(global-company-mode)
+
