@@ -188,7 +188,7 @@ names to which it refers are bound."
      (cursor ((,class (:background ,red))))
      (fringe ((,class (:background ,current-line))))
      ;;(linum ((,class (:background ,current-line))))
-     (linum ((,class (:foreground ,current-line))))
+     (linum ((,class (:foreground ,red))))
      (hl-line ((,class (:background ,current-line))))
      (border ((,class (:background ,current-line))))
      (border-glyph ((,class (nil))))
