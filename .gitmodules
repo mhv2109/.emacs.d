@@ -1,0 +1,3 @@
+[submodule "plugins/leetcode"]
+	path = plugins/leetcode
+	url = https://github.com/ginqi7/leetcode-emacs.git

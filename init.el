@@ -10,6 +10,8 @@
 
 (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 (add-to-list 'package-pinned-packages '(magit . "melpa-stable") t)
+;; add directory for source code plugins
+(add-to-list 'load-path "~/.emacs.d/plugins/")
 
 ;; Load and activate emacs packages. Do this first so that the
 ;; packages are loaded before you start trying to modify them.
@@ -65,7 +67,13 @@
 
     ;; company-mode autocompletion
     company
+    
+    ;; for package configuration
+    use-package
     ))
+
+;; load source code plugins
+(load "leetcode/leetcode.el") ;; plugin for leetcode
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
@@ -125,6 +133,9 @@
 ;; Langauage-specific
 (load "setup-clojure.el")
 (load "setup-js.el")
+
+;; leetcode config
+(load "leetcode.el")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
