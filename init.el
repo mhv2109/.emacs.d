@@ -67,9 +67,15 @@
 
     ;; company-mode autocompletion
     company
+
+    ;; syntax highlighting
+    flycheck
     
     ;; for package configuration
     use-package
+
+    ;; meghanada for java development
+    meghanada
     ))
 
 ;; load source code plugins
@@ -133,6 +139,7 @@
 ;; Langauage-specific
 (load "setup-clojure.el")
 (load "setup-js.el")
+(load "setup-java.el")
 
 ;; leetcode config
 (load "leetcode.el")

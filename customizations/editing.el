@@ -71,3 +71,5 @@
 ;; enable company-mode globally
 (global-company-mode)
 
+;; enable syntax highlighting globally
+(global-flycheck-mode)
