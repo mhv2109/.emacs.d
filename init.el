@@ -76,10 +76,11 @@
 
     ;; meghanada for java development
     meghanada
-    ))
 
-;; load source code plugins
-(load "leetcode/leetcode.el") ;; plugin for leetcode
+    ;; for leetcode plugin
+    ctable
+    names
+    ))
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
@@ -95,6 +96,9 @@
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
+
+;; load source code plugins
+(load "leetcode/leetcode.el") ;; plugin for leetcode
 
 ;; Place downloaded elisp files in ~/.emacs.d/vendor. You'll then be able
 ;; to load them.
