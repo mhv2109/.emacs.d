@@ -80,6 +80,13 @@
     ;; for leetcode plugin
     ctable
     names
+
+    ;; code autocompletion
+    auto-complete
+
+    ;; for go development
+    go-mode
+    go-autocomplete
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user
@@ -144,6 +151,7 @@
 (load "setup-clojure.el")
 (load "setup-js.el")
 (load "setup-java.el")
+(load "setup-go.el")
 
 ;; leetcode config
 (load "leetcode.el")
