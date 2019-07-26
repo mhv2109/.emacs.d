@@ -97,7 +97,7 @@
 ;; This library works around this problem by copying important
 ;; environment variables from the user's shell.
 ;; https://github.com/purcell/exec-path-from-shell
-(if (eq system-type 'darwin)
+(if (memq window-system '(mac ns x))
     (add-to-list 'my-packages 'exec-path-from-shell))
 
 (dolist (p my-packages)
