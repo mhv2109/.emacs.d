@@ -80,6 +80,13 @@
     ;; for leetcode plugin
     ctable
     names
+
+    ;; code autocompletion
+    auto-complete
+
+    ;; for go development
+    go-mode
+    go-autocomplete
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user
@@ -90,7 +97,7 @@
 ;; This library works around this problem by copying important
 ;; environment variables from the user's shell.
 ;; https://github.com/purcell/exec-path-from-shell
-(if (eq system-type 'darwin)
+(if (memq window-system '(mac ns x))
     (add-to-list 'my-packages 'exec-path-from-shell))
 
 (dolist (p my-packages)
@@ -144,6 +151,7 @@
 (load "setup-clojure.el")
 (load "setup-js.el")
 (load "setup-java.el")
+(load "setup-go.el")
 
 ;; leetcode config
 (load "leetcode.el")
