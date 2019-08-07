@@ -87,6 +87,9 @@
     ;; for go development
     go-mode
     go-autocomplete
+
+    ;; directory tree in emacs
+    neotree
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user
