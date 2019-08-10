@@ -73,3 +73,9 @@
 
 ;; enable syntax highlighting globally
 (global-flycheck-mode)
+
+;; whitespace column and line-too-long highlighting
+(setq-default
+ whitespace-line-column 80
+ whitespace-style '(face trailing lines-tail))
+(add-hook 'prog-mode-hook #'whitespace-mode)
