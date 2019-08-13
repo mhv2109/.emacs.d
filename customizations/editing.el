@@ -79,3 +79,6 @@
  whitespace-line-column 80
  whitespace-style '(face trailing lines-tail))
 (add-hook 'prog-mode-hook #'whitespace-mode)
+
+;; automatically load changes from disk
+(global-auto-revert-mode t)
