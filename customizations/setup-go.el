@@ -1,6 +1,8 @@
 (defvar gopath-initialized nil "Only set GOPATH and GOROOT once")
 
 (defun my-go-mode-hook ()
+  ;; Use goimports instead of gofmt
+  (setq gofmt-command "goimports")
   ;; call gofmt before saving
   (add-hook 'before-save-hook 'gofmt-before-save)
   ;; autocomplete
