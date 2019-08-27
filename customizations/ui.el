@@ -67,3 +67,6 @@
 
 ;; no bell
 (setq ring-bell-function 'ignore)
+
+;; show hidden files in neotree
+(setq-default neo-show-hidden-files t)
