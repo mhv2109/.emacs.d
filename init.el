@@ -70,7 +70,7 @@
 
     ;; syntax highlighting
     flycheck
-    
+
     ;; for package configuration
     use-package
 
@@ -90,6 +90,13 @@
 
     ;; directory tree in emacs
     neotree
+
+    ;; for python development
+    elpy
+    py-autopep8
+
+    ;; for editing markdown files
+    markdown-mode
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user
@@ -155,6 +162,7 @@
 (load "setup-js.el")
 (load "setup-java.el")
 (load "setup-go.el")
+(load "setup-python.el")
 
 ;; leetcode config
 (load "leetcode.el")
