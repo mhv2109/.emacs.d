@@ -97,6 +97,9 @@
 
     ;; for editing markdown files
     markdown-mode
+
+    ;; javacript development
+    js2-mode
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user
