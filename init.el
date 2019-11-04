@@ -100,6 +100,7 @@
 
     ;; for js development
     js2-mode
+    rjsx-mode
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user

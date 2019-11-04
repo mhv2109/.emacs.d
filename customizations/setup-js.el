@@ -1,5 +1,6 @@
 ;; javascript / html
 (add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx$" . js-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
 
 ;; setup js2-mode

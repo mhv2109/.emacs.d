@@ -25,7 +25,7 @@ Elpy docs are [here](https://elpy.readthedocs.io/en/latest/).
 Javascript configuratins are based on [this article](https://truongtx.me/2014/02/23/set-up-javascript-development-environment-in-emacs).
 Install js dependencies:
 ```
-$ npm i -g jshint
+$ npm i -g eslint
 ```
 
 ## Usage
