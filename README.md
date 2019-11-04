@@ -14,7 +14,7 @@ $ go get -u github.com/nsf/gocode
 $ go get -u golang.org/x/tools/cmd/goimports
 ```
 
-Python configurations base on [this configuration](https://realpython.com/emacs-the-best-python-editor/).
+Python configurations are based on [this configuration](https://realpython.com/emacs-the-best-python-editor/).
 For python-mode to work correctly, the following packages are necessary:
 ```
 $ pip install --upgrade flake8 autopep8 ipython rope yapf black
@@ -22,6 +22,11 @@ $ pip install --upgrade flake8 autopep8 ipython rope yapf black
 Also install [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv).
 Elpy docs are [here](https://elpy.readthedocs.io/en/latest/).
 
+Javascript configuratins are based on [this article](https://truongtx.me/2014/02/23/set-up-javascript-development-environment-in-emacs).
+Install js dependencies:
+```
+$ npm i -g jshint
+```
 
 ## Usage
 Clone repository into `~/.emacs.d` and start emacs.
