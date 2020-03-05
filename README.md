@@ -18,10 +18,7 @@ Elpy docs are [here](https://elpy.readthedocs.io/en/latest/).
 Go configurations based on [this configuration](https://johnsogg.github.io/emacs-golang).
 For go-mode to work correctly, the following packages are necessary:
 ```
-$ go get -u golang.org/x/tools/cmd/...
-$ go get -u github.com/rogpeppe/godef/...
-$ go get -u github.com/nsf/gocode
-$ go get -u golang.org/x/tools/cmd/goimports
+$ go get -u golang.org/x/tools/cmd/...  github.com/rogpeppe/godef/... github.com/nsf/gocode golang.org/x/tools/cmd/goimports
 ```
 
 ### LeetCode
