@@ -97,6 +97,9 @@
 
     ;; for editing markdown files
     markdown-mode
+
+    ;; for editing yaml files
+    yaml-mode
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user
