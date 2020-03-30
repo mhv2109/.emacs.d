@@ -100,7 +100,7 @@
 
     ;; for editing yaml files
     yaml-mode
-    ))
+))
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
@@ -166,6 +166,7 @@
 (load "setup-java.el")
 (load "setup-go.el")
 (load "setup-python.el")
+(load "setup-org.el")
 
 ;; leetcode config
 (load "leetcode.el")
