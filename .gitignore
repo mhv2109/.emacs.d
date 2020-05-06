@@ -15,3 +15,6 @@ elpa/
 eshell/
 meghanada/
 ac-comphist.dat
+elpy/
+.lsp-session-v1
+transient/

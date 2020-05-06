@@ -97,6 +97,14 @@
 
     ;; for editing markdown files
     markdown-mode
+
+    ;; language server protocol
+    lsp-mode
+    company-lsp
+    lsp-ui
+
+    ;; snippet support
+    yasnippet
     ))
 
 ;; On OS X, an Emacs instance started from the graphical user
@@ -163,6 +171,7 @@
 (load "setup-java.el")
 (load "setup-go.el")
 (load "setup-python.el")
+(load "setup-lsp.el")
 
 ;; leetcode config
 (load "leetcode.el")

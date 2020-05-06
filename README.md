@@ -15,10 +15,9 @@ Also install [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](http
 Elpy docs are [here](https://elpy.readthedocs.io/en/latest/).
 
 ### Go
-Go configurations based on [this configuration](https://johnsogg.github.io/emacs-golang).
-For go-mode to work correctly, the following packages are necessary:
+go-mode uses [gopls](https://github.com/golang/tools/tree/master/gopls). The following packages are necessary:
 ```
-$ go get -u golang.org/x/tools/cmd/...  github.com/rogpeppe/godef/... github.com/nsf/gocode golang.org/x/tools/cmd/goimports
+$ go get -u golang.org/x/tools/cmd/...  golang.org/x/tools/cmd/goimports golang.org/x/tools/gopls
 ```
 
 ### LeetCode
