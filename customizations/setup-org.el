@@ -9,12 +9,20 @@
 ;; Function to insert current date
 (require 'calendar)
 
-(defun insdate-insert-current-date (&optional omit-day-of-week-p)
-    "Insert today's date using the current locale.
-  With a prefix argument, the date is inserted without the day of
-  the week."
-    (interactive "P*")
-    (insert (calendar-date-string (calendar-current-date) nil
-				  omit-day-of-week-p)))
+(defun insdate-insert-current-date ()
+  "Insert today's date using the current locale."
+  (interactive)
+  (insert (calendar-date-string (calendar-current-date) nil)))
+
+(defun insdate-insert-current-datetime ()
+  "Insert current date and time, including timezone."
+  (interactive)
+  (let ((current-time (nth 3 (split-string (current-time-string)))))
+    (insert (concat
+             (calendar-date-string (calendar-current-date) nil)
+             " " current-time " " (nth 1 (current-time-zone))))))
+
 
 (global-set-key "\C-x\M-d" `insdate-insert-current-date)
+(global-set-key "\C-x\M-t" `insdate-insert-current-datetime)
+
