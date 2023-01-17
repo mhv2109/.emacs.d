@@ -86,3 +86,13 @@
 ;; load org mode
 (require 'org)
 (setq org-log-done t)
+
+;; enable line wrap
+(global-visual-line-mode t)
+
+;; show line numbers
+(global-display-line-numbers-mode t)
+
+;; spellchecking
+(add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
+(add-hook 'prog-mode-hook (lambda () (flyspell-mode t)))
