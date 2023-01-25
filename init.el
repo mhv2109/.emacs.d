@@ -61,6 +61,10 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; Disable startup splash screen
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
+
 ;; Functions to insert the current date for org-mode doc headers
 (require 'calendar)
 
