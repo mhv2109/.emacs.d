@@ -91,6 +91,9 @@
 (require 'org)
 (setq org-log-done t)
 
+;; Update TODO states
+(setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED"))
+
 ;; keybinding for quickly inserting zero-length strings so radio links to will work with plurals
 (defun insert-zero-length-space ()
   "Insert a zero-length space under cursor."
