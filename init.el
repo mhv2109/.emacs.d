@@ -116,6 +116,10 @@
 ;; spellchecking
 (add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
 (add-hook 'prog-mode-hook (lambda () (flyspell-mode t)))
+(eval-after-load "flyspell"
+  '(progn
+     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+     (define-key flyspell-mouse-map [mouse-3] #'undefined)))
 
 ;; generate TAGS table file with etags
 (defun etags (d &optional append?)
