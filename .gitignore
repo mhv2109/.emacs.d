@@ -20,3 +20,6 @@ eln-cache/
 session.*
 tramp
 TAGS
+*~
+.dap-breakpoints
+.lsp-session-v1

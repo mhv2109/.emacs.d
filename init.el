@@ -4,6 +4,8 @@
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-pinned-packages '(magit . "melpa-stable") t)
+(add-to-list 'package-pinned-packages '(use-package . "melpa-stable") t)
+(add-to-list 'package-pinned-packages '(evil . "melpa-stable") t)
 
 ;; Load and activate emacs packages. Do this first so that the
 ;; packages are loaded before you start trying to modify them.
@@ -28,13 +30,21 @@
     use-package
 
     ;; vim keybindings
-    evil))
+    evil
+
+    ;; major mode for golang
+    go-mode
+
+    ;; Language Server Protocol support and recommended packages
+    lsp-mode
+    lsp-ui   ;; intellisense-like context hover
+    flycheck ;; syntax highlighting
+    company  ;; autocomplete
+    dap-mode ;; lsp, but for debuggers
+    ))
 
 ;; Locally installed packages
-;; icicles: https://www.emacswiki.org/emacs/Icicles
 (add-to-list 'load-path "~/.emacs.d/icicles/")
-(require 'icicles)
-(icy-mode 1)
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
@@ -51,21 +61,27 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-;; Enable vim keybindings
-(evil-mode 1)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(evil use-package magit exec-path-from-shell)))
+ '(package-selected-packages
+   '(dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+ '(warning-suppress-log-types '((comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; icicles: https://www.emacswiki.org/emacs/Icicles
+(require 'icicles)
+(icy-mode 1)
+
+;; Enable vim keybindings
+(evil-mode 1)
 
 ;; Disable startup splash screen
 (setq inhibit-splash-screen t)
@@ -115,7 +131,7 @@
 
 ;; spellchecking
 (add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
-(add-hook 'prog-mode-hook (lambda () (flyspell-mode t)))
+;; (add-hook 'prog-mode-hook (lambda () (flyspell-mode t))) ;; TODO: make this smarter about code vs. comments
 (eval-after-load "flyspell"
   '(progn
      (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
@@ -128,3 +144,17 @@
   (let ((command (string-join (list "find . -not \\( -path \"./.git\" -prune \\) -type f | xargs etags" (if append? "-a" "")) " ")) 
 	(default-directory d))
     (shell-command-to-string command)))
+
+;; global autocomplete
+(add-hook 'after-init-hook 'global-company-mode)
+
+;; LSP
+(require 'lsp-mode)
+;; try LSP mode for all prog-mode
+(add-hook 'prog-mode-hook #'lsp)
+(use-package lsp-ui)
+(setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
+(setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
+
+;; DAP
+(require 'dap-dlv-go) ;; Go support
