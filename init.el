@@ -32,6 +32,9 @@
     ;; vim keybindings
     evil
 
+    ;; major mode for YAML
+    yaml-mode
+
     ;; major mode for golang
     go-mode
 
@@ -67,8 +70,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
- '(warning-suppress-log-types '((comp))))
+   '(yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+ '(warning-suppress-log-types '((comp)))
+ '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -150,11 +154,19 @@
 
 ;; LSP
 (require 'lsp-mode)
-;; try LSP mode for all prog-mode
-(add-hook 'prog-mode-hook #'lsp)
+(add-hook 'prog-mode-hook #'lsp) ;; try LSP mode for all prog-mode
+(add-hook 'before-save-hook #'lsp-format-buffer) ;; format on save
 (use-package lsp-ui)
 (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
 (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
 
 ;; DAP
 (require 'dap-dlv-go) ;; Go support
+
+;; yaml-mode
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+
+;; go-mode
+(setq gofmt-command "goimports")
