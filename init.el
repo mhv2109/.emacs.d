@@ -133,6 +133,10 @@
 ;; show line numbers
 (global-display-line-numbers-mode t)
 
+;; quickly cycle buffers
+(global-set-key (kbd "M-[") 'previous-buffer)
+(global-set-key (kbd "M-]") 'next-buffer)
+
 ;; spellchecking
 (add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
 ;; (add-hook 'prog-mode-hook (lambda () (flyspell-mode t))) ;; TODO: make this smarter about code vs. comments
