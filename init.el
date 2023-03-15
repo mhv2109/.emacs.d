@@ -35,6 +35,9 @@
     ;; major mode for YAML
     yaml-mode
 
+    ;; major mode for working with mermaid.js: https://mermaid.js.org/
+    mermaid-mode
+
     ;; major mode for golang
     go-mode
 
@@ -70,7 +73,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(mermaid-mode yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
