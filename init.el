@@ -1,11 +1,8 @@
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-pinned-packages '(magit . "melpa-stable") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-pinned-packages '(use-package . "melpa-stable") t)
-(add-to-list 'package-pinned-packages '(evil . "melpa-stable") t)
 
 ;; Load and activate emacs packages. Do this first so that the
 ;; packages are loaded before you start trying to modify them.
@@ -18,54 +15,10 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;; The packages you want installed. You can also install these
-;; manually with M-x package-install
-;; Add in your own as you wish:
-(defvar my-packages
-  '(
-    ;; git integration
-    magit
-
-    ;; for package configuration
-    use-package
-
-    ;; vim keybindings
-    evil
-
-    ;; major mode for YAML
-    yaml-mode
-
-    ;; major mode for working with mermaid.js: https://mermaid.js.org/
-    mermaid-mode
-
-    ;; major mode for golang
-    go-mode
-
-    ;; Language Server Protocol support and recommended packages
-    lsp-mode
-    lsp-ui   ;; intellisense-like context hover
-    flycheck ;; syntax highlighting
-    company  ;; autocomplete
-    dap-mode ;; lsp, but for debuggers
-    ))
-
-;; Locally installed packages
-(add-to-list 'load-path "~/.emacs.d/icicles/")
-
-;; On OS X, an Emacs instance started from the graphical user
-;; interface will have a different environment than a shell in a
-;; terminal window, because OS X does not run a shell during the
-;; login. Obviously this will lead to unexpected results when
-;; calling external utilities like make from Emacs.
-;; This library works around this problem by copying important
-;; environment variables from the user's shell.
-;; https://github.com/purcell/exec-path-from-shell
-(if (memq window-system '(mac ns x))
-    (add-to-list 'my-packages 'exec-path-from-shell))
-
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
+;; use-package is used to both configure and install packages
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -73,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(mermaid-mode yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -89,14 +42,24 @@
 
 ;; bootstrap use-package: https://github.com/jwiegley/use-package
 (require 'use-package)
+(use-package use-package-ensure
+  :config (setq use-package-always-ensure t) ;; always ensure packages are installed
+  )
 
 ;; icicles: https://www.emacswiki.org/emacs/Icicles
+(add-to-list 'load-path "~/.emacs.d/icicles/") ;; installed as a Git submodule
 (use-package icicles
+  :ensure nil
   :config
   (icy-mode 1))
 
+;; Git integration
+(use-package magit
+  :pin melpa-stable)
+
 ;; Enable vim keybindings
 (use-package evil
+  :pin melpa-stable
   :config
   (evil-mode 1))
 
@@ -127,6 +90,7 @@
 
 ;; spellchecking
 (use-package flyspell-mode
+  :ensure nil
   :config
   (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
   (define-key flyspell-mouse-map [mouse-3] #'undefined)
@@ -140,31 +104,48 @@
   :config
   (global-company-mode 1))
 
-;; LSP
+;; LSP: https://github.com/emacs-lsp/lsp-mode
 (use-package lsp-mode
   :hook prog-mode ;; try LSP mode for all prog-mode
   :config
   (add-hook 'before-save-hook #'lsp-format-buffer) ;; format on save
   )
-(use-package lsp-ui
+(use-package lsp-ui ;; intellisense-like context hover
   :init
   (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
   (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
   )
+(use-package flycheck) ;; syntax highlighting
 
-;; DAP
-(use-package dap-dlv-go) ;; Go support
+;; DAP: https://github.com/emacs-lsp/dap-mode
+(use-package dap-mode)
+(use-package dap-dlv-go ;; Go support
+  :ensure nil) 
 
-;; yaml-mode
+;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode)))
 
-;; go-mode
+;; major mode for working with mermaid.js: https://mermaid.js.org/
+(use-package mermaid-mode)
+
+;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
 (use-package go-mode
   :init
   (setq gofmt-command "goimports"))
+
+;; On OS X, an Emacs instance started from the graphical user
+;; interface will have a different environment than a shell in a
+;; terminal window, because OS X does not run a shell during the
+;; login. Obviously this will lead to unexpected results when
+;; calling external utilities like make from Emacs.
+;; This library works around this problem by copying important
+;; environment variables from the user's shell.
+;; https://github.com/purcell/exec-path-from-shell
+(if (memq window-system '(mac ns x))
+    (use-package exec-path-from-shell))
 
 ;;
 ;; Other customizations
