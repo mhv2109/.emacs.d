@@ -83,45 +83,96 @@
  ;; If there is more than one, they won't work right.
  )
 
+;;
+;; Package customizations
+;;
+
+;; bootstrap use-package: https://github.com/jwiegley/use-package
+(require 'use-package)
+
 ;; icicles: https://www.emacswiki.org/emacs/Icicles
-(require 'icicles)
-(icy-mode 1)
+(use-package icicles
+  :config
+  (icy-mode 1))
 
 ;; Enable vim keybindings
-(evil-mode 1)
+(use-package evil
+  :config
+  (evil-mode 1))
+
+;; Functions to insert the current date for org-mode doc headers
+(use-package calendar
+  :config
+  (defun insdate-insert-current-date (&optional omit-day-of-week-p)
+    "Insert today's date using the current locale. With a prefix argument, the date is inserted without the day of the week."
+    (interactive "P*")
+    (insert (calendar-date-string (calendar-current-date) nil
+				   omit-day-of-week-p)))
+  (defun insdate-insert-current-datetime ()
+    "Insert current date and time, including timezone."
+    (interactive)
+    (let ((current-time (nth 3 (split-string (current-time-string)))))
+	(insert (concat
+		(calendar-date-string (calendar-current-date) nil)
+		" " current-time " " (nth 1 (current-time-zone))))))
+  (global-set-key "\C-x\M-d" `insdate-insert-current-date)
+  (global-set-key "\C-x\M-t" `insdate-insert-current-datetime))
+
+;; load org mode
+(use-package org
+  :init
+  (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED")) ;; Update TODO states
+  :config
+  (setq org-log-done t))
+
+;; spellchecking
+(use-package flyspell-mode
+  :config
+  (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+  (define-key flyspell-mouse-map [mouse-3] #'undefined)
+  :hook
+  (text-mode
+   ;; prog-mode ;; TODO: make this smarter about code vs. comments
+   ))
+
+;; autocomplete
+(use-package company
+  :config
+  (global-company-mode 1))
+
+;; LSP
+(use-package lsp-mode
+  :hook prog-mode ;; try LSP mode for all prog-mode
+  :config
+  (add-hook 'before-save-hook #'lsp-format-buffer) ;; format on save
+  )
+(use-package lsp-ui
+  :init
+  (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
+  )
+
+;; DAP
+(use-package dap-dlv-go) ;; Go support
+
+;; yaml-mode
+(use-package yaml-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode)))
+
+;; go-mode
+(use-package go-mode
+  :init
+  (setq gofmt-command "goimports"))
+
+;;
+;; Other customizations
+;;
 
 ;; Disable startup splash screen
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
-
-;; Functions to insert the current date for org-mode doc headers
-(require 'calendar)
-
-(defun insdate-insert-current-date (&optional omit-day-of-week-p)
-    "Insert today's date using the current locale.
-  With a prefix argument, the date is inserted without the day of
-  the week."
-    (interactive "P*")
-    (insert (calendar-date-string (calendar-current-date) nil
-				  omit-day-of-week-p)))
-
-(defun insdate-insert-current-datetime ()
-  "Insert current date and time, including timezone."
-  (interactive)
-  (let ((current-time (nth 3 (split-string (current-time-string)))))
-    (insert (concat
-             (calendar-date-string (calendar-current-date) nil)
-             " " current-time " " (nth 1 (current-time-zone))))))
-
-(global-set-key "\C-x\M-d" `insdate-insert-current-date)
-(global-set-key "\C-x\M-t" `insdate-insert-current-datetime)
-
-;; load org mode
-(require 'org)
-(setq org-log-done t)
-
-;; Update TODO states
-(setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED"))
 
 ;; keybinding for quickly inserting zero-length strings so radio links to will work with plurals
 (defun insert-zero-length-space ()
@@ -140,14 +191,6 @@
 (global-set-key (kbd "M-[") 'previous-buffer)
 (global-set-key (kbd "M-]") 'next-buffer)
 
-;; spellchecking
-(add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
-;; (add-hook 'prog-mode-hook (lambda () (flyspell-mode t))) ;; TODO: make this smarter about code vs. comments
-(eval-after-load "flyspell"
-  '(progn
-     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
-     (define-key flyspell-mouse-map [mouse-3] #'undefined)))
-
 ;; generate TAGS table file with etags
 (defun etags (d &optional append?)
   "Uses etags to generate a TAGS table file in directory D. If APPEND? is truthy, equivalent of calling etags with -a flag."
@@ -155,25 +198,3 @@
   (let ((command (string-join (list "find . -not \\( -path \"./.git\" -prune \\) -type f | xargs etags" (if append? "-a" "")) " ")) 
 	(default-directory d))
     (shell-command-to-string command)))
-
-;; global autocomplete
-(add-hook 'after-init-hook 'global-company-mode)
-
-;; LSP
-(require 'lsp-mode)
-(add-hook 'prog-mode-hook #'lsp) ;; try LSP mode for all prog-mode
-(add-hook 'before-save-hook #'lsp-format-buffer) ;; format on save
-(use-package lsp-ui)
-(setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
-(setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
-
-;; DAP
-(require 'dap-dlv-go) ;; Go support
-
-;; yaml-mode
-(require 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
-
-;; go-mode
-(setq gofmt-command "goimports")
