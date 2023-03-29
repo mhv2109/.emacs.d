@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(typescript-mode bazel python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -109,7 +109,15 @@
   :hook prog-mode ;; try LSP mode for all prog-mode
   :config
   (add-hook 'before-save-hook #'lsp-format-buffer) ;; format on save
-  )
+  ;; language-specific settings
+  (lsp-register-custom-settings
+   '(
+     ;; ts/js settings: https://github.com/typescript-language-server/typescript-language-server#workspacedidchangeconfiguration
+     ("typescript.format.indentSize" 4 t)
+     ("typescript.format.convertTabsToSpaces" t t)
+     ("javascript.format.indentSize" 4 t)
+     ("javascript.format.convertTabsToSpaces" t t))
+  ))
 (use-package lsp-ui ;; intellisense-like context hover
   :init
   (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
@@ -135,6 +143,9 @@
 (use-package go-mode
   :init
   (setq gofmt-command "goimports"))
+
+;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
+(use-package typescript-mode)
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
