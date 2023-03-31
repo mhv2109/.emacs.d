@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(orderless corfu cape typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -102,21 +102,14 @@
    ;; prog-mode ;; TODO: make this smarter about code vs. comments
    ))
 
-;; autocomplete
-(use-package orderless ;; https://github.com/oantolin/orderless
-  :init
-  (setq completion-styles '(orderless basic)))
-(use-package corfu ;; https://github.com/minad/corfu
-  :init
-  (global-corfu-mode)
+;; autocomplete using company-mode: https://company-mode.github.io/
+(use-package company
   :config
-  (setq corfu-auto t
-	corfu-auto-delay 0
-	corfu-auto-prefix 1
-	corfu-quit-no-match t))
-(use-package cape ;; https://github.com/minad/cape
-  :after corfu
-  )
+  (global-company-mode t)
+  (setq-default
+        company-idle-delay 0.05
+        company-require-match nil
+        company-minimum-prefix-length 0))
 
 ;; LSP: https://github.com/emacs-lsp/lsp-mode
 (use-package lsp-mode
@@ -160,6 +153,34 @@
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode)
+
+;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
+(add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
+(use-package codeium
+  :ensure nil
+  ;;:after corfu
+  :init
+  ;; read API key from environment
+  (setq codeium/metadata/api_key (getenv "CODEIUM_API_KEY"))
+  :config
+  ;; keybinding to enable/disable suggestions (overrides other autocompletion backends)
+  (defun codeium-completion-toggle ()
+    "Toggles Codeium AI autocomplete suggestions. If enabled, overrides any other completion-at-point functions."
+    (interactive)
+    (if (member #'codeium-completion-at-point completion-at-point-functions)
+	(progn
+	  ;; toggle from ON to OFF
+	  (setq-local completion-at-point-functions previous-completion-at-point-functions
+		      company-frontends previous-company-frontends)
+	  (message "Disabling Codeium in current buffer"))
+      (progn
+	;; toggle from OFF to ON
+	(setq-local previous-completion-at-point-functions completion-at-point-functions
+		    previous-company-frontends company-frontends
+		    completion-at-point-functions (list #'codeium-completion-at-point)
+		    company-frontends '(company-preview-frontend))
+	(message "Enabling Codeium in current buffer")))) 
+  (global-set-key (kbd "M-C-<tab>") 'codeium-completion-toggle))
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
