@@ -24,3 +24,6 @@ TAGS
 .dap-breakpoints
 .lsp-session-v1
 .cache/
+.DS_Store
+\#*\#
+.\#*

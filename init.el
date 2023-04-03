@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(typescript-mode bazel python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode company flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(orderless corfu cape typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -100,9 +100,20 @@
    ))
 
 ;; autocomplete
-(use-package company
+(use-package orderless ;; https://github.com/oantolin/orderless
+  :init
+  (setq completion-styles '(orderless basic)))
+(use-package corfu ;; https://github.com/minad/corfu
+  :init
+  (global-corfu-mode)
   :config
-  (global-company-mode 1))
+  (setq corfu-auto t
+	corfu-auto-delay 0
+	corfu-auto-prefix 1
+	corfu-quit-no-match t))
+(use-package cape ;; https://github.com/minad/cape
+  :after corfu
+  )
 
 ;; LSP: https://github.com/emacs-lsp/lsp-mode
 (use-package lsp-mode
