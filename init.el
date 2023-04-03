@@ -81,12 +81,15 @@
   (global-set-key "\C-x\M-d" `insdate-insert-current-date)
   (global-set-key "\C-x\M-t" `insdate-insert-current-datetime))
 
-;; load org mode
+;; Org mode: https://orgmode.org/
 (use-package org
   :init
   (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED")) ;; Update TODO states
   :config
   (setq org-log-done t))
+(use-package ox-md ;; markdown backend for org-mode
+  :after org
+  :ensure nil)
 
 ;; spellchecking
 (use-package flyspell-mode
