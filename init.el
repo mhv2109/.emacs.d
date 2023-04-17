@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(lsp-java company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -123,19 +123,36 @@
      ("typescript.format.indentSize" 4 t)
      ("typescript.format.convertTabsToSpaces" t t)
      ("javascript.format.indentSize" 4 t)
-     ("javascript.format.convertTabsToSpaces" t t))
+     ("javascript.format.convertTabsToSpaces" t t)
+     ("java.format.settings.url" "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml"))
   ))
 (use-package lsp-ui ;; intellisense-like context hover
+  :after lsp-mode
   :init
   (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
   (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
   )
 (use-package flycheck) ;; syntax highlighting
+(use-package lsp-java  ;; Java support: https://emacs-lsp.github.io/lsp-java/
+  :after lsp-mode
+  :config
+  (let ((lombok-path (expand-file-name "~/.emacs.d/assets/lombok.jar")))
+    (setq lsp-java-vmargs (list (concat "-javaagent:" lombok-path)
+				"-noverify"
+				"-Xmx100m"
+				"-Xmx2G"
+				"-XX:+UseG1GC"
+				"-XX:+UseStringDeduplication"))))
 
 ;; DAP: https://github.com/emacs-lsp/dap-mode
-(use-package dap-mode)
+(use-package dap-mode
+  :after lsp-mode)
 (use-package dap-dlv-go ;; Go support
-  :ensure nil) 
+  :ensure nil
+  :after dap-mode) 
+(use-package dap-java ;; Java support
+  :ensure nil
+  :after dap-mode)
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
@@ -150,6 +167,7 @@
 (use-package go-mode
   :init
   (setq gofmt-command "goimports"))
+
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode)
