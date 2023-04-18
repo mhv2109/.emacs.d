@@ -109,7 +109,7 @@
   (setq-default
         company-idle-delay 0.05
         company-require-match nil
-        company-minimum-prefix-length 0))
+        company-minimum-prefix-length 1))
 
 ;; LSP: https://github.com/emacs-lsp/lsp-mode
 (use-package lsp-mode
@@ -213,6 +213,14 @@
 
 ;; show line numbers
 (global-display-line-numbers-mode t)
+
+;; add closing brackets & parens
+(electric-pair-mode t)
+
+;; add ruler
+(setq display-fill-column-indicator-column 80) ;; default
+(add-hook 'java-mode-hook (lambda () (setq-local display-fill-column-indicator-column 100))) ;; java
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; quickly cycle buffers
 (global-set-key (kbd "M-[") 'previous-buffer)
