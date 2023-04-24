@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -86,10 +86,29 @@
   :init
   (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED")) ;; Update TODO states
   :config
-  (setq org-log-done t))
+  (setq org-log-done t)
+  (defun get-org-dir (&optional default)
+    "Get main directory containing .org files. Configurable using either $ORG_DIR env var, or defaults to $HOME/org/. Relative filenames are expanded."
+    (interactive)
+    (let ((default (if default default "~/org/")) ;; ~/org/ is where I typically keep my org files
+	  (envv (getenv "ORG_DIR"))) 
+      (expand-file-name (if envv
+			    envv
+			  default)))))
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
+(use-package org-drill ;; Spaced repetition for Org mode: https://orgmode.org/worg/org-contrib/org-drill.html
+  :after org
+  :config
+  (defun org-drill-refresh-scope (&optional dir)
+    "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."
+    (interactive) ;; TODO: allow passing in directory arg interactively
+    (let ((org-dir (if dir dir (get-org-dir))) 
+	  (org-regexp "^[^#].*\\.org$")) 
+      (setq org-drill-scope (directory-files-recursively org-dir org-regexp))
+      (message "%s" "Updated org-drill-scope.")))
+  (org-drill-refresh-scope))
 
 ;; spellchecking
 (use-package flyspell-mode
