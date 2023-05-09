@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -180,7 +180,20 @@
 		    completion-at-point-functions (list #'codeium-completion-at-point)
 		    company-frontends '(company-preview-frontend))
 	(message "Enabling Codeium in current buffer")))) 
-  (global-set-key (kbd "M-C-<tab>") 'codeium-completion-toggle))
+  (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
+
+;; GitHub Copilot: https://github.com/zerolfx/copilot.el
+(add-to-list 'load-path "~/.emacs.d/copilot.el/") ;; installed as a Git sumbodule
+(use-package dash)
+(use-package s)
+(use-package editorconfig)
+(use-package copilot
+  :ensure nil
+  :after (dash s editorconfig)
+  :config
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+  (global-set-key (kbd "M-C-<tab>") 'copilot-mode))
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
