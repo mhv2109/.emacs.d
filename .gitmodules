@@ -4,3 +4,6 @@
 [submodule "codeium.el"]
 	path = codeium.el
 	url = https://github.com/Exafunction/codeium.el.git
+[submodule "copilot.el"]
+	path = copilot.el
+	url = https://github.com/zerolfx/copilot.el
