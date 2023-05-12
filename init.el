@@ -258,6 +258,10 @@
 (global-set-key (kbd "M-[") 'previous-buffer)
 (global-set-key (kbd "M-]") 'next-buffer)
 
+;; quickly swap between windows
+(windmove-default-keybindings)
+(setq windmove-wrap-around nil)
+
 ;; generate TAGS table file with etags
 (defun etags (d &optional append?)
   "Uses etags to generate a TAGS table file in directory D. If APPEND? is truthy, equivalent of calling etags with -a flag."
