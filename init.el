@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -139,9 +139,9 @@
   (lsp-register-custom-settings
    '(
      ;; ts/js settings: https://github.com/typescript-language-server/typescript-language-server#workspacedidchangeconfiguration
-     ("typescript.format.indentSize" 4 t)
+     ("typescript.format.indentSize" 2 t)
      ("typescript.format.convertTabsToSpaces" t t)
-     ("javascript.format.indentSize" 4 t)
+     ("javascript.format.indentSize" 2 t)
      ("javascript.format.convertTabsToSpaces" t t))
   ))
 (use-package lsp-ui ;; intellisense-like context hover
@@ -155,6 +155,18 @@
 (use-package dap-mode)
 (use-package dap-dlv-go ;; Go support
   :ensure nil) 
+(use-package dap-node ;; NodeJS support
+  :ensure nil
+  :config
+  (dap-node-setup)
+  ;; special run configurations
+  (dap-register-debug-template
+   "Node Jest Run Configuration"
+   (list :type "node"
+         :cwd "${workspaceFolder}"
+         :request "launch"
+         :program "${workspaceFolder}/node_modules/jest/bin/jest.js"
+	 :args "-i")))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
@@ -224,6 +236,9 @@
 ;; https://github.com/purcell/exec-path-from-shell
 (if (memq window-system '(mac ns x))
     (use-package exec-path-from-shell))
+
+(use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
+  )
 
 ;;
 ;; Other customizations

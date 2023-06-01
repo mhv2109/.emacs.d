@@ -30,3 +30,6 @@ TAGS
 codeium/
 persist/
 .org-id-locations
+.extension/
+eclipse.jdt.ls/
+workspace/
