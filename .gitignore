@@ -33,3 +33,4 @@ persist/
 .extension/
 eclipse.jdt.ls/
 workspace/
+.last-package-update-day

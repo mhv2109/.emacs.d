@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -45,6 +45,9 @@
 (use-package use-package-ensure
   :config (setq use-package-always-ensure t) ;; always ensure packages are installed
   )
+
+;; automatically update packages
+(use-package auto-package-update)
 
 ;; icicles: https://www.emacswiki.org/emacs/Icicles
 (add-to-list 'load-path "~/.emacs.d/icicles/") ;; installed as a Git submodule
@@ -131,6 +134,7 @@
         company-minimum-prefix-length 1))
 
 ;; LSP: https://github.com/emacs-lsp/lsp-mode
+(add-to-list 'image-types 'svg) ;; error workaround: https://github.com/Alexander-Miller/treemacs/issues/1017#issuecomment-1515602288
 (use-package lsp-mode
   :hook prog-mode ;; try LSP mode for all prog-mode
   :config
@@ -154,7 +158,20 @@
 ;; DAP: https://github.com/emacs-lsp/dap-mode
 (use-package dap-mode)
 (use-package dap-dlv-go ;; Go support
-  :ensure nil) 
+  :ensure nil
+  :config
+  ;; special run configurations
+  (defun dap-register-go-launch-configuration (path)
+    "Register a 'Go Launch' DAP Run Configuration using PATH."
+    (interactive (list
+		  (read-string "Go Package Path: " "${workspaceFolder}")))
+    (dap-register-debug-template
+     (format "Go Dlv Launch Package Configuration (%s)" path)
+     (list :type "go"
+	:cwd "${workspaceFolder}"
+        :request "launch"
+        :mode "auto"
+        :program path))))
 (use-package dap-node ;; NodeJS support
   :ensure nil
   :config
