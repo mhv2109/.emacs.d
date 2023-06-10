@@ -143,9 +143,9 @@
   (lsp-register-custom-settings
    '(
      ;; ts/js settings: https://github.com/typescript-language-server/typescript-language-server#workspacedidchangeconfiguration
-     ("typescript.format.indentSize" 2 t)
+     ("typescript.format.indentSize" 4 t)
      ("typescript.format.convertTabsToSpaces" t t)
-     ("javascript.format.indentSize" 2 t)
+     ("javascript.format.indentSize" 4 t)
      ("javascript.format.convertTabsToSpaces" t t))
   ))
 (use-package lsp-ui ;; intellisense-like context hover
@@ -256,6 +256,10 @@
 
 (use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
   )
+
+(add-to-list 'load-path "~/.emacs.d/github.el/") ;; installed as a Git submodule
+(use-package github
+  :ensure nil)
 
 ;;
 ;; Other customizations
