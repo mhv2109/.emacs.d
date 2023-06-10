@@ -7,3 +7,6 @@
 [submodule "copilot.el"]
 	path = copilot.el
 	url = https://github.com/zerolfx/copilot.el
+[submodule "github.el"]
+	path = github.el
+	url = https://github.com/mhv2109/github.el
