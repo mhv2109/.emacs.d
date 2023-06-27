@@ -305,3 +305,15 @@
   (let ((command (string-join (list "find . -not \\( -path \"./.git\" -prune \\) -type f | xargs etags" (if append? "-a" "")) " ")) 
 	(default-directory d))
     (shell-command-to-string command)))
+
+
+;; Load secrets with Emacs' built-in GPG support
+;; See: https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+
+(defun load-if-exists (f)
+  (let ((expanded (expand-file-name f)))
+    (if (file-exists-p expanded)
+	(load-file expanded))))
+
+(load-if-exists "~/.emacs.d/secrets.el.gpg")
+(load-if-exists "~/.emacs.d/secrets.el")
