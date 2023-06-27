@@ -34,3 +34,5 @@ persist/
 eclipse.jdt.ls/
 workspace/
 .last-package-update-day
+secrets.el.gpg
+secrets.el
