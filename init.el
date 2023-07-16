@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -137,15 +137,17 @@
 (add-to-list 'image-types 'svg) ;; error workaround: https://github.com/Alexander-Miller/treemacs/issues/1017#issuecomment-1515602288
 (use-package lsp-mode
   :hook prog-mode ;; try LSP mode for all prog-mode
+  :init
+  (setq lsp-eslint-format nil)
   :config
   (add-hook 'before-save-hook #'lsp-format-buffer) ;; format on save
   ;; language-specific settings
   (lsp-register-custom-settings
    '(
      ;; ts/js settings: https://github.com/typescript-language-server/typescript-language-server#workspacedidchangeconfiguration
-     ("typescript.format.indentSize" 4 t)
+     ("typescript.format.indentSize" 2 t)
      ("typescript.format.convertTabsToSpaces" t t)
-     ("javascript.format.indentSize" 4 t)
+     ("javascript.format.indentSize" 2 t)
      ("javascript.format.convertTabsToSpaces" t t))
   ))
 (use-package lsp-ui ;; intellisense-like context hover
@@ -154,6 +156,7 @@
   (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
   )
 (use-package flycheck) ;; syntax highlighting
+(use-package yasnippet)
 
 ;; DAP: https://github.com/emacs-lsp/dap-mode
 (use-package dap-mode)
@@ -200,7 +203,9 @@
   (setq gofmt-command "goimports"))
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
-(use-package typescript-mode)
+(use-package typescript-mode
+  :init
+  (setq typescript-indent-level 2))
 
 ;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
 (add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
