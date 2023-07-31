@@ -36,3 +36,4 @@ workspace/
 .last-package-update-day
 secrets.el.gpg
 secrets.el
+tree-sitter/

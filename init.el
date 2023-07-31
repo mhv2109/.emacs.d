@@ -293,6 +293,7 @@
 ;; add ruler
 (setq display-fill-column-indicator-column 80) ;; default
 (add-hook 'java-mode-hook (lambda () (setq-local display-fill-column-indicator-column 100))) ;; java
+(add-hook 'java-ts-mode-hook (lambda () (setq-local display-fill-column-indicator-column 100)))
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; quickly cycle buffers
@@ -322,3 +323,46 @@
 
 (load-if-exists "~/.emacs.d/secrets.el.gpg")
 (load-if-exists "~/.emacs.d/secrets.el")
+
+;; Auto-refresh dired on file change
+(add-hook 'dired-mode-hook 'auto-revert-mode)
+
+(when (treesit-available-p)
+  ;; Add configs for treesitter dialects
+  (setq treesit-language-source-alist
+	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
+	  (cmake "https://github.com/uyha/tree-sitter-cmake")
+	  (css "https://github.com/tree-sitter/tree-sitter-css")
+	  (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+	  (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+	  (go "https://github.com/tree-sitter/tree-sitter-go")
+	  (html "https://github.com/tree-sitter/tree-sitter-html")
+	  (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+	  (json "https://github.com/tree-sitter/tree-sitter-json")
+	  (make "https://github.com/alemuller/tree-sitter-make")
+	  (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+	  (python "https://github.com/tree-sitter/tree-sitter-python")
+	  (toml "https://github.com/tree-sitter/tree-sitter-toml")
+	  (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+	  (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+	  (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+  (defun treesit-install-all-language-grammars ()
+    "Installs all grammars defined in TREESIT-LANGUAGE-SOURCE-ALIST."
+    (interactive)
+    (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist)))
+
+  ;; Use Treesitter modes instead of default modes
+  (setq major-mode-remap-alist
+	'((bash-mode . bash-ts-mode)
+	  (css-mode . css-ts-mode)
+	  (dockerfile-mode . dockerfile-ts-mode)
+	  (go-mode . go-ts-mode)
+	  (html-mode . html-ts-mode)
+	  (javascript-mode . js-ts-mode)
+	  (js-mode . js-ts-mode)
+	  (js2-mode . js-ts-mode)
+	  (json-mode . json-ts-mode)
+	  (python-mode . python-ts-mode)
+	  (typescript-mode . typescript-ts-mode)
+	  (yaml-mode . yaml-ts-mode))))
