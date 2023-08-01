@@ -327,8 +327,11 @@
 ;; Auto-refresh dired on file change
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 
-(when (treesit-available-p)
-  ;; Add configs for treesitter dialects
+;; Setup Tree-sitter
+(when (and (functionp 'treesit-available-p)
+	   (treesit-available-p)) ;; be defensive about Tree-sitter support
+
+  ;; Add configs for Tree-sitter dialects
   (setq treesit-language-source-alist
 	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
 	  (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -347,22 +350,37 @@
 	  (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
 	  (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
-  (defun treesit-install-all-language-grammars ()
-    "Installs all grammars defined in TREESIT-LANGUAGE-SOURCE-ALIST."
-    (interactive)
-    (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist)))
+  ;; Install all grammars automatically if not already installed and tools are available
+  (cl-flet ((installed? (cmd)
+	      (let ((res (eq (shell-command (concat "type -P " cmd)) 0)))
+		(unless res
+		  (message "Missing Tree-sitter grammar dependency: %s" cmd))
+		res)))
+    (if (and (installed? "git")
+	     (installed? "gcc")
+	     (installed? "g++"))
+	(mapc (lambda (lang)
+	      (unless (treesit-language-available-p lang)
+		(treesit-install-language-grammar lang)))
+	      (mapcar #'car treesit-language-source-alist))
+      (message "Skip installtion of Tree-sitter grammars due to missing dependencies")))
 
-  ;; Use Treesitter modes instead of default modes
-  (setq major-mode-remap-alist
-	'((bash-mode . bash-ts-mode)
-	  (css-mode . css-ts-mode)
-	  (dockerfile-mode . dockerfile-ts-mode)
-	  (go-mode . go-ts-mode)
-	  (html-mode . html-ts-mode)
-	  (javascript-mode . js-ts-mode)
-	  (js-mode . js-ts-mode)
-	  (js2-mode . js-ts-mode)
-	  (json-mode . json-ts-mode)
-	  (python-mode . python-ts-mode)
-	  (typescript-mode . typescript-ts-mode)
-	  (yaml-mode . yaml-ts-mode))))
+  ;; Use Tree-sitter modes instead of default modes
+  ;; Only add remap if language is correctly installed
+  (setq major-mode-remap-alist '())
+  (let ((triples '((bash bash-mode . bash-ts-mode)
+		   (css-mode css-mode . css-ts-mode)
+		   (dockerfile dockerfile-mode . dockerfile-ts-mode)
+		   (go go-mode . go-ts-mode)
+		   (html html-mode . html-ts-mode)
+		   (javascript javascript-mode . js-ts-mode)
+		   (javascript js-mode . js-ts-mode)
+		   (javascript js2-mode . js-ts-mode)
+		   (json json-mode . json-ts-mode)
+		   (python python-mode . python-ts-mode)
+		   (typescript typescript-mode . typescript-ts-mode)
+		   (yaml yaml-mode . yaml-ts-mode))))
+    (mapc (lambda (item)
+	    (when (treesit-language-available-p (car item))
+	      (add-to-list 'major-mode-remap-alist (cdr item))))
+	  triples)))
