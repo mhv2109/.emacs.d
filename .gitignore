@@ -30,7 +30,8 @@ TAGS
 codeium/
 persist/
 .org-id-locations
-.extension/
+# Excluded to make dap-node work
+# .extension/
 eclipse.jdt.ls/
 workspace/
 .last-package-update-day
