@@ -140,7 +140,18 @@
   :init
   (setq lsp-eslint-format nil)
   :config
-  (add-hook 'before-save-hook #'lsp-format-buffer) ;; format on save
+  ;; format on save
+  ;; uses eslint for ts/js if eslint lsp server is installed and available
+  (add-hook 'before-save-hook (lambda ()
+				(if (and (or (eq major-mode 'typescript-mode)
+					     (eq major-mode 'typescript-ts-mode)
+					     (eq major-mode 'javascript-mode)
+					     (eq major-mode 'javascript-ts-mode)
+					     (eq major-mode 'js-mode)
+					     (eq major-mode 'js2-mode))
+					 (functionp 'lsp-eslint-apply-all-fixes))
+				    (lsp-eslint-apply-all-fixes)
+				  (lsp-format-buffer)))) 
   ;; language-specific settings
   (lsp-register-custom-settings
    '(
