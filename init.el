@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -266,6 +266,9 @@
 (use-package github
   :ensure nil)
 
+(use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
+  )
+
 ;;
 ;; Other customizations
 ;;
@@ -338,6 +341,7 @@
 	  (css "https://github.com/tree-sitter/tree-sitter-css")
 	  (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
 	  (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+	  (fish "https://github.com/ram02z/tree-sitter-fish")
 	  (go "https://github.com/tree-sitter/tree-sitter-go")
 	  (html "https://github.com/tree-sitter/tree-sitter-html")
 	  (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
