@@ -167,7 +167,9 @@
   (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
   )
 (use-package flycheck) ;; syntax highlighting
-(use-package yasnippet)
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
 
 ;; DAP: https://github.com/emacs-lsp/dap-mode
 (use-package dap-mode)
@@ -403,6 +405,7 @@
 	  triples)))
 
 ;; Eshell helpers
+;; https://howardism.org/Technical/Emacs/eshell-fun.html
 
 (defun eshell-here ()
   "Opens up a new shell in the directory associated with the

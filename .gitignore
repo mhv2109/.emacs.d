@@ -12,7 +12,8 @@ melpa-stable
 archive-contents
 *.elc
 elpa/
-eshell/
+eshell/*
+!eshell/profile
 meghanada/
 ac-comphist.dat
 transient/
