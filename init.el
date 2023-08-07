@@ -97,7 +97,10 @@
 	  (envv (getenv "ORG_DIR"))) 
       (expand-file-name (if envv
 			    envv
-			  default)))))
+			  default))))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t))))
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
