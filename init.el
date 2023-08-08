@@ -100,7 +100,8 @@
 			  default))))
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((python . t))))
+   '((python . t)))
+  (setq org-preview-latex-default-process 'dvisvgm))
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
