@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(ob-go texlive-latex-extra fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -100,11 +100,17 @@
 			  default))))
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((python . t)))
-  (setq org-preview-latex-default-process 'dvisvgm))
+   '((python . t)
+     (shell . t)
+     (go . t)))
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-src-tab-acts-natively nil))
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
+(use-package ob-go ;; org-babel support for Go: https://github.com/pope/ob-go
+  :after org)
 (use-package org-drill ;; Spaced repetition for Org mode: https://orgmode.org/worg/org-contrib/org-drill.html
   :after org
   :config
