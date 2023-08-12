@@ -319,7 +319,6 @@
 ;; add ruler
 (setq display-fill-column-indicator-column 80) ;; default
 (add-hook 'java-mode-hook (lambda () (setq-local display-fill-column-indicator-column 100))) ;; java
-(add-hook 'java-ts-mode-hook (lambda () (setq-local display-fill-column-indicator-column 100)))
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; quickly cycle buffers
