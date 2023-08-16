@@ -40,6 +40,30 @@
 ;; Package customizations
 ;;
 
+(defun install-ts-mode (lang url &optional mode ts-mode)
+  "Helper for installing Treesitter packages.
+
+LANG is the language symbol. URL is the Git repository URL for the grammar. MODE is the major mode to remap to TS-MODE using major-mode-remap-list."
+  (cl-flet ((installed? (cmd)
+	      (with-output-to-temp-buffer "*tmp*"
+		(let ((res (eq (shell-command (concat "type -P " cmd) "*tmp*") 0)))
+		  (unless res
+		    (message "Not installing tree-sitter grammar %s, missing dependency: %s" lang cmd))
+		  res))))
+    (when (and (functionp 'treesit-available-p)
+	       (treesit-available-p)
+	       (not (treesit-language-available-p lang))
+	       (installed? "git")
+	       (installed? "gcc")
+	       (installed? "g++"))
+      (add-to-list 'treesit-language-source-alist (cons lang url))
+      (treesit-install-language-grammar lang)))
+  (if (and (functionp 'treesit-language-available-p)
+	   (treesit-language-available-p lang)
+	   mode
+	   ts-mode)
+      (add-to-list 'major-mode-remap-alist (cons mode ts-mode))))
+
 ;; bootstrap use-package: https://github.com/jwiegley/use-package
 (require 'use-package)
 (use-package use-package-ensure
@@ -216,6 +240,7 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode)))
+(install-ts-mode 'yaml '("https://github.com/ikatyang/tree-sitter-yaml") 'yaml-mode 'yaml-ts-mode)
 
 ;; major mode for working with mermaid.js: https://mermaid.js.org/
 (use-package mermaid-mode)
@@ -224,11 +249,15 @@
 (use-package go-mode
   :init
   (setq gofmt-command "goimports"))
+(install-ts-mode 'go '("https://github.com/tree-sitter/tree-sitter-go") 'go-mode 'go-ts-mode)
+(install-ts-mode 'gomod '("https://github.com/camdencheek/tree-sitter-go-mod") 'go-dot-mod-mode 'go-mod-ts-mode)
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode
   :init
   (setq typescript-indent-level 2))
+(install-ts-mode 'typescript '("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src") 'typescript-mode 'typescript-ts-mode)
+(install-ts-mode 'tsx '("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
 
 ;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
 (add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
@@ -284,6 +313,7 @@
 
 (use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
   )
+(install-ts-mode 'dockerfile '("https://github.com/camdencheek/tree-sitter-dockerfile") 'dockerfile-mode 'dockerfile-ts-mode)
 
 (add-to-list 'load-path "~/.emacs.d/github.el/") ;; installed as a Git submodule
 (use-package github
@@ -291,6 +321,22 @@
 
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
   )
+(install-ts-mode 'fish '("https://github.com/ram02z/tree-sitter-fish"))
+
+;; Other treesitter modes
+(install-ts-mode 'bash '("https://github.com/tree-sitter/tree-sitter-bash") 'bash-mode 'bash-ts-mode)
+(install-ts-mode 'cmake '("https://github.com/uyha/tree-sitter-cmake"))
+(install-ts-mode 'css '("https://github.com/tree-sitter/tree-sitter-css") 'css-mode 'css-ts-mode)
+(install-ts-mode 'elisp '("https://github.com/Wilfred/tree-sitter-elisp"))
+(install-ts-mode 'html '("https://github.com/tree-sitter/tree-sitter-html") 'html-mode 'html-ts-mode)
+(install-ts-mode 'javascript '("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src") 'javascript-mode 'js-ts-mode)
+(install-ts-mode 'javascript '("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src") 'js-mode 'js-ts-mode)
+(install-ts-mode 'javascript '("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src") 'js2-mode 'js-ts-mode)
+(install-ts-mode 'json '("https://github.com/tree-sitter/tree-sitter-json") 'json-mode 'json-ts-mode)
+(install-ts-mode 'make '("https://github.com/alemuller/tree-sitter-make"))
+(install-ts-mode 'markdown '("https://github.com/ikatyang/tree-sitter-markdown"))
+(install-ts-mode 'python '("https://github.com/tree-sitter/tree-sitter-python") 'python-mode 'python-ts-mode)
+(install-ts-mode 'toml '("https://github.com/tree-sitter/tree-sitter-toml"))
 
 ;;
 ;; Other customizations
@@ -351,67 +397,6 @@
 
 ;; Auto-refresh dired on file change
 (add-hook 'dired-mode-hook 'auto-revert-mode)
-
-;; Setup Tree-sitter
-(when (and (functionp 'treesit-available-p)
-	   (treesit-available-p)) ;; be defensive about Tree-sitter support
-
-  ;; Add configs for Tree-sitter dialects
-  (setq treesit-language-source-alist
-	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
-	  (cmake "https://github.com/uyha/tree-sitter-cmake")
-	  (css "https://github.com/tree-sitter/tree-sitter-css")
-	  (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
-	  (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-	  (fish "https://github.com/ram02z/tree-sitter-fish")
-	  (go "https://github.com/tree-sitter/tree-sitter-go")
-	  (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
-	  (html "https://github.com/tree-sitter/tree-sitter-html")
-	  (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-	  (json "https://github.com/tree-sitter/tree-sitter-json")
-	  (make "https://github.com/alemuller/tree-sitter-make")
-	  (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-	  (python "https://github.com/tree-sitter/tree-sitter-python")
-	  (toml "https://github.com/tree-sitter/tree-sitter-toml")
-	  (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-	  (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-	  (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-
-  ;; Install all grammars automatically if not already installed and tools are available
-  (cl-flet ((installed? (cmd)
-	      (let ((res (eq (shell-command (concat "type -P " cmd)) 0)))
-		(unless res
-		  (message "Missing Tree-sitter grammar dependency: %s" cmd))
-		res)))
-    (if (and (installed? "git")
-	     (installed? "gcc")
-	     (installed? "g++"))
-	(mapc (lambda (lang)
-	      (unless (treesit-language-available-p lang)
-		(treesit-install-language-grammar lang)))
-	      (mapcar #'car treesit-language-source-alist))
-      (message "Skip installtion of Tree-sitter grammars due to missing dependencies")))
-
-  ;; Use Tree-sitter modes instead of default modes
-  ;; Only add remap if language is correctly installed
-  (setq major-mode-remap-alist '())
-  (let ((triples '((bash bash-mode . bash-ts-mode)
-		   (css-mode css-mode . css-ts-mode)
-		   (dockerfile dockerfile-mode . dockerfile-ts-mode)
-		   (go go-mode . go-ts-mode)
-		   (gomod go-dot-mod-mode . go-mod-ts-mode)
-		   (html html-mode . html-ts-mode)
-		   (javascript javascript-mode . js-ts-mode)
-		   (javascript js-mode . js-ts-mode)
-		   (javascript js2-mode . js-ts-mode)
-		   (json json-mode . json-ts-mode)
-		   (python python-mode . python-ts-mode)
-		   (typescript typescript-mode . typescript-ts-mode)
-		   (yaml yaml-mode . yaml-ts-mode))))
-    (mapc (lambda (item)
-	    (when (treesit-language-available-p (car item))
-	      (add-to-list 'major-mode-remap-alist (cdr item))))
-	  triples)))
 
 ;; Eshell helpers
 ;; https://howardism.org/Technical/Emacs/eshell-fun.html
