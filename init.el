@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -39,35 +39,6 @@
 ;;
 ;; Package customizations
 ;;
-
-(defun install-ts-mode (lang url &optional mode ts-mode)
-  "Helper for installing Treesitter packages.
-
-LANG is the language symbol. URL is the Git repository URL for the grammar. MODE is the major mode to remap to TS-MODE using major-mode-remap-list."
-  (cl-flet ((installed? (cmd)
-	      (let* ((message-log-max nil) ;; supress messages in *Message* buffer
-		     (tmp (get-buffer-create "*install-ts-mode--tmp*"))
-		     (code (shell-command (concat "type -P " cmd) tmp))
-		     (res (eq code 0)))
-		(kill-buffer tmp)
-		(unless res
-		  (message "Not installing tree-sitter grammar %s, missing dependency: %s" lang cmd))
-		res)))
-    (when (and (functionp 'treesit-available-p)
-	       (treesit-available-p)
-	       (installed? "git")
-	       (installed? "gcc")
-	       (installed? "g++"))
-      (add-to-list 'treesit-language-source-alist (cons lang url))
-      (when (-> lang
-		treesit-language-available-p
-		not)
-	(treesit-install-language-grammar lang))))
-  (if (and (functionp 'treesit-language-available-p)
-	   (treesit-language-available-p lang)
-	   mode
-	   ts-mode)
-      (add-to-list 'major-mode-remap-alist (cons mode ts-mode))))
 
 ;; bootstrap use-package: https://github.com/jwiegley/use-package
 (require 'use-package)
@@ -245,7 +216,6 @@ LANG is the language symbol. URL is the Git repository URL for the grammar. MODE
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode)))
-(install-ts-mode 'yaml '("https://github.com/ikatyang/tree-sitter-yaml") 'yaml-mode 'yaml-ts-mode)
 
 ;; major mode for working with mermaid.js: https://mermaid.js.org/
 (use-package mermaid-mode)
@@ -254,15 +224,11 @@ LANG is the language symbol. URL is the Git repository URL for the grammar. MODE
 (use-package go-mode
   :init
   (setq gofmt-command "goimports"))
-(install-ts-mode 'go '("https://github.com/tree-sitter/tree-sitter-go") 'go-mode 'go-ts-mode)
-(install-ts-mode 'gomod '("https://github.com/camdencheek/tree-sitter-go-mod") 'go-dot-mod-mode 'go-mod-ts-mode)
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode
   :init
   (setq typescript-indent-level 2))
-(install-ts-mode 'typescript '("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src") 'typescript-mode 'typescript-ts-mode)
-(install-ts-mode 'tsx '("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
 
 ;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
 (add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
@@ -318,7 +284,6 @@ LANG is the language symbol. URL is the Git repository URL for the grammar. MODE
 
 (use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
   )
-(install-ts-mode 'dockerfile '("https://github.com/camdencheek/tree-sitter-dockerfile") 'dockerfile-mode 'dockerfile-ts-mode)
 
 (add-to-list 'load-path "~/.emacs.d/github.el/") ;; installed as a Git submodule
 (use-package github
@@ -326,22 +291,21 @@ LANG is the language symbol. URL is the Git repository URL for the grammar. MODE
 
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
   )
-(install-ts-mode 'fish '("https://github.com/ram02z/tree-sitter-fish"))
 
-;; Other treesitter modes
-(install-ts-mode 'bash '("https://github.com/tree-sitter/tree-sitter-bash") 'bash-mode 'bash-ts-mode)
-(install-ts-mode 'cmake '("https://github.com/uyha/tree-sitter-cmake"))
-(install-ts-mode 'css '("https://github.com/tree-sitter/tree-sitter-css") 'css-mode 'css-ts-mode)
-(install-ts-mode 'elisp '("https://github.com/Wilfred/tree-sitter-elisp"))
-(install-ts-mode 'html '("https://github.com/tree-sitter/tree-sitter-html") 'html-mode 'html-ts-mode)
-(install-ts-mode 'javascript '("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src") 'javascript-mode 'js-ts-mode)
-(install-ts-mode 'javascript '("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src") 'js-mode 'js-ts-mode)
-(install-ts-mode 'javascript '("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src") 'js2-mode 'js-ts-mode)
-(install-ts-mode 'json '("https://github.com/tree-sitter/tree-sitter-json") 'json-mode 'json-ts-mode)
-(install-ts-mode 'make '("https://github.com/alemuller/tree-sitter-make"))
-(install-ts-mode 'markdown '("https://github.com/ikatyang/tree-sitter-markdown"))
-(install-ts-mode 'python '("https://github.com/tree-sitter/tree-sitter-python") 'python-mode 'python-ts-mode)
-(install-ts-mode 'toml '("https://github.com/tree-sitter/tree-sitter-toml"))
+(use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
+  :demand t
+  :config
+  (setq treesit-auto-install t)
+  (global-treesit-auto-mode)
+  ;; custom recipes
+  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					  :lang 'gomod
+					  :ts-mode 'go-mod-ts-mode
+					  :remap '(go-dot-mod-mode)
+					  :url "https://github.com/camdencheek/tree-sitter-go-mod"))
+  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					  :lang 'fish
+					  :url "https://github.com/ram02z/tree-sitter-fish")))
 
 ;;
 ;; Other customizations
