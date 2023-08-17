@@ -45,19 +45,24 @@
 
 LANG is the language symbol. URL is the Git repository URL for the grammar. MODE is the major mode to remap to TS-MODE using major-mode-remap-list."
   (cl-flet ((installed? (cmd)
-	      (with-output-to-temp-buffer "*tmp*"
-		(let ((res (eq (shell-command (concat "type -P " cmd) "*tmp*") 0)))
-		  (unless res
-		    (message "Not installing tree-sitter grammar %s, missing dependency: %s" lang cmd))
-		  res))))
+	      (let* ((message-log-max nil) ;; supress messages in *Message* buffer
+		     (tmp (get-buffer-create "*install-ts-mode--tmp*"))
+		     (code (shell-command (concat "type -P " cmd) tmp))
+		     (res (eq code 0)))
+		(kill-buffer tmp)
+		(unless res
+		  (message "Not installing tree-sitter grammar %s, missing dependency: %s" lang cmd))
+		res)))
     (when (and (functionp 'treesit-available-p)
 	       (treesit-available-p)
-	       (not (treesit-language-available-p lang))
 	       (installed? "git")
 	       (installed? "gcc")
 	       (installed? "g++"))
       (add-to-list 'treesit-language-source-alist (cons lang url))
-      (treesit-install-language-grammar lang)))
+      (when (-> lang
+		treesit-language-available-p
+		not)
+	(treesit-install-language-grammar lang))))
   (if (and (functionp 'treesit-language-available-p)
 	   (treesit-language-available-p lang)
 	   mode
