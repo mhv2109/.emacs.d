@@ -389,3 +389,8 @@ directory to make multiple eshell windows easier."
     (eshell-send-input)))
 
 (global-set-key (kbd "C-!") 'eshell-here)
+
+;; change tab behavior
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
