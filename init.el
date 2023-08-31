@@ -292,8 +292,8 @@
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
   )
 
-(if (and (fboundp 'treesit-available-p)
-         (treesit-available-p))
+(when (and (fboundp 'treesit-available-p)
+           (treesit-available-p))
     (use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
       :demand t
       :config
@@ -307,7 +307,12 @@
 					                          :url "https://github.com/camdencheek/tree-sitter-go-mod"))
       (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
 					                          :lang 'fish
-					                          :url "https://github.com/ram02z/tree-sitter-fish"))))
+					                          :url "https://github.com/ram02z/tree-sitter-fish")))
+    (use-package go-ts-mode
+      :ensure nil
+      :after treesit-auto
+      :custom
+      (go-ts-mode-indent-offset 4)))
 
 ;;
 ;; Other customizations
