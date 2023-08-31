@@ -292,20 +292,22 @@
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
   )
 
-(use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
-  :demand t
-  :config
-  (setq treesit-auto-install t)
-  (global-treesit-auto-mode)
-  ;; custom recipes
-  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					  :lang 'gomod
-					  :ts-mode 'go-mod-ts-mode
-					  :remap '(go-dot-mod-mode)
-					  :url "https://github.com/camdencheek/tree-sitter-go-mod"))
-  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					  :lang 'fish
-					  :url "https://github.com/ram02z/tree-sitter-fish")))
+(if (and (fboundp 'treesit-available-p)
+         (treesit-available-p))
+    (use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
+      :demand t
+      :config
+      (setq treesit-auto-install t)
+      (global-treesit-auto-mode)
+      ;; custom recipes
+      (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					                          :lang 'gomod
+					                          :ts-mode 'go-mod-ts-mode
+					                          :remap '(go-dot-mod-mode)
+					                          :url "https://github.com/camdencheek/tree-sitter-go-mod"))
+      (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					                          :lang 'fish
+					                          :url "https://github.com/ram02z/tree-sitter-fish"))))
 
 ;;
 ;; Other customizations
