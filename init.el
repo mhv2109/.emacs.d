@@ -215,7 +215,8 @@
 (use-package yaml-mode
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode)))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+  (add-hook 'yaml-mode-hook (lambda () (setq tab-width 2))))
 
 ;; major mode for working with mermaid.js: https://mermaid.js.org/
 (use-package mermaid-mode)
@@ -312,7 +313,12 @@
       :ensure nil
       :after treesit-auto
       :custom
-      (go-ts-mode-indent-offset 4)))
+      (go-ts-mode-indent-offset 4))
+    (use-package yaml-ts-mode
+      :ensure nil
+      :after treesit-auto
+      :config
+      (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2)))))
 
 ;;
 ;; Other customizations
