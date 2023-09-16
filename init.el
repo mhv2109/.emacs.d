@@ -26,7 +26,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -272,16 +272,20 @@
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
   (global-set-key (kbd "M-C-<tab>") 'copilot-mode))
 
-;; On OS X, an Emacs instance started from the graphical user
-;; interface will have a different environment than a shell in a
-;; terminal window, because OS X does not run a shell during the
-;; login. Obviously this will lead to unexpected results when
-;; calling external utilities like make from Emacs.
-;; This library works around this problem by copying important
-;; environment variables from the user's shell.
-;; https://github.com/purcell/exec-path-from-shell
-(if (memq window-system '(mac ns x))
-    (use-package exec-path-from-shell))
+;; macOS specific packages
+(when (memq window-system '(mac ns x))
+  ;; On OS X, an Emacs instance started from the graphical user
+  ;; interface will have a different environment than a shell in a
+  ;; terminal window, because OS X does not run a shell during the
+  ;; login. Obviously this will lead to unexpected results when
+  ;; calling external utilities like make from Emacs.
+  ;; This library works around this problem by copying important
+  ;; environment variables from the user's shell.
+  ;; https://github.com/purcell/exec-path-from-shell
+  (use-package exec-path-from-shell)
+
+  ;; Local documentation for macOS: https://github.com/stanaka/dash-at-point#readme
+  (use-package dash-at-point))
 
 (use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
   )
