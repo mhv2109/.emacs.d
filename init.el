@@ -486,3 +486,6 @@ directory to make multiple eshell windows easier."
       (if this-win-2nd (other-window 1))))))
 
 (global-set-key (kbd "C-x |") 'toggle-window-split)
+
+;; Disable tool-bar-mode
+(tool-bar-mode -1)
