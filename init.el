@@ -1,3 +1,5 @@
+(setq gc-cons-threshold 100000000) ;; raise GC threshold to 10MB
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -173,7 +175,7 @@
   ))
 (use-package lsp-ui ;; intellisense-like context hover
   :init
-  (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
+  ;; (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold ;; instead, set at top of file to speed up loading
   (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
   )
 (use-package flycheck) ;; syntax highlighting
