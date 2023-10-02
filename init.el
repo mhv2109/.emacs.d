@@ -456,7 +456,6 @@ directory to make multiple eshell windows easier."
 ;; change tab behavior
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-(setq indent-line-function 'insert-tab)
 
 ;; quickly swap from horizontal to vertical split & vice-versa
 ;; copied from here: https://stackoverflow.com/questions/14881020/emacs-shortcut-to-switch-from-a-horizontal-split-to-a-vertical-split-in-one-move
