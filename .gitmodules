@@ -1,6 +1,3 @@
-[submodule "icicles"]
-	path = icicles
-	url = https://github.com/emacsmirror/icicles
 [submodule "codeium.el"]
 	path = codeium.el
 	url = https://github.com/Exafunction/codeium.el.git

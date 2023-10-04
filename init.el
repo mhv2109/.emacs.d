@@ -51,13 +51,6 @@
 ;; automatically update packages
 (use-package auto-package-update)
 
-;; icicles: https://www.emacswiki.org/emacs/Icicles
-(add-to-list 'load-path "~/.emacs.d/icicles/") ;; installed as a Git submodule
-(use-package icicles
-  :ensure nil
-  :config
-  (icy-mode 1))
-
 ;; Git integration
 (use-package magit
   :pin melpa-stable)
