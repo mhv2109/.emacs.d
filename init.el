@@ -371,7 +371,7 @@
   :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
 (use-package rainbow-delimiters ;; Make reading nested parens easier: https://github.com/Fanael/rainbow-delimiters
   :after (cider slime)
-  :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . rainbow-delimiters-mode))
+  :hook ((prog-mode) . rainbow-delimiters-mode))
 
 ;;
 ;; Other customizations
