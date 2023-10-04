@@ -373,6 +373,10 @@
   :after (cider slime)
   :hook ((prog-mode) . rainbow-delimiters-mode))
 
+(use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
+  :config
+  (load-theme 'doom-dracula t))
+
 ;;
 ;; Other customizations
 ;;

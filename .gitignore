@@ -40,3 +40,4 @@ secrets.el.gpg
 secrets.el
 tree-sitter/
 image-dired/
+url/
