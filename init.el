@@ -381,6 +381,11 @@
   :config
   (load-theme 'doom-dracula t))
 
+(use-package uniquify ;; Overrides Emacs’ default mechanism for making buffer names unique, from: https://git.sr.ht/~technomancy/better-defaults
+  :ensure nil
+  :config
+  (setq uniquify-buffer-name-style 'forward))
+
 ;;
 ;; Other customizations
 ;;
@@ -497,7 +502,11 @@ directory to make multiple eshell windows easier."
 
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 
-;; Disable tool-bar-mode
-(tool-bar-mode -1)
+;; General "improved" defaults from: https://git.sr.ht/~technomancy/better-defaults
+(unless (memq window-system '(mac ns)) ;; Disable menu bar on everything but mac
+  (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode) ;; Disable tool-bar-mode
+  (tool-bar-mode -1))
+(save-place-mode 1) ;; https://www.emacswiki.org/emacs/SavePlace
 
 (setq gc-cons-threshold gc-cons-threshold--original) ;; reset GC threshold
