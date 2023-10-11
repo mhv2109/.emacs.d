@@ -1,3 +1,4 @@
+(setq gc-cons-threshold--original gc-cons-threshold)
 (setq gc-cons-threshold 100000000) ;; raise GC threshold to 10MB
 
 (require 'package)
@@ -128,6 +129,9 @@
   (text-mode
    ;; prog-mode ;; TODO: make this smarter about code vs. comments
    ))
+(use-package flyspell-lazy ;; Reduce CPU+MEM usage by flyspell: https://github.com/rolandwalker/flyspell-lazy 
+  :config
+  (flyspell-lazy-mode 1))
 
 ;; autocomplete using company-mode: https://company-mode.github.io/
 (use-package company
@@ -495,3 +499,5 @@ directory to make multiple eshell windows easier."
 
 ;; Disable tool-bar-mode
 (tool-bar-mode -1)
+
+(setq gc-cons-threshold gc-cons-threshold--original) ;; reset GC threshold
