@@ -469,10 +469,6 @@ directory to make multiple eshell windows easier."
 
 (global-set-key (kbd "C-!") 'eshell-here)
 
-;; change tab behavior
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-
 ;; quickly swap from horizontal to vertical split & vice-versa
 ;; copied from here: https://stackoverflow.com/questions/14881020/emacs-shortcut-to-switch-from-a-horizontal-split-to-a-vertical-split-in-one-move
 (defun toggle-window-split ()
@@ -503,10 +499,23 @@ directory to make multiple eshell windows easier."
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 
 ;; General "improved" defaults from: https://git.sr.ht/~technomancy/better-defaults
+;; See also: https://idiomdrottning.org/bad-emacs-defaults (I don't agree with _everything_ there)
 (unless (memq window-system '(mac ns)) ;; Disable menu bar on everything but mac
   (menu-bar-mode -1))
 (when (fboundp 'tool-bar-mode) ;; Disable tool-bar-mode
   (tool-bar-mode -1))
 (save-place-mode 1) ;; https://www.emacswiki.org/emacs/SavePlace
+(setq-default indent-tabs-mode nil) ;; change tab behavior
+(setq-default tab-width 4)
+(setq apropos-do-all t
+      require-final-newline t
+      visible-bell t
+      load-prefer-newer t
+      backup-by-copying t
+      show-trailing-whitespace t)
+(unless backup-directory-alist ;; don't litter directory with backups and autosaves, but still backup and auto-save
+    (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
+                                                   "backups")))))
 
-(setq gc-cons-threshold gc-cons-threshold--original) ;; reset GC threshold
+;; reset GC threshold
+(setq gc-cons-threshold gc-cons-threshold--original)
