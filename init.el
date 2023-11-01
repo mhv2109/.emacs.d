@@ -129,9 +129,6 @@
   (text-mode
    ;; prog-mode ;; TODO: make this smarter about code vs. comments
    ))
-(use-package flyspell-lazy ;; Reduce CPU+MEM usage by flyspell: https://github.com/rolandwalker/flyspell-lazy 
-  :config
-  (flyspell-lazy-mode 1))
 
 ;; autocomplete using company-mode: https://company-mode.github.io/
 (use-package company
