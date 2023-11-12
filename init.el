@@ -220,7 +220,9 @@
 ;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
 (use-package go-mode
   :init
-  (setq gofmt-command "goimports"))
+  (setq gofmt-command "goimports")
+  :hook
+  (before-save-hook gofmt-before-save))
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode
