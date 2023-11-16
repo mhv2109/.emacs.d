@@ -1,4 +1,4 @@
-#+title: MHz2109's Emacs con-fig v2
+#+title: mhv2109's Emacs config v2
 
 * Usage
 
