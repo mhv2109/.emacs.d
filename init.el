@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode evil use-package magit exec-path-from-shell))
+   '(terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -55,12 +55,6 @@
 ;; Git integration
 (use-package magit
   :pin melpa-stable)
-
-;; Enable vim keybindings
-(use-package evil
-  :pin melpa-stable
-  :config
-  (evil-mode 1))
 
 ;; Functions to insert the current date for org-mode doc headers
 (use-package calendar
@@ -388,6 +382,14 @@
 (use-package terraform-mode ;; Major mode for Hashicorp Terraform: https://github.com/hcl-emacs/terraform-mode
   )
 
+;; minibuffer autocomplete config
+(use-package icomplete ;; incremental completion, part of Emacs: https://www.emacswiki.org/emacs/IcompleteMode
+  :ensure nil
+  :config
+  (icomplete-mode 1)
+  (icomplete-vertical-mode 1)
+  (setq completion-cycle-threshold t))
+
 ;;
 ;; Other customizations
 ;;
@@ -425,12 +427,15 @@
 (windmove-default-keybindings)
 (setq windmove-wrap-around nil)
 
+;; Treat snake_case as one word
+(global-superword-mode 1)
+
 ;; generate TAGS table file with etags
 (defun etags (d &optional append?)
   "Uses etags to generate a TAGS table file in directory D. If APPEND? is truthy, equivalent of calling etags with -a flag."
   (interactive "F")
   (let ((command (string-join (list "find . -not \\( -path \"./.git\" -prune \\) -type f | xargs etags" (if append? "-a" "")) " ")) 
-	(default-directory d))
+	    (default-directory d))
     (shell-command-to-string command)))
 
 
