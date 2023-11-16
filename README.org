@@ -2,7 +2,7 @@
 
 * Usage
 
-Clone repository using ~git clone --recurse-submodules https://github.com/mhv2109/.emacs.d.git~ into ~~/.emacs.d~ and start Emacs.
+Clone repository using ~git clone --recurse-submodules https://github.com/mhv2109/.emacs.d.git~ into ~$HOME/.emacs.d~ and start Emacs.
 
 * Keybindings
 
