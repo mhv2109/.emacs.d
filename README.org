@@ -85,7 +85,7 @@ I also have ~windmove~ enabled, so can also switch windows directionally with ~S
 - ~M-m~ :: Move to first non-whitespace character on the line
 - ~M-g M-g~ :: Go to line
 
-**** By sex, List, Balanced Expression
+**** By sexp, List, Balanced Expression
 
 - ~C-M-f~ :: Move forward one sexp
 - ~C-M-b~ :: Move backward one sexp
@@ -141,3 +141,78 @@ I also have ~windmove~ enabled, so can also switch windows directionally with ~S
 - ~C-M-s~ or ~C-M-r~ :: Forward/reverse regex isearch
 - ~RET~ :: Pick selected match
 - ~C-g~ :: Exit isearch
+
+** Editing
+
+*** Killing and Yanking Text
+
+- ~C-d~ :: Kill character (analogous to 'delete' key behavior)
+- ~<backspace>~ :: Kill previous character
+- ~M-d~, ~C-<backspace>~ :: Kill word
+- ~C-k~ :: Kill rest of line
+- ~M-k~ :: Kill sentence
+- ~C-M-k~ :: Kill sexp
+- ~C-S-<backspace>~ :: Kill entire line (including newline)
+
+- ~C-w~ :: Kill active region (cut)
+- ~M-w~ :: Copy to kill ring (copy)
+- ~C-M-w~ :: Append kill
+- ~C-y~ :: Yank last kill (paste)
+- ~M-y~ :: Cycle through kill ring
+
+*** Transposing Text
+
+- ~C-t~ :: Transpose characters
+- ~M-t~ :: Transpose words
+- ~C-M-t~ :: Transpose sexps
+
+*** Filling and Commenting
+
+- ~M-q~ :: Refill the paragraph (break paragraphs at desired max line length)
+- ~M-;~ :: Comment DWIM
+- ~C-x C-;~ :: Comment line
+
+*** Search and Replace (see also [[Searching and Indexing][Searching and Indexing]])
+
+- ~M-%~ :: Query search and replace
+- ~C-M-%~ :: Query regexp search and replace
+- ~M-x replace-string~ :: Search and replace
+- ~M-x replace-regexp~ :: Search and replace regexp
+
+*** Changing Case
+
+- ~C-x C-u~ :: Uppercase region
+- ~C-x C-l~ :: Lowercase region
+- ~M-c~ :: Capitalize next word
+- ~M-u~ :: Uppercase next word
+- ~M-l~ :: Lowercase next word
+
+*** Joining and Splitting Lines
+
+- ~C-o~ :: Insert blank line after text
+- ~C-x C-o~ :: Delete all blank lines after point
+- ~M-^~ :: Join line with one above
+
+*** Rectangle Commands (Column edit)
+
+- ~C-x r k~ :: Kill rectangle
+- ~C-x r M-w~ :: Copy rectangle
+- ~C-x r t~ :: Replace rectangle region with text
+- ~C-x r o~ :: Insert whitespace rectangle into the region
+- ~C-u C-x r N~ :: Create a numbered list from selected lines
+
+*** Macros
+
+- ~F3~ or ~C-x (~ :: Start macro recording
+- ~F4~ or ~C-x )~ :: Stops macro recording
+- ~C-x e~ :: Play last macro
+- ~C-x C-k C-n~ :: Cycles macro ring to next
+- ~C-x C-k C-p~ :: Cycles macro ring to previous
+- ~C-x C-k n~ :: Names the last macro
+- ~C-x C-k b~ :: Binds the last macro to a key
+  
+*** Spellchecking
+
+Flyspell is enabled in ~init.el~.
+
+- ~C-.~ :: Cycle through corrections for misspelled word at point

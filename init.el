@@ -120,18 +120,20 @@
   (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
   (define-key flyspell-mouse-map [mouse-3] #'undefined)
   :hook
-  (text-mode
-   ;; prog-mode ;; TODO: make this smarter about code vs. comments
-   ))
+  (text-mode))
+(use-package flyspell-prog-mode
+  :ensure nil
+  :hook
+  (prog-mode))
 
 ;; autocomplete using company-mode: https://company-mode.github.io/
 (use-package company
   :config
   (global-company-mode t)
   (setq-default
-        company-idle-delay 0.05
-        company-require-match nil
-        company-minimum-prefix-length 1))
+   company-idle-delay 0.05
+   company-require-match nil
+   company-minimum-prefix-length 1))
 
 ;; LSP: https://github.com/emacs-lsp/lsp-mode
 (add-to-list 'image-types 'svg) ;; error workaround: https://github.com/Alexander-Miller/treemacs/issues/1017#issuecomment-1515602288
