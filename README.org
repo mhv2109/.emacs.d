@@ -216,3 +216,15 @@ I also have ~windmove~ enabled, so can also switch windows directionally with ~S
 Flyspell is enabled in ~init.el~.
 
 - ~C-.~ :: Cycle through corrections for misspelled word at point
+
+* TRAMP: Remote File Editing
+
+TRAMP works transparently with ~C-x C-f~, as well as other commands (you can ~cd~ to a remote directory from ~eshell~ with TRAMP). All TRAMP connections follow this syntax:
+#+BEGIN_EXAMPLE
+/protocol:[user@]hostname[#port]:filepath
+#+END_EXAMPLE
+
+e.g. to edit a remote file ~/home/myuser/myfile.txt~ as user ~myuser~ over ~ssh~ at ~myhost~, type ~C-x C-f~ followed by:
+#+BEGIN_EXAMPLE
+/ssh:myuser@myhost:/home/myuser/myfile.txt
+#+END_EXAMPLE
