@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -172,6 +172,40 @@
 (use-package yasnippet
   :config
   (yas-global-mode 1))
+(use-package lsp-java
+  :config
+  ;; below is copied and adapted from https://github.com/sei40kr/lsp-java-lombok/blob/f77514f0b2fae634c4e02070afce04287032f13e/lsp-java-lombok.el
+  ;; as the provided commands needed some updates for Java modules
+  (defgroup lsp-java-lombok nil
+    "Lombok for Java LSP"
+    :prefix "lsp-java-lombok-"
+    :group 'languages)
+  (defcustom lsp-java-lombok-jar-path (expand-file-name
+                                       (locate-user-emacs-file ".cache/lombok.jar"))
+    "The location of the Lombok JAR."
+    :group 'lsp-java-lombok
+    :risky t
+    :type 'directory)
+  (defun lsp-java-lombok-download ()
+    "Download the latest Lombok JAR file and install it into `lsp-java-lombok-jar-path'."
+    (interactive)
+    (if (and (y-or-n-p (format "Download the latest Lombok JAR into %s? "
+                               lsp-java-lombok-jar-path))
+             (or (not (file-exists-p lsp-java-lombok-jar-path))
+                 (y-or-n-p (format "The Lombok JAR already exists at %s, overwrite? "
+                                   lsp-java-lombok-jar-path))))
+        (progn
+          (mkdir (file-name-directory lsp-java-lombok-jar-path) t)
+          (message "Downloading Lombok JAR into %s" lsp-java-lombok-jar-path)
+          (url-copy-file "https://projectlombok.org/downloads/lombok.jar" lsp-java-lombok-jar-path t))
+      (message "Aborted.")))
+  (defun lsp-java-lombok ()
+    "Configure lsp-java to let the server to load the Lombok JAR."
+    (setq lsp-java-vmargs
+          (append lsp-java-vmargs
+                  (list (concat "-javaagent:" lsp-java-lombok-jar-path)))))
+  (when (file-exists-p lsp-java-lombok-jar-path)
+      (lsp-java-lombok)))
 
 ;; DAP: https://github.com/emacs-lsp/dap-mode
 (use-package dap-mode)
@@ -202,6 +236,8 @@
          :request "launch"
          :program "${workspaceFolder}/node_modules/jest/bin/jest.js"
 	 :args "-i")))
+(use-package dap-java
+  :ensure nil)
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
