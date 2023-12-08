@@ -80,14 +80,10 @@
   (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED")) ;; Update TODO states
   :config
   (setq org-log-done t)
-  (defun get-org-dir (&optional default)
-    "Get main directory containing .org files. Configurable using either $ORG_DIR env var, or defaults to $HOME/org/. Relative filenames are expanded."
+  (defun get-org-dir (&optional override)
+    "Get main directory containing .org files. Configurable using either $ORG_DIR env var, or defaults to ORG-DIRECTORY ($HOME/org/). Relative filenames are expanded."
     (interactive)
-    (let ((default (if default default "~/org/")) ;; ~/org/ is where I typically keep my org files
-	  (envv (getenv "ORG_DIR"))) 
-      (expand-file-name (if envv
-			    envv
-			  default))))
+    (expand-file-name (or override (getenv "ORG_DIR") org-directory)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
@@ -95,7 +91,15 @@
      (go . t)))
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-confirm-babel-evaluate nil)
-  (setq org-src-tab-acts-natively nil))
+  (setq org-src-tab-acts-natively nil)
+  ;; setup org-capture
+  (setq org-default-notes-file (concat (get-org-dir) "/notes.org"))
+  (setq org-capture-templates
+        `(("t" "Todo" entry (file+datetree ,(concat (get-org-dir) "/todo.org")) "* TODO %?\n  %i\n  %a")
+          ("j" "Journal" entry (file+datetree ,(concat (get-org-dir) "/journal.org")) "* %?\n  %i\n")))
+  ;; setup org-agenda
+  (setq  org-agenda-files (list (get-org-dir)))
+  )
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
@@ -107,7 +111,7 @@
   (defun org-drill-refresh-scope (&optional dir)
     "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."
     (interactive) ;; TODO: allow passing in directory arg interactively
-    (let ((org-dir (if dir dir (get-org-dir))) 
+    (let ((org-dir (or dir (get-org-dir)))
 	  (org-regexp "^[^#].*\\.org$")) 
       (setq org-drill-scope (directory-files-recursively org-dir org-regexp))
       (message "%s" "Updated org-drill-scope.")))
