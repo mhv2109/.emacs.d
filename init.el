@@ -397,6 +397,16 @@
 ;; protobuf support
 (use-package protobuf-mode)
 
+;; customize built-in python.el
+(use-package python
+  :ensure nil
+  :config
+  ;; if ipython is available, use it w/ autoloads
+  ;; autoloads lets you use a lisp-like repl-driven development where you can load a buffer into the repl and modify imported modules
+  (when-let ((found (executable-find "ipython")))
+    (setq python-shell-interpreter found)
+    (setq python-shell-interpreter-args (concat "--simple-prompt -i " (file-name-directory user-init-file) "autoload.ipy"))))
+
 ;;
 ;; Other customizations
 ;;
