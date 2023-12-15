@@ -358,58 +358,20 @@
       :config
       (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2)))))
 
-(defun slime-auto-complete-setup-hook ()
-  "This disables company-mode for slime-mode, while still seting up & configuring
-  so it can be enabled and still work as expected. Doesn't work as well as
-  auto-complete+ac-slime since company is missing inline docstrings."
-  (add-to-list 'slime-completion-at-point-functions #'slime-fuzzy-complete-symbol)
-  (add-hook 'slime-mode-hook (lambda ()
-                               (company-mode 0)
-                               (auto-complete-mode 1)))
-  (add-hook 'slime-repl-mode-hook (lambda ()
-                                    (company-mode 0)
-                                    (auto-complete-mode 1))))
-
-(use-package slime ;; Lisp support: https://slime.common-lisp.dev/
+(use-package sly ;; Fork of SLIME for Lisp support: https://github.com/joaotavora/sly
   :config
-  ;; https://slime.common-lisp.dev/doc/html/Contributed-Packages.html#Contributed-Packages
-  (slime-setup '(slime-fancy
-                 slime-quicklisp
-                 slime-asdf
-                 slime-autodoc
-                 helm-slime
-                 ;; slime-company
-                 slime-xref-browser
-                 slime-fuzzy)))
-(use-package helm-slime ;; https://github.com/emacs-helm/helm-slime
-  :after slime)
-(use-package slime-company ;; https://github.com/anwyn/slime-company
-  :after (slime company)
-  :config
-  (setq slime-company-completion 'fuzzy
-        slime-company-after-completion 'slime-company-just-one-space)
-  (slime-auto-complete-setup-hook))
-(use-package auto-complete ;; Similar function to Company: https://github.com/auto-complete/auto-complete
-  :after slime ;; to make sure hooks are in order
-  :config
-  (slime-auto-complete-setup-hook))
-(use-package fuzzy ;; https://github.com/auto-complete/fuzzy-el
-  :after auto-complete)
-(use-package ac-slime ;; slime autocomplete: https://github.com/purcell/ac-slime
-  :after (slime auto-complete)
-  :config
-  (add-hook 'slime-mode-hook 'set-up-slime-ac)
-  (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-  (eval-after-load "auto-complete"
-    '(add-to-list 'ac-modes 'slime-repl-mode))
-  (slime-auto-complete-setup-hook))
+  (setq sly-complete-symbol-function 'sly-flex-completions))
+(use-package sly-asdf ;; Working with ASDF: https://github.com/mmgeorge/sly-asdf
+  :after sly)
+(use-package sly-quicklisp ;; Working with quicklisp: https://github.com/joaotavora/sly-quicklisp
+  :after sly)
 
 (use-package cider) ;; Clojure support: https://cider.mx/
+
 (use-package paredit ;; Lisp programming conveniences: http://paredit.org/
-  :after (cider slime)
   :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
+
 (use-package rainbow-delimiters ;; Make reading nested parens easier: https://github.com/Fanael/rainbow-delimiters
-  :after (cider slime)
   :hook ((prog-mode) . rainbow-delimiters-mode))
 
 (use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
