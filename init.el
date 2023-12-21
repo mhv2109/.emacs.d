@@ -137,7 +137,8 @@
   (setq-default
    company-idle-delay 0.05
    company-require-match nil
-   company-minimum-prefix-length 1))
+   company-minimum-prefix-length 1
+   company-auto-update-doc t))
 
 ;; LSP: https://github.com/emacs-lsp/lsp-mode
 (add-to-list 'image-types 'svg) ;; error workaround: https://github.com/Alexander-Miller/treemacs/issues/1017#issuecomment-1515602288
@@ -359,8 +360,13 @@
       (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2)))))
 
 (use-package sly ;; Fork of SLIME for Lisp support: https://github.com/joaotavora/sly
+  :defer
   :config
-  (setq sly-complete-symbol-function 'sly-flex-completions))
+  (setq sly-complete-symbol-function 'sly-flex-completions)
+  ;; Use local docs, if installed
+  (when-let* ((local (expand-file-name "~/.quicklisp/clhs-use-local.el"))
+              (exists? (file-exists-p local)))
+    (load local t)))
 (use-package sly-asdf ;; Working with ASDF: https://github.com/mmgeorge/sly-asdf
   :after sly)
 (use-package sly-quicklisp ;; Working with quicklisp: https://github.com/joaotavora/sly-quicklisp
