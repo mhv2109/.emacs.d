@@ -559,5 +559,8 @@ directory to make multiple eshell windows easier."
     (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                    "backups")))))
 
+;; use flex completion style: https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
+(setq completion-styles '(flex))
+
 ;; reset GC threshold
 (setq gc-cons-threshold gc-cons-threshold--original)
