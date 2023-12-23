@@ -137,8 +137,15 @@
   (setq-default
    company-idle-delay 0.05
    company-require-match nil
-   company-minimum-prefix-length 1
-   company-auto-update-doc t))
+   company-minimum-prefix-length 1))
+;; popup window for docs: https://github.com/company-mode/company-quickhelp
+(use-package company-quickhelp
+  :after company
+  :config
+  (setq company-quickhelp-delay 0.05)
+  (define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin)
+  (add-hook 'company-completion-started-hook #'(lambda (&rest _) (company-quickhelp-manual-begin)))
+  (company-quickhelp-mode))
 
 ;; LSP: https://github.com/emacs-lsp/lsp-mode
 (add-to-list 'image-types 'svg) ;; error workaround: https://github.com/Alexander-Miller/treemacs/issues/1017#issuecomment-1515602288
