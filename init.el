@@ -1,5 +1,4 @@
-(setq gc-cons-threshold--original gc-cons-threshold)
-(setq gc-cons-threshold 100000000) ;; raise GC threshold to 10MB
+(setq gc-cons-threshold 100000000) ;; raise GC threshold to 100MB
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -152,20 +151,22 @@
 (use-package lsp-mode
   :hook prog-mode ;; try LSP mode for all prog-mode
   :init
+  ;; (setq lsp-use-plists t) ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#use-plists-for-deserialization
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
   (setq lsp-eslint-format nil)
   :config
   ;; format on save
   ;; uses eslint for ts/js if eslint lsp server is installed and available
   (add-hook 'before-save-hook (lambda ()
-				(if (and (or (eq major-mode 'typescript-mode)
-					     (eq major-mode 'typescript-ts-mode)
-					     (eq major-mode 'javascript-mode)
-					     (eq major-mode 'javascript-ts-mode)
-					     (eq major-mode 'js-mode)
-					     (eq major-mode 'js2-mode))
-					 (functionp 'lsp-eslint-apply-all-fixes))
-				    (lsp-eslint-apply-all-fixes)
-				  (lsp-format-buffer)))) 
+				                (if (and (or (eq major-mode 'typescript-mode)
+					                         (eq major-mode 'typescript-ts-mode)
+					                         (eq major-mode 'javascript-mode)
+					                         (eq major-mode 'javascript-ts-mode)
+					                         (eq major-mode 'js-mode)
+					                         (eq major-mode 'js2-mode))
+					                     (functionp 'lsp-eslint-apply-all-fixes))
+				                    (lsp-eslint-apply-all-fixes)
+				                  (lsp-format-buffer)))) 
   ;; language-specific settings
   (lsp-register-custom-settings
    '(
@@ -176,15 +177,14 @@
      ("javascript.format.convertTabsToSpaces" t t))
   ))
 (use-package lsp-ui ;; intellisense-like context hover
-  :init
-  ;; (setq gc-cons-threshold 100000000) ;; See: https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold ;; instead, set at top of file to speed up loading
-  (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
+  :after lsp-mode
   )
 (use-package flycheck) ;; syntax highlighting
 (use-package yasnippet
   :config
   (yas-global-mode 1))
 (use-package lsp-java
+  :after lsp-mode
   :config
   ;; below is copied and adapted from https://github.com/sei40kr/lsp-java-lombok/blob/f77514f0b2fae634c4e02070afce04287032f13e/lsp-java-lombok.el
   ;; as the provided commands needed some updates for Java modules
@@ -220,9 +220,11 @@
       (lsp-java-lombok)))
 
 ;; DAP: https://github.com/emacs-lsp/dap-mode
-(use-package dap-mode)
+(use-package dap-mode
+  :after lsp-mode)
 (use-package dap-dlv-go ;; Go support
   :ensure nil
+  :after dap-mode
   :config
   ;; special run configurations
   (defun dap-register-go-launch-configuration (path)
@@ -238,6 +240,7 @@
         :program path))))
 (use-package dap-node ;; NodeJS support
   :ensure nil
+  :after dap-mode
   :config
   (dap-node-setup)
   ;; special run configurations
@@ -249,7 +252,8 @@
          :program "${workspaceFolder}/node_modules/jest/bin/jest.js"
 	 :args "-i")))
 (use-package dap-java
-  :ensure nil)
+  :ensure nil
+  :after dap-mode)
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
@@ -562,5 +566,3 @@ directory to make multiple eshell windows easier."
 ;; use flex completion style: https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
 (setq completion-styles '(flex))
 
-;; reset GC threshold
-(setq gc-cons-threshold gc-cons-threshold--original)
