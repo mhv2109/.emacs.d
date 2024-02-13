@@ -155,18 +155,6 @@
   (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
   (setq lsp-eslint-format nil)
   :config
-  ;; format on save
-  ;; uses eslint for ts/js if eslint lsp server is installed and available
-  (add-hook 'before-save-hook (lambda ()
-				                (if (and (or (eq major-mode 'typescript-mode)
-					                         (eq major-mode 'typescript-ts-mode)
-					                         (eq major-mode 'javascript-mode)
-					                         (eq major-mode 'javascript-ts-mode)
-					                         (eq major-mode 'js-mode)
-					                         (eq major-mode 'js2-mode))
-					                     (functionp 'lsp-eslint-apply-all-fixes))
-				                    (lsp-eslint-apply-all-fixes)
-				                  (lsp-format-buffer))))
   ;; language-specific settings
   (lsp-register-custom-settings
    '(
@@ -176,7 +164,22 @@
      ("javascript.format.indentSize" 2 t)
      ("javascript.format.convertTabsToSpaces" t t)
      ;; yaml settings: https://github.com/redhat-developer/yaml-language-server/blob/dfccc6fc095faeb5d07051b51f308478cdac70fd/README.md#language-server-settings
-     ("yaml.editor.tabSize" 2 t))))
+     ("yaml.editor.tabSize" 2 t)))
+  :hook
+  ;; format on save
+  (before-save . (lambda ()
+				   (if (and (seq-contains-p '(typescript-mode
+                                              typescript-ts-mode
+                                              javascript-mode
+                                              javascript-ts-mode
+                                              js-mode
+                                              js-ts-mode
+                                              js2-mode) major-mode)
+					        (functionp 'lsp-eslint-apply-all-fixes))
+				       (lsp-eslint-apply-all-fixes) ;; uses eslint for ts/js if eslint lsp server is installed and available
+                     ;; otherwise, auto-format and organize imports with lsp-mode
+				     (lsp-format-buffer)
+                     (lsp-organize-imports)))))
 (use-package lsp-ui ;; intellisense-like context hover
   :after lsp-mode
   )
