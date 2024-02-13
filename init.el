@@ -136,7 +136,9 @@
   (setq-default
    company-idle-delay 0.05
    company-require-match nil
-   company-minimum-prefix-length 1))
+   company-minimum-prefix-length 1)
+  ;; Make TAB cycle candidates instead of company-complete-common, behaving similarly to icomplete
+  (define-key company-active-map (kbd "<tab>") #'company-select-next))
 ;; popup window for docs: https://github.com/company-mode/company-quickhelp
 (use-package company-quickhelp
   :after company
