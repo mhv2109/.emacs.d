@@ -166,7 +166,7 @@
 					                         (eq major-mode 'js2-mode))
 					                     (functionp 'lsp-eslint-apply-all-fixes))
 				                    (lsp-eslint-apply-all-fixes)
-				                  (lsp-format-buffer)))) 
+				                  (lsp-format-buffer))))
   ;; language-specific settings
   (lsp-register-custom-settings
    '(
@@ -174,8 +174,9 @@
      ("typescript.format.indentSize" 2 t)
      ("typescript.format.convertTabsToSpaces" t t)
      ("javascript.format.indentSize" 2 t)
-     ("javascript.format.convertTabsToSpaces" t t))
-  ))
+     ("javascript.format.convertTabsToSpaces" t t)
+     ;; yaml settings: https://github.com/redhat-developer/yaml-language-server/blob/dfccc6fc095faeb5d07051b51f308478cdac70fd/README.md#language-server-settings
+     ("yaml.editor.tabSize" 2 t))))
 (use-package lsp-ui ;; intellisense-like context hover
   :after lsp-mode
   )
@@ -260,7 +261,7 @@
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
-  (add-hook 'yaml-mode-hook (lambda () (setq tab-width 2))))
+  (add-hook 'yaml-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
 
 ;; major mode for working with mermaid.js: https://mermaid.js.org/
 (use-package mermaid-mode)
@@ -368,7 +369,7 @@
       :ensure nil
       :after treesit-auto
       :config
-      (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2)))))
+      (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2)))))
 
 (use-package sly ;; Fork of SLIME for Lisp support: https://github.com/joaotavora/sly
   :defer
