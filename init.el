@@ -561,6 +561,9 @@ directory to make multiple eshell windows easier."
 
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 
+;; allow undo + redo of window layout changes with C-c <left> and C-c <right>
+(winner-mode 1)
+
 ;; General "improved" defaults from: https://git.sr.ht/~technomancy/better-defaults
 ;; See also: https://idiomdrottning.org/bad-emacs-defaults (I don't agree with _everything_ there)
 (unless (memq window-system '(mac ns)) ;; Disable menu bar on everything but mac
