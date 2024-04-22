@@ -96,7 +96,7 @@
   (setq org-default-notes-file (concat (get-org-dir) "/notes.org"))
   (setq org-capture-templates
         `(("t" "Todo" entry (file+datetree ,(concat (get-org-dir) "/todo.org")) "* TODO %?\n  %i\nLink: %a" :empty-lines 1)
-          ("j" "Journal" entry (file+datetree ,(concat (get-org-dir) "/journal.org")) "* %?\n  %i\n" :empty-lines 1)))
+          ("j" "Journal" entry (file+datetree ,(concat (get-org-dir) "/journal.org")) "* %?\n  %i\nLink: %a" :empty-lines 1)))
   ;; setup org-agenda
   (setq  org-agenda-files (list (get-org-dir)))
   )
