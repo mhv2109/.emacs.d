@@ -112,7 +112,7 @@
     "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."
     (interactive) ;; TODO: allow passing in directory arg interactively
     (let ((org-dir (or dir (get-org-dir)))
-	  (org-regexp "^[^#].*\\.org$")) 
+	  (org-regexp "^[^#].*\\.org$"))
       (setq org-drill-scope (directory-files-recursively org-dir org-regexp))
       (message "%s" "Updated org-drill-scope.")))
   (org-drill-refresh-scope))
@@ -309,7 +309,7 @@
 		    previous-company-frontends company-frontends
 		    completion-at-point-functions (list #'codeium-completion-at-point)
 		    company-frontends '(company-preview-frontend))
-	(message "Enabling Codeium in current buffer")))) 
+	(message "Enabling Codeium in current buffer"))))
   (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
 
 ;; GitHub Copilot: https://github.com/zerolfx/copilot.el
@@ -491,7 +491,7 @@
 (defun etags (d &optional append?)
   "Uses etags to generate a TAGS table file in directory D. If APPEND? is truthy, equivalent of calling etags with -a flag."
   (interactive "F")
-  (let ((command (string-join (list "find . -not \\( -path \"./.git\" -prune \\) -type f | xargs etags" (if append? "-a" "")) " ")) 
+  (let ((command (string-join (list "find . -not \\( -path \"./.git\" -prune \\) -type f | xargs etags" (if append? "-a" "")) " "))
 	    (default-directory d))
     (shell-command-to-string command)))
 
@@ -589,3 +589,6 @@ directory to make multiple eshell windows easier."
 
 ;; allow commands in minibuffer
 (setq enable-recursive-minibuffers t)
+
+;; Delete trailing whitespace and trailing empty line from files.
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
