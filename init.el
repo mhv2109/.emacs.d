@@ -400,7 +400,7 @@
 
 (use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
   :config
-  (load-theme 'doom-dracula t))
+  (load-theme 'doom-horizon t))
 
 (use-package uniquify ;; Overrides Emacs’ default mechanism for making buffer names unique, from: https://git.sr.ht/~technomancy/better-defaults
   :ensure nil
