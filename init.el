@@ -587,3 +587,5 @@ directory to make multiple eshell windows easier."
 ;; use flex completion style: https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
 (setq completion-styles '(flex))
 
+;; allow commands in minibuffer
+(setq enable-recursive-minibuffers t)
