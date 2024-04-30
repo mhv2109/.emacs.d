@@ -107,15 +107,16 @@
   :after org)
 (use-package org-drill ;; Spaced repetition for Org mode: https://orgmode.org/worg/org-contrib/org-drill.html
   :after org
-  :config
-  (defun org-drill-refresh-scope (&optional dir)
-    "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."
-    (interactive) ;; TODO: allow passing in directory arg interactively
-    (let ((org-dir (or dir (get-org-dir)))
-	  (org-regexp "^[^#].*\\.org$"))
-      (setq org-drill-scope (directory-files-recursively org-dir org-regexp))
-      (message "%s" "Updated org-drill-scope.")))
-  (org-drill-refresh-scope))
+  ;; :config
+  ;; (defun org-drill-refresh-scope (&optional dir)
+  ;;   "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."
+  ;;   (interactive) ;; TODO: allow passing in directory arg interactively
+  ;;   (let ((org-dir (or dir (get-org-dir)))
+  ;;     (org-regexp "^[^#].*\\.org$"))
+  ;;     (setq org-drill-scope (directory-files-recursively org-dir org-regexp))
+  ;;     (message "%s" "Updated org-drill-scope.")))
+  ;; (org-drill-refresh-scope)
+  )
 
 ;; spellchecking
 (use-package flyspell-mode
