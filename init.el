@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -448,6 +448,12 @@
                                   (require 'lsp-grammarly)
                                   (lsp))))
 
+;; Faster fuzzy completion: https://github.com/axelf4/hotfuzz
+(use-package hotfuzz
+  :config
+  (setq completion-styles '(hotfuzz)
+        completion-ignore-case t))
+
 ;;
 ;; Other customizations
 ;;
@@ -584,9 +590,6 @@ directory to make multiple eshell windows easier."
 (unless backup-directory-alist ;; don't litter directory with backups and autosaves, but still backup and auto-save
     (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                    "backups")))))
-
-;; use flex completion style: https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
-(setq completion-styles '(flex))
 
 ;; allow commands in minibuffer
 (setq enable-recursive-minibuffers t)
