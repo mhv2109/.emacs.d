@@ -229,7 +229,9 @@
 
 ;; DAP: https://github.com/emacs-lsp/dap-mode
 (use-package dap-mode
-  :after lsp-mode)
+  :after lsp-mode
+  :config
+  (setq dap-debug-restart-keep-session nil))
 (use-package dap-dlv-go ;; Go support
   :ensure nil
   :after dap-mode
@@ -238,14 +240,14 @@
   (defun dap-register-go-launch-configuration (path)
     "Register a 'Go Launch' DAP Run Configuration using PATH."
     (interactive (list
-		  (read-string "Go Package Path: " "${workspaceFolder}")))
+		          (read-string "Go Package Path: " "${workspaceFolder}")))
     (dap-register-debug-template
      (format "Go Dlv Launch Package Configuration (%s)" path)
      (list :type "go"
-	:cwd "${workspaceFolder}"
-        :request "launch"
-        :mode "auto"
-        :program path))))
+	       :cwd "${workspaceFolder}"
+           :request "launch"
+           :mode "auto"
+           :program path))))
 (use-package dap-node ;; NodeJS support
   :ensure nil
   :after dap-mode
