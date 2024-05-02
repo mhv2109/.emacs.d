@@ -150,120 +150,22 @@
   (add-hook 'company-completion-started-hook #'(lambda (&rest _) (company-quickhelp-manual-begin)))
   (company-quickhelp-mode))
 
-;; LSP: https://github.com/emacs-lsp/lsp-mode
-(add-to-list 'image-types 'svg) ;; error workaround: https://github.com/Alexander-Miller/treemacs/issues/1017#issuecomment-1515602288
-(use-package lsp-mode
-  :hook prog-mode ;; try LSP mode for all prog-mode
+(use-package flycheck ;; syntax highlighting
   :init
-  ;; (setq lsp-use-plists t) ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#use-plists-for-deserialization
-  (setq read-process-output-max (* 1024 1024)) ;; 1mb, See: https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
-  (setq lsp-eslint-format nil)
-  :config
-  ;; language-specific settings
-  (lsp-register-custom-settings
-   '(
-     ;; ts/js settings: https://github.com/typescript-language-server/typescript-language-server#workspacedidchangeconfiguration
-     ("typescript.format.indentSize" 2 t)
-     ("typescript.format.convertTabsToSpaces" t t)
-     ("javascript.format.indentSize" 2 t)
-     ("javascript.format.convertTabsToSpaces" t t)
-     ;; yaml settings: https://github.com/redhat-developer/yaml-language-server/blob/dfccc6fc095faeb5d07051b51f308478cdac70fd/README.md#language-server-settings
-     ("yaml.editor.tabSize" 2 t)))
-  :hook
-  ;; format on save
-  (before-save . (lambda ()
-				   (if (and (seq-contains-p '(typescript-mode
-                                              typescript-ts-mode
-                                              javascript-mode
-                                              javascript-ts-mode
-                                              js-mode
-                                              js-ts-mode
-                                              js2-mode) major-mode)
-					        (functionp 'lsp-eslint-apply-all-fixes))
-				       (lsp-eslint-apply-all-fixes) ;; uses eslint for ts/js if eslint lsp server is installed and available
-                     ;; otherwise, auto-format and organize imports with lsp-mode
-				     (lsp-format-buffer)
-                     (lsp-organize-imports)))))
-(use-package lsp-ui ;; intellisense-like context hover
-  :after lsp-mode
-  )
-(use-package flycheck) ;; syntax highlighting
+  (global-flycheck-mode))
+
 (use-package yasnippet
   :config
   (yas-global-mode 1))
-(use-package lsp-java
-  :after lsp-mode
-  :config
-  ;; below is copied and adapted from https://github.com/sei40kr/lsp-java-lombok/blob/f77514f0b2fae634c4e02070afce04287032f13e/lsp-java-lombok.el
-  ;; as the provided commands needed some updates for Java modules
-  (defgroup lsp-java-lombok nil
-    "Lombok for Java LSP"
-    :prefix "lsp-java-lombok-"
-    :group 'languages)
-  (defcustom lsp-java-lombok-jar-path (expand-file-name
-                                       (locate-user-emacs-file ".cache/lombok.jar"))
-    "The location of the Lombok JAR."
-    :group 'lsp-java-lombok
-    :risky t
-    :type 'directory)
-  (defun lsp-java-lombok-download ()
-    "Download the latest Lombok JAR file and install it into `lsp-java-lombok-jar-path'."
-    (interactive)
-    (if (and (y-or-n-p (format "Download the latest Lombok JAR into %s? "
-                               lsp-java-lombok-jar-path))
-             (or (not (file-exists-p lsp-java-lombok-jar-path))
-                 (y-or-n-p (format "The Lombok JAR already exists at %s, overwrite? "
-                                   lsp-java-lombok-jar-path))))
-        (progn
-          (mkdir (file-name-directory lsp-java-lombok-jar-path) t)
-          (message "Downloading Lombok JAR into %s" lsp-java-lombok-jar-path)
-          (url-copy-file "https://projectlombok.org/downloads/lombok.jar" lsp-java-lombok-jar-path t))
-      (message "Aborted.")))
-  (defun lsp-java-lombok ()
-    "Configure lsp-java to let the server to load the Lombok JAR."
-    (setq lsp-java-vmargs
-          (append lsp-java-vmargs
-                  (list (concat "-javaagent:" lsp-java-lombok-jar-path)))))
-  (when (file-exists-p lsp-java-lombok-jar-path)
-      (lsp-java-lombok)))
 
-;; DAP: https://github.com/emacs-lsp/dap-mode
-(use-package dap-mode
-  :after lsp-mode
-  :config
-  (setq dap-debug-restart-keep-session nil))
-(use-package dap-dlv-go ;; Go support
+;; TODO eglot + dape config
+(use-package eglot
   :ensure nil
-  :after dap-mode
-  :config
-  ;; special run configurations
-  (defun dap-register-go-launch-configuration (path)
-    "Register a 'Go Launch' DAP Run Configuration using PATH."
-    (interactive (list
-		          (read-string "Go Package Path: " "${workspaceFolder}")))
-    (dap-register-debug-template
-     (format "Go Dlv Launch Package Configuration (%s)" path)
-     (list :type "go"
-	       :cwd "${workspaceFolder}"
-           :request "launch"
-           :mode "auto"
-           :program path))))
-(use-package dap-node ;; NodeJS support
-  :ensure nil
-  :after dap-mode
-  :config
-  (dap-node-setup)
-  ;; special run configurations
-  (dap-register-debug-template
-   "Node Jest Run Configuration"
-   (list :type "node"
-         :cwd "${workspaceFolder}"
-         :request "launch"
-         :program "${workspaceFolder}/node_modules/jest/bin/jest.js"
-	 :args "-i")))
-(use-package dap-java
-  :ensure nil
-  :after dap-mode)
+  :hook
+  (prog-mode . eglot-ensure) ;; try LSP for all prog mode
+  (before-save . (lambda ()
+                   ;; TODO: js/ts mode overrides
+                   (eglot-format-buffer))))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
@@ -280,12 +182,13 @@
   :init
   (setq gofmt-command "goimports")
   :hook
-  (before-save-hook gofmt-before-save))
+  (before-save . gofmt-before-save))
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode
-  :init
-  (setq typescript-indent-level 2))
+  :custom
+  (js-indent-level 2)
+  (js-jsx-indent-level 2))
 
 ;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
 (add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
@@ -445,10 +348,10 @@
   (which-key-mode))
 
 ;; grammarly integration: https://github.com/emacs-grammarly/lsp-grammarly
-(use-package lsp-grammarly
-  :hook ((text-mode org-mode) . (lambda ()
-                                  (require 'lsp-grammarly)
-                                  (lsp))))
+;; (use-package lsp-grammarly
+;;   :hook ((text-mode org-mode) . (lambda ()
+;;                                   (require 'lsp-grammarly)
+;;                                   (lsp))))
 
 ;; Faster fuzzy completion: https://github.com/axelf4/hotfuzz
 (use-package hotfuzz
