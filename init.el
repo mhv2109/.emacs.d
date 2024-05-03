@@ -497,6 +497,3 @@ directory to make multiple eshell windows easier."
 
 ;; Delete trailing whitespace and trailing empty line from files.
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
-
-;; Keep point's screen position unchanged
-(setq scroll-preserve-screen-position 'always)
