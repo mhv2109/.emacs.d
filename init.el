@@ -571,3 +571,6 @@ directory to make multiple eshell windows easier."
 
 ;; Delete trailing whitespace and trailing empty line from files.
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
+
+;; I know this is bad, but...
+(setq warning-minimum-level :emergency)
