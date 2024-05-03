@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -158,7 +158,6 @@
   :config
   (yas-global-mode 1))
 
-;; TODO dape config
 (use-package eglot
   :ensure nil
   :hook
@@ -169,6 +168,35 @@
                    (when (seq-contains-p '(go-mode
                                            go-ts-mode) major-mode)
                      (eglot-format-buffer)))))
+
+;; Debug Adapter Protocol: https://github.com/svaante/dape
+(use-package dape
+  :config
+  ;; Run Go unit test under point: https://github.com/svaante/dape/wiki#go---dlv
+  (add-to-list 'dape-configs
+             `(dlv-unit-test
+               modes (go-mode go-ts-mode)
+               ensure dape-ensure-command
+               fn dape-config-autoport
+               command "dlv"
+               command-args ("dap" "--listen" "127.0.0.1::autoport")
+               command-cwd dape-cwd-fn
+               port :autoport
+               :type "debug"
+               :request "launch"
+               :mode (lambda () (if (string-suffix-p "_test.go"   (buffer-name)) "test" "debug"))
+               :cwd dape-cwd-fn
+               :program (lambda () (if (string-suffix-p "_test.go"   (buffer-name))
+                                       (concat "./" (file-relative-name default-directory (funcall dape-cwd-fn)))
+                                     (funcall dape-cwd-fn)))
+               :args (lambda ()
+                       (require 'which-func)
+                       (if (string-suffix-p "_test.go"   (buffer-name))
+                           (when-let* ((test-name (which-function))
+                                       (test-regexp (concat "^" test-name "$")))
+                             (if test-name `["-test.run" ,test-regexp]
+                               (error "No test selected")))
+                         [])))))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
@@ -182,6 +210,9 @@
 
 ;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
 (use-package go-mode)
+
+;; quickly run Go unit tests:
+(use-package gotest)
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode)
