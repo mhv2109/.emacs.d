@@ -160,6 +160,8 @@
 
 (use-package eglot
   :ensure nil
+  :config
+
   :hook
   (prog-mode . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
@@ -171,6 +173,7 @@
 
 ;; Debug Adapter Protocol: https://github.com/svaante/dape
 (use-package dape
+  :after eglot
   :config
   ;; Run Go unit test under point: https://github.com/svaante/dape/wiki#go---dlv
   (add-to-list 'dape-configs
@@ -230,7 +233,13 @@
                  :autoAttachChildProcesses t
                  :console "internalConsole"
                  :outputCapture "std"
-                 :killBehavior "forceful")))
+                 :killBehavior "forceful"))
+  ;; Java debugging: https://github.com/svaante/dape?tab=readme-ov-file#java---jdtls-with-java-debug-server-plugin
+  (add-to-list 'eglot-server-programs
+               `((java-mode java-ts-mode) .
+                 ("jdtls"
+                  :initializationOptions
+                  (:bundles [,(expand-file-name (file-name-concat dape-adapter-dir "com.microsoft.java.debug.plugin-0.52.0.jar"))])))))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
