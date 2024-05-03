@@ -196,7 +196,41 @@
                                        (test-regexp (concat "^" test-name "$")))
                              (if test-name `["-test.run" ,test-regexp]
                                (error "No test selected")))
-                         [])))))
+                         []))))
+  ;; Run Jest unit tests in buffer: https://github.com/svaante/dape/wiki#debug-jest-unit-test
+  ;; I skip all the extra 'ensure' steps.
+  (add-to-list 'dape-configs
+               `(jest
+                 modes (js-mode js-ts-mode typescript-mode typescript-ts-mode)
+                 ensure dape-ensure-command
+                 command (lambda ()
+                           (if (string-suffix-p ".ts" (buffer-name))
+                               "ts-node"
+                             "node"))
+                 command-cwd dape-command-cwd
+                 command-args (,(expand-file-name
+                                 (file-name-concat dape-adapter-dir
+                                                   "js-debug"
+                                                   "src"
+                                                   "dapDebugServer.js"))
+                               :autoport)
+                 port :autoport
+                 fn dape-config-autoport
+                 :type "pwa-node"
+                 :cwd dape-cwd
+                 :program "node_modules/.bin/jest"
+                 :args (lambda ()
+                         (let ((file (dape-buffer-default)))
+                           (if file
+                               `["--runInBand" "--no-coverage" ,file]
+                             (user-error "No file found"))))
+                 :outputCapture "console"
+                 :sourceMapRenames t
+                 :pauseForSourceMap nil
+                 :autoAttachChildProcesses t
+                 :console "internalConsole"
+                 :outputCapture "std"
+                 :killBehavior "forceful")))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
