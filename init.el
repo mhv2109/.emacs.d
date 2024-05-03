@@ -158,16 +158,17 @@
   :config
   (yas-global-mode 1))
 
-;; TODO eglot + dape config
+;; TODO dape config
 (use-package eglot
   :ensure nil
-  :config
-  ()
   :hook
   (prog-mode . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
-                   ;; TODO: js/ts mode overrides
-                   (eglot-format-buffer))))
+                   ;; autoformatting only behaves well for certain modes
+                   ;; TODO: having trouble configuring typescript-language-server
+                   (when (seq-contains-p '(go-mode
+                                           go-ts-mode) major-mode)
+                     (eglot-format-buffer)))))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
