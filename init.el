@@ -161,6 +161,8 @@
 ;; TODO eglot + dape config
 (use-package eglot
   :ensure nil
+  :config
+  ()
   :hook
   (prog-mode . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
@@ -178,17 +180,10 @@
 (use-package mermaid-mode)
 
 ;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
-(use-package go-mode
-  :init
-  (setq gofmt-command "goimports")
-  :hook
-  (before-save . gofmt-before-save))
+(use-package go-mode)
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
-(use-package typescript-mode
-  :custom
-  (js-indent-level 2)
-  (js-jsx-indent-level 2))
+(use-package typescript-mode)
 
 ;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
 (add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
