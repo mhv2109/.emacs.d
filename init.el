@@ -161,9 +161,12 @@
 (use-package eglot
   :ensure nil
   :config
-
+  (add-to-list
+   'eglot-server-programs
+   `((text-mode latex-mode org-mode markdown-mode) "grammarly-languageserver" "--stdio"
+     :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
   :hook
-  (prog-mode . eglot-ensure) ;; try LSP for all prog mode
+  ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
                    ;; autoformatting only behaves well for certain modes
                    ;; TODO: having trouble configuring typescript-language-server
@@ -177,29 +180,29 @@
   :config
   ;; Run Go unit test under point: https://github.com/svaante/dape/wiki#go---dlv
   (add-to-list 'dape-configs
-             `(dlv-unit-test
-               modes (go-mode go-ts-mode)
-               ensure dape-ensure-command
-               fn dape-config-autoport
-               command "dlv"
-               command-args ("dap" "--listen" "127.0.0.1::autoport")
-               command-cwd dape-cwd-fn
-               port :autoport
-               :type "debug"
-               :request "launch"
-               :mode (lambda () (if (string-suffix-p "_test.go"   (buffer-name)) "test" "debug"))
-               :cwd dape-cwd-fn
-               :program (lambda () (if (string-suffix-p "_test.go"   (buffer-name))
-                                       (concat "./" (file-relative-name default-directory (funcall dape-cwd-fn)))
-                                     (funcall dape-cwd-fn)))
-               :args (lambda ()
-                       (require 'which-func)
-                       (if (string-suffix-p "_test.go"   (buffer-name))
-                           (when-let* ((test-name (which-function))
-                                       (test-regexp (concat "^" test-name "$")))
-                             (if test-name `["-test.run" ,test-regexp]
-                               (error "No test selected")))
-                         []))))
+               `(dlv-unit-test
+                 modes (go-mode go-ts-mode)
+                 ensure dape-ensure-command
+                 fn dape-config-autoport
+                 command "dlv"
+                 command-args ("dap" "--listen" "127.0.0.1::autoport")
+                 command-cwd dape-cwd-fn
+                 port :autoport
+                 :type "debug"
+                 :request "launch"
+                 :mode (lambda () (if (string-suffix-p "_test.go"   (buffer-name)) "test" "debug"))
+                 :cwd dape-cwd-fn
+                 :program (lambda () (if (string-suffix-p "_test.go"   (buffer-name))
+                                         (concat "./" (file-relative-name default-directory (funcall dape-cwd-fn)))
+                                       (funcall dape-cwd-fn)))
+                 :args (lambda ()
+                         (require 'which-func)
+                         (if (string-suffix-p "_test.go"   (buffer-name))
+                             (when-let* ((test-name (which-function))
+                                         (test-regexp (concat "^" test-name "$")))
+                               (if test-name `["-test.run" ,test-regexp]
+                                 (error "No test selected")))
+                           []))))
   ;; Run Jest unit tests in buffer: https://github.com/svaante/dape/wiki#debug-jest-unit-test
   ;; I skip all the extra 'ensure' steps.
   (add-to-list 'dape-configs
@@ -416,12 +419,6 @@
 (use-package which-key
   :config
   (which-key-mode))
-
-;; grammarly integration: https://github.com/emacs-grammarly/lsp-grammarly
-;; (use-package lsp-grammarly
-;;   :hook ((text-mode org-mode) . (lambda ()
-;;                                   (require 'lsp-grammarly)
-;;                                   (lsp))))
 
 ;; Faster fuzzy completion: https://github.com/axelf4/hotfuzz
 (use-package hotfuzz
