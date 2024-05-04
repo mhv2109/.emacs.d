@@ -238,9 +238,14 @@
                  :outputCapture "std"
                  :killBehavior "forceful"))
   ;; Java debugging: https://github.com/svaante/dape?tab=readme-ov-file#java---jdtls-with-java-debug-server-plugin
+  ;; Also adding Lombok here, although not related to dape
+  ;; See:
+  ;; - https://github.com/joaotavora/eglot/discussions/888#discussioncomment-2384693
+  ;; - https://github.com/joaotavora/eglot/discussions/868
+  ;; - https://github.com/eclipse-jdtls/eclipse.jdt.ls?tab=readme-ov-file#running-from-command-line-with-wrapper-script
   (add-to-list 'eglot-server-programs
                `((java-mode java-ts-mode) .
-                 ("jdtls"
+                 ("jdtls" ,(concat "--jvm-arg=-javaagent:" (expand-file-name (file-name-concat dape-adapter-dir "lombok.jar")))
                   :initializationOptions
                   (:bundles [,(expand-file-name (file-name-concat dape-adapter-dir "com.microsoft.java.debug.plugin-0.52.0.jar"))])))))
 
