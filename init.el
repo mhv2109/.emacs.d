@@ -165,6 +165,13 @@
    'eglot-server-programs
    `((text-mode latex-mode org-mode markdown-mode) "grammarly-languageserver" "--stdio"
      :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
+  (add-to-list
+   'eglot-server-programs
+   `((yaml-mode yaml-ts-mode) "yaml-language-server" "--stdio"
+     :initializationOptions (:yaml.schemaStore.url  "https://www.schemastore.org/api/json/catalog.json")))
+  (add-to-list
+   'eglot-server-programs
+   `((makefile-mode makefile-bsdmake-mode) "autotools-language-server"))
   :hook
   ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
