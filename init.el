@@ -172,6 +172,9 @@
   (add-to-list
    'eglot-server-programs
    `((makefile-mode makefile-bsdmake-mode) "autotools-language-server"))
+  (add-to-list
+   'eglot-server-programs
+   `((terraform-mode) "terraform-ls" "serve"))
   :hook
   ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
