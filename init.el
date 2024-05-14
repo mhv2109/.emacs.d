@@ -589,5 +589,10 @@ directory to make multiple eshell windows easier."
 ;; Delete trailing whitespace and trailing empty line from files.
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
+;; Disallow splitting existing windows with SPLIT-WINDOW-SENSIBLY (dired, magit, etc.)
+;; See: https://emacs.stackexchange.com/a/15123
+(setq split-width-threshold nil
+      split-height-threshold nil)
+
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
