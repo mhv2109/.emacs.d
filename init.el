@@ -175,6 +175,12 @@
   (add-to-list
    'eglot-server-programs
    `((terraform-mode) "terraform-ls" "serve"))
+  (add-to-list
+   'eglot-server-programs
+   `((bash-mode bash-ts-mode sh-mode) "bash-language-server" "start"))
+  (add-to-list
+   'eglot-server-programs
+   `((sql-mode) "sql-language-server" "up" "--method" "stdio"))
   :hook
   ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
