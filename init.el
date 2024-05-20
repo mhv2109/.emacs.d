@@ -603,5 +603,12 @@ directory to make multiple eshell windows easier."
 (setq split-width-threshold nil
       split-height-threshold nil)
 
+;; Save window and buffer layout on exit:
+;; - https://bmag.github.io/2015/12/26/desktop.html
+;; - https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Emacs-Sessions.html
+(desktop-save-mode 1)
+(setq desktop-path (list (concat user-emacs-directory ".cache"))
+      desktop-save t)
+
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
