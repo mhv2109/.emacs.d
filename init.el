@@ -187,7 +187,10 @@
                    ;; autoformatting only behaves well for certain modes
                    ;; TODO: having trouble configuring typescript-language-server
                    (when (seq-contains-p '(go-mode
-                                           go-ts-mode) major-mode)
+                                           go-ts-mode
+                                           terraform-mode
+                                           terraform-ts-mode) major-mode)
+                     (eglot-code-action-organize-imports)
                      (eglot-format-buffer)))))
 
 ;; Debug Adapter Protocol: https://github.com/svaante/dape
