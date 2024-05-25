@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -138,9 +138,7 @@
   (setq-default
    company-idle-delay 0.05
    company-require-match nil
-   company-minimum-prefix-length 1)
-  ;; Make TAB cycle candidates instead of company-complete-common, behaving similarly to icomplete
-  (define-key company-active-map (kbd "<tab>") #'company-select-next))
+   company-minimum-prefix-length 1))
 ;; popup window for docs: https://github.com/company-mode/company-quickhelp
 (use-package company-quickhelp
   :after company
@@ -426,12 +424,25 @@ EGLOT-SERVER-PROGRAMS."
   )
 
 ;; minibuffer autocomplete config
-(use-package icomplete ;; incremental completion, part of Emacs: https://www.emacswiki.org/emacs/IcompleteMode
-  :ensure nil
+;; https://github.com/abo-abo/swiper
+;; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+(use-package ivy
   :config
-  (icomplete-mode 1)
-  (icomplete-vertical-mode 1)
-  (setq completion-cycle-threshold t))
+  (ivy-mode 1)
+  (setq ivy-display-style 'fancy
+        ivy-use-virtual-buffers t
+        ivy-wrap t)
+  ;; enable swiper
+  (global-set-key (kbd "C-s") 'swiper-isearch)
+  (global-set-key (kbd "C-S-s") 'swiper-isearch-thing-at-point)
+  (global-set-key (kbd "M-C-s") 'swiper-all)
+  (global-set-key (kbd "C-r") 'swiper-isearch-backward)
+  (global-set-key (kbd "M-%") 'swiper-query-replace)
+  (global-set-key (kbd "M-C-%") 'swiper-all-query-replace))
+
+(use-package counsel
+  :config
+  (counsel-mode 1))
 
 ;; Additional docs in minibuffer: https://github.com/minad/marginalia
 (use-package marginalia
