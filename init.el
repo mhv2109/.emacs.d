@@ -161,26 +161,36 @@
 (use-package eglot
   :ensure nil
   :config
-  (add-to-list
-   'eglot-server-programs
-   `((text-mode latex-mode org-mode markdown-mode) "grammarly-languageserver" "--stdio"
-     :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
-  (add-to-list
-   'eglot-server-programs
-   `((yaml-mode yaml-ts-mode) "yaml-language-server" "--stdio"
-     :initializationOptions (:yaml.schemaStore.url  "https://www.schemastore.org/api/json/catalog.json")))
-  (add-to-list
-   'eglot-server-programs
-   `((makefile-mode makefile-bsdmake-mode) "autotools-language-server"))
-  (add-to-list
-   'eglot-server-programs
-   `((terraform-mode) "terraform-ls" "serve"))
-  (add-to-list
-   'eglot-server-programs
-   `((bash-mode bash-ts-mode sh-mode) "bash-language-server" "start"))
-  (add-to-list
-   'eglot-server-programs
-   `((sql-mode) "sql-language-server" "up" "--method" "stdio"))
+  (defun executable-find (command)
+    "Search for COMMAND in `exec-path' and return the absolute file name.
+Return nil if COMMAND is not found anywhere in `exec-path'."
+    ;; Use 1 rather than file-executable-p to better match the behavior of
+    ;; call-process.
+    (locate-file command exec-path exec-suffixes 1))
+
+  (defmacro add-server-program-if-found (exec &rest forms)
+    "If EXEC is in `exec-path', bind COMMAND and add FORMS to
+EGLOT-SERVER-PROGRAMS."
+    `(if-let ((command (executable-find ,exec)))
+         (add-to-list
+          'eglot-server-programs
+          ,@forms)
+       (message "EXEC not found, not adding to EGLOT-SERVER-PROGRAMS: %s" ,exec)))
+
+  (add-server-program-if-found "grammarly-languageserver"
+                               `((text-mode latex-mode org-mode markdown-mode) ,command "--stdio"
+                                 :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
+  (add-server-program-if-found "yaml-language-server"
+                               `((yaml-mode yaml-ts-mode) ,command "--stdio"
+                                 :initializationOptions (:yaml.schemaStore.url  "https://www.schemastore.org/api/json/catalog.json")))
+  (add-server-program-if-found "autotools-language-server"
+                               `((makefile-mode makefile-bsdmake-mode) ,command))
+  (add-server-program-if-found "terraform-ls"
+                               `((terraform-mode) ,command "serve"))
+  (add-server-program-if-found "bash-language-server"
+                               `((bash-mode bash-ts-mode sh-mode) ,command "start"))
+  (add-server-program-if-found "sql-language-server"
+                               `((sql-mode) ,command "up" "--method" "stdio"))
   :hook
   ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
@@ -264,11 +274,11 @@
   ;; - https://github.com/joaotavora/eglot/discussions/888#discussioncomment-2384693
   ;; - https://github.com/joaotavora/eglot/discussions/868
   ;; - https://github.com/eclipse-jdtls/eclipse.jdt.ls?tab=readme-ov-file#running-from-command-line-with-wrapper-script
-  (add-to-list 'eglot-server-programs
-               `((java-mode java-ts-mode) .
-                 ("jdtls" ,(concat "--jvm-arg=-javaagent:" (expand-file-name (file-name-concat dape-adapter-dir "lombok.jar")))
-                  :initializationOptions
-                  (:bundles [,(expand-file-name (file-name-concat dape-adapter-dir "com.microsoft.java.debug.plugin-0.52.0.jar"))])))))
+  (add-server-program-if-found "jdtls"
+                               `((java-mode java-ts-mode) .
+                                 (,command ,(concat "--jvm-arg=-javaagent:" (expand-file-name (file-name-concat dape-adapter-dir "lombok.jar")))
+                                  :initializationOptions
+                                  (:bundles [,(expand-file-name (file-name-concat dape-adapter-dir "com.microsoft.java.debug.plugin-0.52.0.jar"))])))))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
