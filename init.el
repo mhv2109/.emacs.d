@@ -190,7 +190,9 @@
                                            go-ts-mode
                                            terraform-mode
                                            terraform-ts-mode) major-mode)
-                     (eglot-code-action-organize-imports (eglot--region-bounds))
+                     (condition-case nil
+                         (eglot-code-action-organize-imports (eglot--region-bounds))
+                       (error nil))
                      (eglot-format-buffer)))))
 
 ;; Debug Adapter Protocol: https://github.com/svaante/dape
