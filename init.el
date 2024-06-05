@@ -53,8 +53,7 @@
 (use-package auto-package-update)
 
 ;; Git integration
-(use-package magit
-  :pin melpa-stable)
+(use-package magit)
 
 ;; Functions to insert the current date for org-mode doc headers
 (use-package calendar
