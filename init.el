@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -402,6 +402,12 @@ EGLOT-SERVER-PROGRAMS."
   :after sly)
 (use-package sly-quicklisp ;; Working with quicklisp: https://github.com/joaotavora/sly-quicklisp
   :after sly)
+(use-package sly-overlay ;; https://github.com/emacsmirror/sly-overlay
+  :after sly
+  :config
+  (define-key sly-editing-mode-map (kbd "C-x C-e") 'sly-overlay-eval-defun)
+  :custom
+  (sly-overlay-eval-result-duration nil))
 
 (use-package cider) ;; Clojure support: https://cider.mx/
 
