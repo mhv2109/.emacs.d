@@ -178,15 +178,8 @@ EGLOT-SERVER-PROGRAMS."
   (add-server-program-if-found "grammarly-languageserver"
                                `((text-mode latex-mode org-mode markdown-mode) ,command "--stdio"
                                  :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
-  (add-server-program-if-found "yaml-language-server"
-                               `((yaml-mode yaml-ts-mode) ,command "--stdio"
-                                 :initializationOptions (:yaml.schemaStore.url  "https://www.schemastore.org/api/json/catalog.json")))
   (add-server-program-if-found "autotools-language-server"
                                `((makefile-mode makefile-bsdmake-mode) ,command))
-  (add-server-program-if-found "terraform-ls"
-                               `((terraform-mode) ,command "serve"))
-  (add-server-program-if-found "bash-language-server"
-                               `((bash-mode bash-ts-mode sh-mode) ,command "start"))
   (add-server-program-if-found "sql-language-server"
                                `((sql-mode) ,command "up" "--method" "stdio"))
   :hook
