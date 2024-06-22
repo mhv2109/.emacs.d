@@ -7,3 +7,6 @@
 [submodule "github.el"]
 	path = github.el
 	url = https://github.com/mhv2109/github.el
+[submodule "org-drill"]
+	path = org-drill
+	url = https://gitlab.com/mhv2109/org-drill

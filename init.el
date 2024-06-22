@@ -105,8 +105,11 @@
   :ensure nil)
 (use-package ob-go ;; org-babel support for Go: https://github.com/pope/ob-go
   :after org)
+
+(add-to-list 'load-path "~/.emacs.d/org-drill/") ;; installed as a Git submodule (includes a bugfix)
 (use-package org-drill ;; Spaced repetition for Org mode: https://orgmode.org/worg/org-contrib/org-drill.html
   :after org
+  :ensure nil
   ;; :config
   ;; (defun org-drill-refresh-scope (&optional dir)
   ;;   "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."

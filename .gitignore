@@ -45,3 +45,5 @@ bookmarks
 request/
 flycheck_init.el
 recentf
+projects
+.cask/
