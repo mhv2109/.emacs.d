@@ -29,7 +29,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -162,24 +162,17 @@
 (use-package eglot
   :ensure nil
   :config
-  (defun executable-find (command)
-    "Search for COMMAND in `exec-path' and return the absolute file name.
-Return nil if COMMAND is not found anywhere in `exec-path'."
-    ;; Use 1 rather than file-executable-p to better match the behavior of
-    ;; call-process.
-    (locate-file command exec-path exec-suffixes 1))
-
   (defmacro add-server-program-if-found (exec &rest forms)
     "If EXEC is in `exec-path', bind COMMAND and add FORMS to
 EGLOT-SERVER-PROGRAMS."
-    `(if-let ((command (executable-find ,exec)))
+    `(if-let ((command (locate-file ,exec exec-path exec-suffixes 1)))
          (add-to-list
           'eglot-server-programs
-          ,@forms)
+          ,@forms t)
        (message "EXEC not found, not adding to EGLOT-SERVER-PROGRAMS: %s" ,exec)))
 
   (add-server-program-if-found "grammarly-languageserver"
-                               `((text-mode latex-mode org-mode markdown-mode) ,command "--stdio"
+                               `((text-mode latex-mode org-mode) ,command "--stdio"
                                  :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
   (add-server-program-if-found "autotools-language-server"
                                `((makefile-mode makefile-bsdmake-mode) ,command))
@@ -273,6 +266,12 @@ EGLOT-SERVER-PROGRAMS."
                                  (,command ,(concat "--jvm-arg=-javaagent:" (expand-file-name (file-name-concat dape-adapter-dir "lombok.jar")))
                                   :initializationOptions
                                   (:bundles [,(expand-file-name (file-name-concat dape-adapter-dir "com.microsoft.java.debug.plugin-0.52.0.jar"))])))))
+
+;; integrate flycheck with eglot: https://github.com/flycheck/flycheck-eglot
+(use-package flycheck-eglot
+  :after (eglot flycheck)
+  :config
+  (global-flycheck-eglot-mode 1))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
