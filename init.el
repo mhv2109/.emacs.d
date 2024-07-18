@@ -642,5 +642,8 @@ directory to make multiple eshell windows easier."
 ;; horizontal line highlighting
 (global-hl-line-mode 1)
 
+;; automatically revert buffers when files on disk change
+(global-auto-revert-mode 1)
+
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
