@@ -81,10 +81,6 @@
   (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED")) ;; Update TODO states
   :config
   (setq org-log-done t)
-  (defun get-org-dir (&optional override)
-    "Get main directory containing .org files. Configurable using either $ORG_DIR env var, or defaults to ORG-DIRECTORY ($HOME/org/). Relative filenames are expanded."
-    (interactive)
-    (expand-file-name (or override (getenv "ORG_DIR") org-directory)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
@@ -93,14 +89,15 @@
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-confirm-babel-evaluate nil)
   (setq org-src-tab-acts-natively nil)
-  ;; setup org-capture
-  (setq org-default-notes-file (concat (get-org-dir) "/notes.org"))
-  (setq org-capture-templates
-        `(("t" "Todo" entry (file+datetree ,(concat (get-org-dir) "/todo.org")) "* TODO %?\n  %i\nLink: %a" :empty-lines 1)
-          ("j" "Journal" entry (file+datetree ,(concat (get-org-dir) "/journal.org")) "* %?\n  %i\nLink: %a" :empty-lines 1)))
+  ;; setup org-capture and org-agenda
+  ;; periodically update the the current journal file
+  (run-with-timer 0 60 (lambda ()
+                         (setq org-default-notes-file (concat org-directory
+                                                              (format-time-string "/journal_%Y_%m_%d.org"))
+                               org-capture-templates `(("t" "Todo" entry (file ,org-default-notes-file) "* TODO %?\n  %i\nLink: %a" :empty-lines 1)
+                                                       ("j" "Journal" entry (file ,org-default-notes-file) "* %?\n  %i\nLink: %a" :empty-lines 1)))))
   ;; setup org-agenda
-  (setq  org-agenda-files (list (get-org-dir)))
-  )
+  (setq  org-agenda-files (list org-directory)))
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
@@ -115,7 +112,7 @@
   ;; (defun org-drill-refresh-scope (&optional dir)
   ;;   "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."
   ;;   (interactive) ;; TODO: allow passing in directory arg interactively
-  ;;   (let ((org-dir (or dir (get-org-dir)))
+  ;;   (let ((org-dir (or dir org-directory))
   ;;     (org-regexp "^[^#].*\\.org$"))
   ;;     (setq org-drill-scope (directory-files-recursively org-dir org-regexp))
   ;;     (message "%s" "Updated org-drill-scope.")))
