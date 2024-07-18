@@ -197,6 +197,8 @@ EGLOT-SERVER-PROGRAMS."
 (use-package dape
   :after eglot
   :config
+  ;; kubebuilder tests take a little bit to start
+  (setq dape-request-timeout 30)
   ;; Run Go unit test under point: https://github.com/svaante/dape/wiki#go---dlv
   (add-to-list 'dape-configs
                `(dlv-unit-test
