@@ -163,21 +163,22 @@
 (use-package eglot
   :ensure nil
   :config
-  (defmacro add-server-program-if-found (exec &rest forms)
+  (defmacro add-server-program-if-found (exec append &rest forms)
     "If EXEC is in `exec-path', bind COMMAND and add FORMS to
-EGLOT-SERVER-PROGRAMS."
+EGLOT-SERVER-PROGRAMS. If APPEND is truthy, add to end of list,
+otherwise add to start of list."
     `(if-let ((command (locate-file ,exec exec-path exec-suffixes 1)))
          (add-to-list
           'eglot-server-programs
-          ,@forms t)
+          ,@forms ,append)
        (message "EXEC not found, not adding to EGLOT-SERVER-PROGRAMS: %s" ,exec)))
 
-  (add-server-program-if-found "grammarly-languageserver"
+  (add-server-program-if-found "grammarly-languageserver" t
                                `((text-mode latex-mode org-mode) ,command "--stdio"
                                  :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
-  (add-server-program-if-found "autotools-language-server"
+  (add-server-program-if-found "autotools-language-server" t
                                `((makefile-mode makefile-bsdmake-mode) ,command))
-  (add-server-program-if-found "sql-language-server"
+  (add-server-program-if-found "sql-language-server" t
                                `((sql-mode) ,command "up" "--method" "stdio"))
   :hook
   ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
@@ -264,7 +265,7 @@ EGLOT-SERVER-PROGRAMS."
   ;; - https://github.com/joaotavora/eglot/discussions/888#discussioncomment-2384693
   ;; - https://github.com/joaotavora/eglot/discussions/868
   ;; - https://github.com/eclipse-jdtls/eclipse.jdt.ls?tab=readme-ov-file#running-from-command-line-with-wrapper-script
-  (add-server-program-if-found "jdtls"
+  (add-server-program-if-found "jdtls" nil
                                `((java-mode java-ts-mode) .
                                  (,command ,(concat "--jvm-arg=-javaagent:" (expand-file-name (file-name-concat dape-adapter-dir "lombok.jar")))
                                   :initializationOptions
