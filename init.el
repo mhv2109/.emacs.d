@@ -187,7 +187,7 @@ otherwise add to start of list."
                                            terraform-mode
                                            terraform-ts-mode) major-mode)
                      (condition-case nil
-                         (eglot-code-action-organize-imports (eglot--region-bounds))
+                         (eglot-code-action-organize-imports 1)
                        (error nil))
                      (eglot-format-buffer)))))
 
