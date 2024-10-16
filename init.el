@@ -30,7 +30,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(lua-mode projectile flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(org-roam lua-mode projectile flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -78,26 +78,19 @@
 ;; Org mode: https://orgmode.org/
 (use-package org
   :init
-  (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED")) ;; Update TODO states
+  (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED") ;; Update TODO states
+        org-log-done t
+        org-preview-latex-default-process 'dvisvgm
+        org-confirm-babel-evaluate nil
+        org-src-tab-acts-natively nil
+        org-agenda-files (list org-directory) ;; setup org-agenda
+        )
   :config
-  (setq org-log-done t)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
      (shell . t)
-     (go . t)))
-  (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-src-tab-acts-natively nil)
-  ;; setup org-capture and org-agenda
-  ;; periodically update the the current journal file
-  (run-with-timer 0 60 (lambda ()
-                         (setq org-default-notes-file (concat org-directory
-                                                              (format-time-string "/journal_%Y_%m_%d.org"))
-                               org-capture-templates `(("t" "Todo" entry (file ,org-default-notes-file) "* TODO %?\n  %i\nLink: %a" :empty-lines 1)
-                                                       ("j" "Journal" entry (file ,org-default-notes-file) "* %?\n  %i\nLink: %a" :empty-lines 1)))))
-  ;; setup org-agenda
-  (setq  org-agenda-files (list org-directory)))
+     (go . t))))
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
@@ -107,17 +100,40 @@
 (add-to-list 'load-path "~/.emacs.d/org-drill/") ;; installed as a Git submodule (includes a bugfix)
 (use-package org-drill ;; Spaced repetition for Org mode: https://orgmode.org/worg/org-contrib/org-drill.html
   :after org
-  :ensure nil
-  ;; :config
-  ;; (defun org-drill-refresh-scope (&optional dir)
-  ;;   "Updates org-drill-scope to include all .org files. DIR default is the result of get-org-dir."
-  ;;   (interactive) ;; TODO: allow passing in directory arg interactively
-  ;;   (let ((org-dir (or dir org-directory))
-  ;;     (org-regexp "^[^#].*\\.org$"))
-  ;;     (setq org-drill-scope (directory-files-recursively org-dir org-regexp))
-  ;;     (message "%s" "Updated org-drill-scope.")))
-  ;; (org-drill-refresh-scope)
-  )
+  :ensure nil)
+
+;; org-roam: https://www.orgroam.com/
+(use-package org-roam
+  :after org
+  :init
+  (setq org-roam-directory (file-truename org-directory) ;; file-truename required since ~/org is often a symlink
+        org-roam-dailies-directory "" ;; I prefer a flat file structure
+        org-roam-completion-everywhere t ;; automatically autocomplete links for notes
+        org-roam-capture-templates '(("d" "default" plain "%?"
+                                      :target (file+head "${slug}.org"
+                                                         "#+title: ${title}\n")
+                                      :unnarrowed t))
+        org-roam-dailies-capture-templates '(("j" "Journal" entry
+                                              "* %?"
+                                              :target (file+head "%<%Y-%m-%d>_daily.org"
+                                                                 "#+title: %<%Y-%m-%d>\n")
+                                              :empty-lines 1)
+                                             ("t" "Todo" entry
+                                              "* TODO %?"
+                                              :target (file+head "%<%Y-%m-%d>_daily.org"
+                                                                 "#+title: %<%Y-%m-%d>\n")
+                                              :empty-lines 1)))
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (org-roam-db-autosync-mode)
+  :bind
+  (("C-c n l" . org-roam-buffer-toggle)
+   ("C-c n f" . org-roam-node-find)
+   ("C-c n i" . org-roam-node-insert)
+   :map org-mode-map
+   ("C-M-i"    . completion-at-point))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map))
 
 ;; spellchecking
 (use-package flyspell-mode

@@ -47,3 +47,4 @@ flycheck_init.el
 recentf
 projects
 .cask/
+org-roam.db
