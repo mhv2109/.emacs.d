@@ -55,7 +55,10 @@
 
 ;; Git integration
 (use-package magit
-  :pin melpa-stable)
+  :pin melpa-stable
+  :config
+  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1) ;; open magit buffer in same window: https://magit.vc/manual/magit/Switching-Buffers.html#index-magit_002ddisplay_002dbuffer_002dfunction
+  )
 
 ;; Functions to insert the current date for org-mode doc headers
 (use-package calendar
