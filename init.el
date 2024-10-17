@@ -82,10 +82,10 @@
         org-log-done t
         org-preview-latex-default-process 'dvisvgm
         org-confirm-babel-evaluate nil
-        org-src-tab-acts-natively nil
-        org-agenda-files (list org-directory) ;; setup org-agenda
-        )
+        org-src-tab-acts-natively nil)
   :config
+  ;; setup org-agenda
+  (setq org-agenda-files (list org-directory))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
