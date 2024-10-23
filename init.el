@@ -60,6 +60,12 @@
   (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1) ;; open magit buffer in same window: https://magit.vc/manual/magit/Switching-Buffers.html#index-magit_002ddisplay_002dbuffer_002dfunction
   )
 
+;; https://github.com/editorconfig/editorconfig-emacs/
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
 ;; Functions to insert the current date for org-mode doc headers
 (use-package calendar
   :config
@@ -67,14 +73,14 @@
     "Insert today's date using the current locale. With a prefix argument, the date is inserted without the day of the week."
     (interactive "P*")
     (insert (calendar-date-string (calendar-current-date) nil
-				   omit-day-of-week-p)))
+				                  omit-day-of-week-p)))
   (defun insdate-insert-current-datetime ()
     "Insert current date and time, including timezone."
     (interactive)
     (let ((current-time (nth 3 (split-string (current-time-string)))))
-	(insert (concat
-		(calendar-date-string (calendar-current-date) nil)
-		" " current-time " " (nth 1 (current-time-zone))))))
+	  (insert (concat
+		       (calendar-date-string (calendar-current-date) nil)
+		       " " current-time " " (nth 1 (current-time-zone))))))
   (global-set-key "\C-x\M-d" `insdate-insert-current-date)
   (global-set-key "\C-x\M-t" `insdate-insert-current-datetime))
 
@@ -196,6 +202,7 @@ otherwise add to start of list."
                                `((makefile-mode makefile-bsdmake-mode) ,command))
   (add-server-program-if-found "sql-language-server" t
                                `((sql-mode) ,command "up" "--method" "stdio"))
+
   :hook
   ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
