@@ -30,7 +30,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(embark citar-embark citar-org-roam citar org-roam lua-mode projectile flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(org-roam lua-mode projectile flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -143,59 +143,6 @@
    ("C-M-i"    . completion-at-point))
   :bind-keymap
   ("C-c n d" . org-roam-dailies-map))
-
-;; Cite references from my Calibre Library: https://github.com/emacs-citar/citar
-(use-package citar
-  :after org
-  :custom
-  (org-cite-insert-processor 'citar)
-  (org-cite-follow-processor 'citar)
-  (org-cite-activate-processor 'citar)
-  (citar-notes-paths (list org-roam-directory))
-  :config
-  (defun list-files-of-type (paths file-extension)
-    "Lists all files with the given extension in the specified paths.
-   Args:
-     paths: A list of directory paths to search.
-     file-extension: The file extension to match (e.g., \"org\", \"txt\")."
-    (let (files)
-      (dolist (path paths)
-        (let ((full-path (expand-file-name path))) ;; Ensure absolute paths
-          (if (file-directory-p full-path) ;; Check if directory exists
-              (dolist (file (directory-files full-path t (concat "\\." file-extension)))
-                (push file files))
-            (message "Directory not found: %s" full-path))))
-      files))
-  ;; Not using a customization because I don't want this set if the file isn't present
-  (when-let ((refs (list-files-of-type '("~/bib") "bib")))
-    (setq org-cite-global-bibliography refs
-          citar-bibliography refs))
-  :hook
-  (org-mode . citar-capf-setup))
-
-;; Integrate Citar with org-roam: https://github.com/emacs-citar/citar-org-roam
-(use-package citar-org-roam
-  :after org-roam citar
-  :config
-  ;; not intended to be used directly, instead invoke 'CITAR-OPEN'
-  (add-to-list 'org-roam-capture-templates
-               '("l" "Literature note" plain "%?"
-                 :target (file+head "${citar-title}.org"
-                                    "#+title: ${citar-title}\n#+author: ${citar-author}\n#+date: ${citar-date}\n#+created: %U\n\n")
-                 :unnarrowed t))
-  (setq citar-org-roam-capture-template-key "l"))
-(citar-org-roam-mode)
-
-;; https://github.com/oantolin/embark
-(use-package embark)
-
-;; https://github.com/emacs-citar/citar?tab=readme-ov-file#embark
-(use-package citar-embark
-  :after citar embark
-  :no-require
-  :config
-  (setq citar-at-point-function 'embark-act)
-  (citar-embark-mode))
 
 ;; spellchecking
 (use-package flyspell-mode
