@@ -121,13 +121,21 @@
         org-roam-capture-templates '(("d" "default" plain "%?"
                                       :target (file+head "${slug}.org"
                                                          "#+title: ${title}\n")
+                                      :unnarrowed t)
+                                     ("b" "book" plain "%?"
+                                      :target (file+head "${slug}.org"
+                                                         "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n")
+                                      :unnarrowed t)
+                                     ("w" "website" plain "%?"
+                                      :target (file+head "${slug}.org"
+                                                         "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+website: ${website-name}\n#+date: ${date}\n#+url: ${url}\n#+created: %U\n")
                                       :unnarrowed t))
-        org-roam-dailies-capture-templates '(("j" "Journal" entry
+        org-roam-dailies-capture-templates '(("j" "journal" entry
                                               "* %?"
                                               :target (file+head "%<%Y-%m-%d>_daily.org"
                                                                  "#+title: %<%Y-%m-%d>\n")
                                               :empty-lines 1)
-                                             ("t" "Todo" entry
+                                             ("t" "todo" entry
                                               "* TODO %?"
                                               :target (file+head "%<%Y-%m-%d>_daily.org"
                                                                  "#+title: %<%Y-%m-%d>\n")
