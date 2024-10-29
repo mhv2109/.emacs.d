@@ -30,7 +30,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(org-roam lua-mode projectile flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(gcmh org-roam lua-mode projectile flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -52,6 +52,10 @@
 
 ;; automatically update packages
 (use-package auto-package-update)
+
+;; Garbage Collector Magic Hack: https://github.com/emacsmirror/gcmh
+(use-package gcmh
+  :config (gcmh-mode 1))
 
 ;; Git integration
 (use-package magit
