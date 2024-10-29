@@ -383,7 +383,8 @@ otherwise add to start of list."
   ;; This library works around this problem by copying important
   ;; environment variables from the user's shell.
   ;; https://github.com/purcell/exec-path-from-shell
-  (use-package exec-path-from-shell)
+  (use-package exec-path-from-shell
+    :config (exec-path-from-shell-initialize))
 
   ;; Local documentation for macOS: https://github.com/stanaka/dash-at-point#readme
   (use-package dash-at-point))
