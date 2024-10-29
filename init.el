@@ -162,6 +162,7 @@
   :config
   (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
   (define-key flyspell-mouse-map [mouse-3] #'undefined)
+  (setq flyspell-issue-message-flag nil) ;; allegedly improves performance
   :hook
   (text-mode))
 (use-package flyspell-prog-mode
