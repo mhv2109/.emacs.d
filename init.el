@@ -346,18 +346,18 @@ otherwise add to start of list."
     "Toggles Codeium AI autocomplete suggestions. If enabled, overrides any other completion-at-point functions."
     (interactive)
     (if (member #'codeium-completion-at-point completion-at-point-functions)
-	(progn
-	  ;; toggle from ON to OFF
-	  (setq-local completion-at-point-functions previous-completion-at-point-functions
-		      company-frontends previous-company-frontends)
-	  (message "Disabling Codeium in current buffer"))
+	    (progn
+	      ;; toggle from ON to OFF
+	      (setq-local completion-at-point-functions previous-completion-at-point-functions
+		              company-frontends previous-company-frontends)
+	      (message "Disabling Codeium in current buffer"))
       (progn
-	;; toggle from OFF to ON
-	(setq-local previous-completion-at-point-functions completion-at-point-functions
-		    previous-company-frontends company-frontends
-		    completion-at-point-functions (list #'codeium-completion-at-point)
-		    company-frontends '(company-preview-frontend))
-	(message "Enabling Codeium in current buffer"))))
+	    ;; toggle from OFF to ON
+	    (setq-local previous-completion-at-point-functions completion-at-point-functions
+		            previous-company-frontends company-frontends
+		            completion-at-point-functions (list #'codeium-completion-at-point)
+		            company-frontends '(company-preview-frontend))
+	    (message "Enabling Codeium in current buffer"))))
   (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
 
 ;; GitHub Copilot: https://github.com/zerolfx/copilot.el
