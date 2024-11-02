@@ -515,13 +515,6 @@ otherwise add to start of list."
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 
-;; keybinding for quickly inserting zero-length strings so radio links to will work with plurals
-(defun insert-zero-length-space ()
-  "Insert a zero-length space under cursor."
-  (interactive)
-  (insert-char 8203))
-(global-set-key "\C-x\M-z" `insert-zero-length-space)
-
 ;; enable line wrap
 (global-visual-line-mode t)
 
