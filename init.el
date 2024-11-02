@@ -30,7 +30,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(gcmh org-roam lua-mode projectile flycheck-eglot sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode flycheck lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(gcmh org-roam lua-mode projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles mermaid-mode yaml-mode dap-mode  lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -56,6 +56,11 @@
 ;; Garbage Collector Magic Hack: https://github.com/emacsmirror/gcmh
 (use-package gcmh
   :config (gcmh-mode 1))
+
+;; Syntax highlighting, built-in
+(use-package flymake
+  :ensure nil
+  :hook ((prog-mode) . flymake-mode))
 
 ;; Git integration
 (use-package magit
@@ -187,10 +192,6 @@
   (add-hook 'company-completion-started-hook #'(lambda (&rest _) (company-quickhelp-manual-begin)))
   (company-quickhelp-mode))
 
-(use-package flycheck ;; syntax highlighting
-  :init
-  (global-flycheck-mode))
-
 (use-package yasnippet
   :config
   (yas-global-mode 1))
@@ -306,12 +307,6 @@ otherwise add to start of list."
                                  (,command ,(concat "--jvm-arg=-javaagent:" (expand-file-name (file-name-concat dape-adapter-dir "lombok.jar")))
                                   :initializationOptions
                                   (:bundles [,(expand-file-name (file-name-concat dape-adapter-dir "com.microsoft.java.debug.plugin-0.52.0.jar"))])))))
-
-;; integrate flycheck with eglot: https://github.com/flycheck/flycheck-eglot
-(use-package flycheck-eglot
-  :after (eglot flycheck)
-  :config
-  (global-flycheck-eglot-mode 1))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
