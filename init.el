@@ -540,15 +540,6 @@ otherwise add to start of list."
 ;; Treat snake_case as one word
 (global-superword-mode 1)
 
-;; generate TAGS table file with etags
-(defun etags (d &optional append?)
-  "Uses etags to generate a TAGS table file in directory D. If APPEND? is truthy, equivalent of calling etags with -a flag."
-  (interactive "F")
-  (let ((command (string-join (list "find . -not \\( -path \"./.git\" -prune \\) -type f | xargs etags" (if append? "-a" "")) " "))
-	    (default-directory d))
-    (shell-command-to-string command)))
-
-
 ;; Load secrets with Emacs' built-in GPG support
 ;; See: https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
 
