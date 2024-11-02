@@ -1,4 +1,3 @@
-(setq gc-cons-threshold 100000000) ;; raise GC threshold to 100MB
 (setq max-lisp-eval-depth 10000) ;; This is covering up a deeper problem, but hasn't been an issue on my hardware. Blame our Java dependency management.
 
 (require 'package)
