@@ -177,6 +177,234 @@
   :config
   (yas-global-mode 1))
 
+;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
+(use-package yaml-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+  (add-hook 'yaml-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
+
+;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
+(use-package go-mode)
+
+;; quickly run Go unit tests:
+(use-package gotest)
+
+;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
+(use-package typescript-mode)
+
+;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
+(add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
+(use-package codeium
+  :ensure nil
+  ;;:after corfu
+  :init
+  ;; read API key from environment
+  (setq codeium/metadata/api_key (getenv "CODEIUM_API_KEY"))
+  :config
+  ;; keybinding to enable/disable suggestions (overrides other autocompletion backends)
+  (defun codeium-completion-toggle ()
+    "Toggles Codeium AI autocomplete suggestions. If enabled, overrides any other completion-at-point functions."
+    (interactive)
+    (if (member #'codeium-completion-at-point completion-at-point-functions)
+	    (progn
+	      ;; toggle from ON to OFF
+	      (setq-local completion-at-point-functions previous-completion-at-point-functions
+		              company-frontends previous-company-frontends)
+	      (message "Disabling Codeium in current buffer"))
+      (progn
+	    ;; toggle from OFF to ON
+	    (setq-local previous-completion-at-point-functions completion-at-point-functions
+		            previous-company-frontends company-frontends
+		            completion-at-point-functions (list #'codeium-completion-at-point)
+		            company-frontends '(company-preview-frontend))
+	    (message "Enabling Codeium in current buffer"))))
+  (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
+
+;; GitHub Copilot: https://github.com/zerolfx/copilot.el
+(add-to-list 'load-path "~/.emacs.d/copilot.el/") ;; installed as a Git sumbodule
+(use-package dash)
+(use-package s)
+(use-package copilot
+  :ensure nil
+  :after (dash s editorconfig)
+  :config
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+  (global-set-key (kbd "M-C-<tab>") 'copilot-mode))
+
+(use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
+  )
+
+(add-to-list 'load-path "~/.emacs.d/github.el/") ;; installed as a Git submodule
+(use-package github
+  :ensure nil)
+
+(use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
+  )
+
+(use-package sly ;; Fork of SLIME for Lisp support: https://github.com/joaotavora/sly
+  :defer
+  :config
+  (setq sly-complete-symbol-function 'sly-flex-completions)
+  ;; Use local docs, if installed
+  (when-let* ((local (expand-file-name "~/.quicklisp/clhs-use-local.el"))
+              (exists? (file-exists-p local)))
+    (load local t)))
+(use-package sly-asdf ;; Working with ASDF: https://github.com/mmgeorge/sly-asdf
+  :after sly)
+(use-package sly-quicklisp ;; Working with quicklisp: https://github.com/joaotavora/sly-quicklisp
+  :after sly)
+(use-package sly-overlay ;; https://github.com/emacsmirror/sly-overlay
+  :after sly
+  :config
+  (define-key sly-editing-mode-map (kbd "C-x C-e") 'sly-overlay-eval-defun)
+  :custom
+  (sly-overlay-eval-result-duration nil))
+
+(use-package cider) ;; Clojure support: https://cider.mx/
+
+(use-package paredit ;; Lisp programming conveniences: http://paredit.org/
+  :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
+
+(use-package rainbow-delimiters ;; Make reading nested parens easier: https://github.com/Fanael/rainbow-delimiters
+  :hook ((prog-mode) . rainbow-delimiters-mode))
+
+(use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
+  :config
+  (load-theme 'doom-horizon t))
+
+(use-package uniquify ;; Overrides Emacs’ default mechanism for making buffer names unique, from: https://git.sr.ht/~technomancy/better-defaults
+  :ensure nil
+  :config
+  (setq uniquify-buffer-name-style 'forward))
+
+(use-package terraform-mode ;; Major mode for Hashicorp Terraform: https://github.com/hcl-emacs/terraform-mode
+  )
+
+;; minibuffer autocomplete config
+;; https://github.com/abo-abo/swiper
+;; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
+(use-package ivy
+  :config
+  (ivy-mode 1)
+  (setq ivy-display-style 'fancy
+        ivy-use-virtual-buffers t
+        ivy-wrap t)
+  ;; enable swiper
+  (global-set-key (kbd "C-s") 'swiper-isearch)
+  (global-set-key (kbd "C-S-s") 'swiper-isearch-thing-at-point)
+  (global-set-key (kbd "M-C-s") 'swiper-all)
+  (global-set-key (kbd "C-r") 'swiper-isearch-backward)
+  (global-set-key (kbd "M-%") 'swiper-query-replace)
+  (global-set-key (kbd "M-C-%") 'swiper-all-query-replace))
+
+(use-package counsel
+  :config
+  (counsel-mode 1))
+
+;; Additional docs in minibuffer: https://github.com/minad/marginalia
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+;; protobuf support
+(use-package protobuf-mode)
+
+;; customize built-in python.el
+(use-package python
+  :ensure nil
+  :config
+  ;; if ipython is available, use it w/ autoloads
+  ;; autoloads lets you use a lisp-like repl-driven development where you can load a buffer into the repl and modify imported modules
+  (when-let ((found (executable-find "ipython")))
+    (setq python-shell-interpreter found)
+    (setq python-shell-interpreter-args (concat "--simple-prompt -i " (file-name-directory user-init-file) "autoload.ipy"))))
+
+;; Highlight key combos for incomplete commands: https://github.com/justbur/emacs-which-key
+(use-package which-key
+  :config
+  (which-key-mode))
+
+;; Faster fuzzy completion: https://github.com/axelf4/hotfuzz
+(use-package hotfuzz
+  :config
+  (setq completion-styles '(hotfuzz)
+        completion-ignore-case t))
+
+;; markdown-mode: https://jblevins.org/projects/markdown-mode/
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode))
+
+;; horizontal and vertical line highlighting
+;; super slow
+(use-package vline)
+
+;; project management utilities: https://github.com/bbatsov/projectile
+(use-package projectile
+  :config
+  (projectile-mode 1)
+  ;; setup keybindings
+  (if (memq window-system '(mac ns x))
+      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map) ;; Recommended keymap prefix on macOS
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map) ;; Recommended keymap prefix on Windows/Linux
+    ))
+
+;;
+;; macOS-specific packages and configuration
+;;
+
+(when (memq window-system '(mac ns x))
+  ;; On OS X, an Emacs instance started from the graphical user
+  ;; interface will have a different environment than a shell in a
+  ;; terminal window, because OS X does not run a shell during the
+  ;; login. Obviously this will lead to unexpected results when
+  ;; calling external utilities like make from Emacs.
+  ;; This library works around this problem by copying important
+  ;; environment variables from the user's shell.
+  ;; https://github.com/purcell/exec-path-from-shell
+  (use-package exec-path-from-shell
+    :config (exec-path-from-shell-initialize))
+
+  ;; Local documentation for macOS: https://github.com/stanaka/dash-at-point#readme
+  (use-package dash-at-point))
+
+;;
+;; Treesitter
+;;
+
+(when (and (fboundp 'treesit-available-p)
+           (treesit-available-p))
+  (use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
+    :demand t
+    :config
+    (setq treesit-auto-install t)
+    (global-treesit-auto-mode)
+    ;; custom recipes
+    (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					                        :lang 'gomod
+					                        :ts-mode 'go-mod-ts-mode
+					                        :remap '(go-dot-mod-mode)
+					                        :url "https://github.com/camdencheek/tree-sitter-go-mod"))
+    (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					                        :lang 'fish
+					                        :url "https://github.com/ram02z/tree-sitter-fish")))
+  (use-package go-ts-mode
+    :ensure nil
+    :after treesit-auto
+    :custom
+    (go-ts-mode-indent-offset 4))
+  (use-package yaml-ts-mode
+    :ensure nil
+    :after treesit-auto
+    :config
+    (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2)))))
+
+;;
+;; LSP: eglot+dape
+;;
+
 (use-package eglot
   :ensure nil
   :config
@@ -289,231 +517,13 @@ otherwise add to start of list."
                                   :initializationOptions
                                   (:bundles [,(expand-file-name (file-name-concat dape-adapter-dir "com.microsoft.java.debug.plugin-0.52.0.jar"))])))))
 
-;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
-(use-package yaml-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
-  (add-hook 'yaml-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
-
-;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
-(use-package go-mode)
-
-;; quickly run Go unit tests:
-(use-package gotest)
-
-;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
-(use-package typescript-mode)
-
-;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
-(add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
-(use-package codeium
-  :ensure nil
-  ;;:after corfu
-  :init
-  ;; read API key from environment
-  (setq codeium/metadata/api_key (getenv "CODEIUM_API_KEY"))
-  :config
-  ;; keybinding to enable/disable suggestions (overrides other autocompletion backends)
-  (defun codeium-completion-toggle ()
-    "Toggles Codeium AI autocomplete suggestions. If enabled, overrides any other completion-at-point functions."
-    (interactive)
-    (if (member #'codeium-completion-at-point completion-at-point-functions)
-	    (progn
-	      ;; toggle from ON to OFF
-	      (setq-local completion-at-point-functions previous-completion-at-point-functions
-		              company-frontends previous-company-frontends)
-	      (message "Disabling Codeium in current buffer"))
-      (progn
-	    ;; toggle from OFF to ON
-	    (setq-local previous-completion-at-point-functions completion-at-point-functions
-		            previous-company-frontends company-frontends
-		            completion-at-point-functions (list #'codeium-completion-at-point)
-		            company-frontends '(company-preview-frontend))
-	    (message "Enabling Codeium in current buffer"))))
-  (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
-
-;; GitHub Copilot: https://github.com/zerolfx/copilot.el
-(add-to-list 'load-path "~/.emacs.d/copilot.el/") ;; installed as a Git sumbodule
-(use-package dash)
-(use-package s)
-(use-package editorconfig)
-(use-package copilot
-  :ensure nil
-  :after (dash s editorconfig)
-  :config
-  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-  (global-set-key (kbd "M-C-<tab>") 'copilot-mode))
-
-;; macOS specific packages
-(when (memq window-system '(mac ns x))
-  ;; On OS X, an Emacs instance started from the graphical user
-  ;; interface will have a different environment than a shell in a
-  ;; terminal window, because OS X does not run a shell during the
-  ;; login. Obviously this will lead to unexpected results when
-  ;; calling external utilities like make from Emacs.
-  ;; This library works around this problem by copying important
-  ;; environment variables from the user's shell.
-  ;; https://github.com/purcell/exec-path-from-shell
-  (use-package exec-path-from-shell
-    :config (exec-path-from-shell-initialize))
-
-  ;; Local documentation for macOS: https://github.com/stanaka/dash-at-point#readme
-  (use-package dash-at-point))
-
-(use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
-  )
-
-(add-to-list 'load-path "~/.emacs.d/github.el/") ;; installed as a Git submodule
-(use-package github
-  :ensure nil)
-
-(use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
-  )
-
-(when (and (fboundp 'treesit-available-p)
-           (treesit-available-p))
-    (use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
-      :demand t
-      :config
-      (setq treesit-auto-install t)
-      (global-treesit-auto-mode)
-      ;; custom recipes
-      (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					                          :lang 'gomod
-					                          :ts-mode 'go-mod-ts-mode
-					                          :remap '(go-dot-mod-mode)
-					                          :url "https://github.com/camdencheek/tree-sitter-go-mod"))
-      (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					                          :lang 'fish
-					                          :url "https://github.com/ram02z/tree-sitter-fish")))
-    (use-package go-ts-mode
-      :ensure nil
-      :after treesit-auto
-      :custom
-      (go-ts-mode-indent-offset 4))
-    (use-package yaml-ts-mode
-      :ensure nil
-      :after treesit-auto
-      :config
-      (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2)))))
-
-(use-package sly ;; Fork of SLIME for Lisp support: https://github.com/joaotavora/sly
-  :defer
-  :config
-  (setq sly-complete-symbol-function 'sly-flex-completions)
-  ;; Use local docs, if installed
-  (when-let* ((local (expand-file-name "~/.quicklisp/clhs-use-local.el"))
-              (exists? (file-exists-p local)))
-    (load local t)))
-(use-package sly-asdf ;; Working with ASDF: https://github.com/mmgeorge/sly-asdf
-  :after sly)
-(use-package sly-quicklisp ;; Working with quicklisp: https://github.com/joaotavora/sly-quicklisp
-  :after sly)
-(use-package sly-overlay ;; https://github.com/emacsmirror/sly-overlay
-  :after sly
-  :config
-  (define-key sly-editing-mode-map (kbd "C-x C-e") 'sly-overlay-eval-defun)
-  :custom
-  (sly-overlay-eval-result-duration nil))
-
-(use-package cider) ;; Clojure support: https://cider.mx/
-
-(use-package paredit ;; Lisp programming conveniences: http://paredit.org/
-  :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
-
-(use-package rainbow-delimiters ;; Make reading nested parens easier: https://github.com/Fanael/rainbow-delimiters
-  :hook ((prog-mode) . rainbow-delimiters-mode))
-
-(use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
-  :config
-  (load-theme 'doom-horizon t))
-
-(use-package uniquify ;; Overrides Emacs’ default mechanism for making buffer names unique, from: https://git.sr.ht/~technomancy/better-defaults
-  :ensure nil
-  :config
-  (setq uniquify-buffer-name-style 'forward))
-
-(use-package terraform-mode ;; Major mode for Hashicorp Terraform: https://github.com/hcl-emacs/terraform-mode
-  )
-
-;; minibuffer autocomplete config
-;; https://github.com/abo-abo/swiper
-;; https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html
-(use-package ivy
-  :config
-  (ivy-mode 1)
-  (setq ivy-display-style 'fancy
-        ivy-use-virtual-buffers t
-        ivy-wrap t)
-  ;; enable swiper
-  (global-set-key (kbd "C-s") 'swiper-isearch)
-  (global-set-key (kbd "C-S-s") 'swiper-isearch-thing-at-point)
-  (global-set-key (kbd "M-C-s") 'swiper-all)
-  (global-set-key (kbd "C-r") 'swiper-isearch-backward)
-  (global-set-key (kbd "M-%") 'swiper-query-replace)
-  (global-set-key (kbd "M-C-%") 'swiper-all-query-replace))
-
-(use-package counsel
-  :config
-  (counsel-mode 1))
-
-;; Additional docs in minibuffer: https://github.com/minad/marginalia
-(use-package marginalia
-  :init
-  (marginalia-mode))
-
-;; protobuf support
-(use-package protobuf-mode)
-
-;; customize built-in python.el
-(use-package python
-  :ensure nil
-  :config
-  ;; if ipython is available, use it w/ autoloads
-  ;; autoloads lets you use a lisp-like repl-driven development where you can load a buffer into the repl and modify imported modules
-  (when-let ((found (executable-find "ipython")))
-    (setq python-shell-interpreter found)
-    (setq python-shell-interpreter-args (concat "--simple-prompt -i " (file-name-directory user-init-file) "autoload.ipy"))))
-
-;; Highlight key combos for incomplete commands: https://github.com/justbur/emacs-which-key
-(use-package which-key
-  :config
-  (which-key-mode))
-
-;; Faster fuzzy completion: https://github.com/axelf4/hotfuzz
-(use-package hotfuzz
-  :config
-  (setq completion-styles '(hotfuzz)
-        completion-ignore-case t))
-
-;; markdown-mode: https://jblevins.org/projects/markdown-mode/
-(use-package markdown-mode
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode))
-
-;; horizontal and vertical line highlighting
-;; super slow
-(use-package vline)
-
-;; project management utilities: https://github.com/bbatsov/projectile
-(use-package projectile
-  :config
-  (projectile-mode 1)
-  ;; setup keybindings
-  (if (memq window-system '(mac ns x))
-      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map) ;; Recommended keymap prefix on macOS
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map) ;; Recommended keymap prefix on Windows/Linux
-    ))
-
 ;;
 ;; Other customizations
 ;;
 
 ;; Disable startup splash screen
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-message t)
+(setq inhibit-splash-screen t
+      inhibit-startup-message t)
 
 ;; enable line wrap
 (global-visual-line-mode t)
