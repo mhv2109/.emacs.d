@@ -644,5 +644,8 @@ otherwise add to start of list."
 ;; automatically revert buffers when files on disk change
 (global-auto-revert-mode 1)
 
+;; Render PDFs more legibly @ 300dpi
+(setq doc-view-resolution 300)
+
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
