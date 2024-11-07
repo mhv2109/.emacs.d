@@ -356,33 +356,26 @@
   :if (locate-file "ollama" exec-path exec-suffixes) ;; install only if Ollama is installed: https://ollama.com/
   )
 
-;;
-;; macOS-specific packages and configuration
-;;
-
-(when (memq window-system '(mac ns x))
-  ;; On OS X, an Emacs instance started from the graphical user
-  ;; interface will have a different environment than a shell in a
-  ;; terminal window, because OS X does not run a shell during the
-  ;; login. Obviously this will lead to unexpected results when
-  ;; calling external utilities like make from Emacs.
-  ;; This library works around this problem by copying important
-  ;; environment variables from the user's shell.
-  ;; https://github.com/purcell/exec-path-from-shell
-  (use-package exec-path-from-shell
-    :config (exec-path-from-shell-initialize))
-
-  ;; Local documentation for macOS: https://github.com/stanaka/dash-at-point#readme
-  (use-package dash-at-point))
+;; On OS X, an Emacs instance started from the graphical user
+;; interface will have a different environment than a shell in a
+;; terminal window, because OS X does not run a shell during the
+;; login. Obviously this will lead to unexpected results when
+;; calling external utilities like make from Emacs.
+;; This library works around this problem by copying important
+;; environment variables from the user's shell.
+;; https://github.com/purcell/exec-path-from-shell
+(use-package exec-path-from-shell
+  :if (or (memq window-system '(mac ns x)) (daemonp))
+  :config (exec-path-from-shell-initialize))
 
 ;;
 ;; Treesitter
 ;;
 
 (when (and (fboundp 'treesit-available-p)
-           (treesit-available-p))
+           (treesit-available-p)
+           (not (memq window-system '(x)))) ;; having issues on linux
   (use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
-    :demand t
     :config
     (setq treesit-auto-install t)
     (global-treesit-auto-mode)
