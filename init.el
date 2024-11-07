@@ -424,7 +424,7 @@ otherwise add to start of list."
                                `((sql-mode) ,command "up" "--method" "stdio"))
 
   :hook
-  ((prog-mode text-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
+  ((prog-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
   (before-save . (lambda ()
                    ;; autoformatting only behaves well for certain modes
                    ;; TODO: having trouble configuring typescript-language-server
