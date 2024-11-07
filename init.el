@@ -372,32 +372,31 @@
 ;; Treesitter
 ;;
 
-(when (and (fboundp 'treesit-available-p)
-           (treesit-available-p)
-           (not (memq window-system '(x)))) ;; having issues on linux
-  (use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
-    :config
-    (setq treesit-auto-install t)
-    (global-treesit-auto-mode)
-    ;; custom recipes
-    (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					                        :lang 'gomod
-					                        :ts-mode 'go-mod-ts-mode
-					                        :remap '(go-dot-mod-mode)
-					                        :url "https://github.com/camdencheek/tree-sitter-go-mod"))
-    (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					                        :lang 'fish
-					                        :url "https://github.com/ram02z/tree-sitter-fish")))
-  (use-package go-ts-mode
-    :ensure nil
-    :after treesit-auto
-    :custom
-    (go-ts-mode-indent-offset 4))
-  (use-package yaml-ts-mode
-    :ensure nil
-    :after treesit-auto
-    :config
-    (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2)))))
+(use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
+  :if (and (fboundp 'treesit-available-p)
+           (treesit-available-p))
+  :config
+  (setq treesit-auto-install t)
+  (global-treesit-auto-mode)
+  ;; custom recipes
+  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+                                          :lang 'gomod
+                                          :ts-mode 'go-mod-ts-mode
+                                          :remap '(go-dot-mod-mode)
+                                          :url "https://github.com/camdencheek/tree-sitter-go-mod"))
+  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+                                          :lang 'fish
+                                          :url "https://github.com/ram02z/tree-sitter-fish")))
+(use-package go-ts-mode
+  :ensure nil
+  :after treesit-auto
+  :custom
+  (go-ts-mode-indent-offset 4))
+(use-package yaml-ts-mode
+  :ensure nil
+  :after treesit-auto
+  :config
+  (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
 
 ;;
 ;; LSP: eglot+dape
