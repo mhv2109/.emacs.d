@@ -636,7 +636,7 @@ otherwise add to start of list."
 ;; - https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Emacs-Sessions.html
 (desktop-save-mode 1)
 (setq desktop-path (list (concat user-emacs-directory ".cache"))
-      desktop-save t)
+      desktop-save 'ask)
 
 ;; horizontal line highlighting
 (global-hl-line-mode 1)
