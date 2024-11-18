@@ -561,7 +561,7 @@ otherwise add to start of list."
 (defun load-if-exists (f)
   "Load file F if it exists.  F is expanded to an absolute path."
   (when-let* ((expanded (expand-file-name f))
-              (file-exists-p expanded))
+              (exists (file-exists-p expanded)))
 	(load-file expanded)))
 
 (load-if-exists "~/.emacs.d/secrets.el.gpg")
