@@ -559,12 +559,12 @@ otherwise add to start of list."
 ;; See: https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
 
 (defun load-if-exists (f)
-  (let ((expanded (expand-file-name f)))
-    (if (file-exists-p expanded)
-	(load-file expanded))))
+  "Load file F if it exists.  F is expanded to an absolute path."
+  (when-let* ((expanded (expand-file-name f))
+              (file-exists-p expanded))
+	(load-file expanded)))
 
 (load-if-exists "~/.emacs.d/secrets.el.gpg")
-(load-if-exists "~/.emacs.d/secrets.el")
 
 ;; Auto-refresh dired on file change
 (add-hook 'dired-mode-hook 'auto-revert-mode)
