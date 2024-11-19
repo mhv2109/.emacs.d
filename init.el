@@ -81,7 +81,8 @@
         org-log-done t
         org-preview-latex-default-process 'dvisvgm
         org-confirm-babel-evaluate nil
-        org-src-tab-acts-natively nil)
+        org-src-tab-acts-natively nil
+        org-startup-with-inline-images t)
   :config
   ;; setup org-agenda
   (setq org-agenda-files (list org-directory))
