@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -142,6 +142,18 @@
    ("C-M-i"    . completion-at-point))
   :bind-keymap
   ("C-c n d" . org-roam-dailies-map))
+
+;; Full Text Search for org files: https://jblevins.org/projects/deft/
+;; Config adapted from: https://www.orgroam.com/manual.html#Full_002dtext-search-with-Deft
+(use-package deft
+  :after (org org-roam)
+  :bind ("<f8>" . deft)
+  :commands (deft)
+  :custom
+  (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory org-roam-directory))
 
 ;; spellchecking
 (use-package flyspell-mode
