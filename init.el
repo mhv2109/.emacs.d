@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy slime-company helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig company codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -169,22 +169,18 @@
   :hook
   (prog-mode))
 
-;; autocomplete using company-mode: https://company-mode.github.io/
-(use-package company
-  :config
-  (global-company-mode t)
-  (setq-default
-   company-idle-delay 0.05
-   company-require-match nil
-   company-minimum-prefix-length 1))
-;; popup window for docs: https://github.com/company-mode/company-quickhelp
-(use-package company-quickhelp
-  :after company
-  :config
-  (setq company-quickhelp-delay 0.05)
-  (define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin)
-  (add-hook 'company-completion-started-hook #'(lambda (&rest _) (company-quickhelp-manual-begin)))
-  (company-quickhelp-mode))
+;; autocomplete using corfu-mode: https://github.com/minad/corfu
+(use-package corfu
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-delay 0.1)
+  (corfu-auto-prefix 1)
+  (corfu-popupinfo-delay '(0.5 . 0.5))
+  (tab-always-indent 'complete)
+  :init
+  (global-corfu-mode)
+  (corfu-popupinfo-mode t))
 
 (use-package yasnippet
   :config
@@ -222,15 +218,12 @@
     (if (member #'codeium-completion-at-point completion-at-point-functions)
 	    (progn
 	      ;; toggle from ON to OFF
-	      (setq-local completion-at-point-functions previous-completion-at-point-functions
-		              company-frontends previous-company-frontends)
+	      (setq-local completion-at-point-functions previous-completion-at-point-functions)
 	      (message "Disabling Codeium in current buffer"))
       (progn
 	    ;; toggle from OFF to ON
 	    (setq-local previous-completion-at-point-functions completion-at-point-functions
-		            previous-company-frontends company-frontends
-		            completion-at-point-functions (list #'codeium-completion-at-point)
-		            company-frontends '(company-preview-frontend))
+		            completion-at-point-functions (list #'codeium-completion-at-point))
 	    (message "Enabling Codeium in current buffer"))))
   (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
 
