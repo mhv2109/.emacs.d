@@ -277,7 +277,8 @@
 
 (use-package cider ;; Clojure support: https://cider.mx/
   :custom
-  (cider-enrich-classpath t))
+  ;; (cider-enrich-classpath t) ;; TODO: fix or allow to fail silently, doesn't work if network offline
+  )
 
 (use-package paredit ;; Lisp programming conveniences: http://paredit.org/
   :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
