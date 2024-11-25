@@ -178,6 +178,14 @@
   (corfu-auto-prefix 1)
   (corfu-popupinfo-delay '(0.5 . 0.5))
   (tab-always-indent 'complete)
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous)
+        ("ESC" . corfu-quit)
+        ([escape] . corfu-quit))
   :init
   (global-corfu-mode)
   (corfu-popupinfo-mode t))
