@@ -278,6 +278,7 @@
 (use-package cider ;; Clojure support: https://cider.mx/
   :custom
   ;; (cider-enrich-classpath t) ;; TODO: fix or allow to fail silently, doesn't work if network offline
+  (cider-font-lock-dynamically '(macro core function var)) ;; higlight all symbols that are known to be defined
   )
 
 (use-package paredit ;; Lisp programming conveniences: http://paredit.org/
