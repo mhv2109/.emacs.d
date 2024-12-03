@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -338,7 +338,12 @@
   ;; autoloads lets you use a lisp-like repl-driven development where you can load a buffer into the repl and modify imported modules
   (when-let ((found (executable-find "ipython")))
     (setq python-shell-interpreter found)
-    (setq python-shell-interpreter-args (concat "--simple-prompt -i " (file-name-directory user-init-file) "autoload.ipy"))))
+    (setq python-shell-interpreter-args (concat "-c exec('__import__(\\'readline\\')') --simple-prompt -i " (file-name-directory user-init-file) "autoload.ipy"))))
+
+;; Python IDE for emacs: https://github.com/jorgenschaefer/elpy
+(use-package elpy
+  :init
+  (elpy-enable))
 
 ;; Highlight key combos for incomplete commands: https://github.com/justbur/emacs-which-key
 (use-package which-key
