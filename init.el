@@ -177,6 +177,7 @@
   (corfu-auto-delay 0.1)
   (corfu-auto-prefix 1)
   (corfu-popupinfo-delay '(0.5 . 0.5))
+  (corfu-quit-no-match t)
   (tab-always-indent 'complete)
   :bind
   (:map corfu-map
