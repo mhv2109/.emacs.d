@@ -333,12 +333,14 @@
 ;; customize built-in python.el
 (use-package python
   :ensure nil
+  :custom
+  (python-indent-offset 4)
   :config
   ;; if ipython is available, use it w/ autoloads
   ;; autoloads lets you use a lisp-like repl-driven development where you can load a buffer into the repl and modify imported modules
   (when-let ((found (executable-find "ipython")))
-    (setq python-shell-interpreter found)
-    (setq python-shell-interpreter-args (concat "-c exec('__import__(\\'readline\\')') --simple-prompt -i " (file-name-directory user-init-file) "autoload.ipy"))))
+    (setq python-shell-interpreter found
+          python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " (file-name-directory user-init-file) "autoload.ipy"))))
 
 ;; Python IDE for emacs: https://github.com/jorgenschaefer/elpy
 (use-package elpy
@@ -429,6 +431,10 @@
 (use-package eglot
   :ensure nil
   :config
+  ;; suppress logging
+  (fset #'jsonrpc--log-event #'ignore)
+  (eglot-events-buffer-size 0)
+
   (defmacro add-server-program-if-found (exec append &rest forms)
     "If EXEC is in `exec-path', bind COMMAND and add FORMS to
 EGLOT-SERVER-PROGRAMS. If APPEND is truthy, add to end of list,
