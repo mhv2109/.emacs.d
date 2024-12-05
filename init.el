@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -67,6 +67,16 @@
   :config
   (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1) ;; open magit buffer in same window: https://magit.vc/manual/magit/Switching-Buffers.html#index-magit_002ddisplay_002dbuffer_002dfunction
   )
+
+;; Git forge (GitHub) integration: https://magit.vc/manual/forge/
+(use-package forge
+  :after magit
+  :pin melpa-stable)
+
+;; GitHub Permalink at Point (what I was using github.el for):
+(use-package git-link
+ :after magit
+ :pin melpa-stable)
 
 ;; https://github.com/editorconfig/editorconfig-emacs/
 (use-package editorconfig
@@ -251,10 +261,6 @@
 
 (use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
   )
-
-(add-to-list 'load-path "~/.emacs.d/github.el/") ;; installed as a Git submodule
-(use-package github
-  :ensure nil)
 
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
   )
