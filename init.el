@@ -437,10 +437,12 @@
 
 (use-package eglot
   :ensure nil
+  :custom
+  (eglot-events-buffer-size 0) ;; disable eglot events buffer
+  (eldoc-echo-area-prefer-doc-buffer t) ;; prefer eldoc buffer, if visible
   :config
   ;; suppress logging
   (fset #'jsonrpc--log-event #'ignore)
-  (eglot-events-buffer-size 0)
 
   (defmacro add-server-program-if-found (exec append &rest forms)
     "If EXEC is in `exec-path', bind COMMAND and add FORMS to
