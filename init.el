@@ -411,6 +411,8 @@
                   ("https://go.dev/blog/feed.atom" go tech)
                   ("https://feed.infoq.com/" tech)
                   ("https://huggingface.co/blog/feed.xml" tech ai)
+                  ("https://kubernetes.io/docs/reference/issues-security/official-cve-feed/feed.xml" tech k8s cve)
+                  ("https://kubernetes.io/feed.xml" tech k8s)
                   ("https://techcrunch.com/feed/" news tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
