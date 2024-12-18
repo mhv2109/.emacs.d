@@ -388,6 +388,8 @@
 ;; project management utilities: https://github.com/bbatsov/projectile
 (use-package projectile
   :after neotree
+  :custom
+  (projectile-switch-project-action 'neotree-projectile-action)
   :config
   (projectile-mode 1)
   ;; setup keybindings
