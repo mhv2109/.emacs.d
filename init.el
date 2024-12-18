@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -158,7 +158,7 @@
 ;; Config adapted from: https://www.orgroam.com/manual.html#Full_002dtext-search-with-Deft
 (use-package deft
   :after (org org-roam)
-  :bind ("<f8>" . deft)
+  :bind ("<f9>" . deft)
   :commands (deft)
   :custom
   (deft-recursive t)
@@ -375,8 +375,19 @@
 ;; super slow
 (use-package vline)
 
+ ;; file tree UI: https://github.com/jaypei/emacs-neotree
+(use-package neotree
+  :bind ("<f8>" . neotree-toggle)
+  :custom
+  (neo-smart-open t)
+  (neo-show-hidden-files t)
+  (neo-autorefresh t)
+  (neo-window-width 48)
+  (neo-vc-integration '(face char)))
+
 ;; project management utilities: https://github.com/bbatsov/projectile
 (use-package projectile
+  :after neotree
   :config
   (projectile-mode 1)
   ;; setup keybindings
