@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -402,6 +402,22 @@
 (use-package ellama
   :if (locate-file "ollama" exec-path exec-suffixes) ;; install only if Ollama is installed: https://ollama.com/
   )
+
+;; RSS Reader: https://github.com/skeeto/elfeed
+(use-package elfeed
+  :custom
+  (elfeed-feeds '(("https://aws.amazon.com/about-aws/whats-new/recent/feed/" aws tech)
+                  ("https://news.ycombinator.com/rss" tech)
+                  ("https://go.dev/blog/feed.atom" go tech)
+                  ("https://feed.infoq.com/" tech)
+                  ("https://huggingface.co/blog/feed.xml" tech ai)
+                  ("https://techcrunch.com/feed/" news tech)
+                  ("https://abcnews.go.com/abcnews/topstories" news)
+                  ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
+                  ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
+                  ("https://www.wcnc.com/feeds/syndication/rss/news" news clt)))
+  :bind
+  ("C-c r" . elfeed))
 
 ;; On OS X, an Emacs instance started from the graphical user
 ;; interface will have a different environment than a shell in a
