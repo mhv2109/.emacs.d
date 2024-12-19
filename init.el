@@ -458,11 +458,15 @@
   (setq treesit-auto-install t)
   (global-treesit-auto-mode)
   ;; custom recipes
+  ;; having issues with newer versions of libtree-sitter-go on linux
   (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-                                          :lang 'gomod
-                                          :ts-mode 'go-mod-ts-mode
-                                          :remap '(go-dot-mod-mode)
-                                          :url "https://github.com/camdencheek/tree-sitter-go-mod"))
+                                           :lang 'go
+                                           :ts-mode 'go-ts-mode
+                                           :remap 'go-mode
+                                           :requires 'gomod
+                                           :url "https://github.com/tree-sitter/tree-sitter-go"
+                                           :revision "v0.19.1"
+                                           :ext  "\\.go\\'"))
   (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
                                           :lang 'fish
                                           :url "https://github.com/ram02z/tree-sitter-fish")))
