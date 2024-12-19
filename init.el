@@ -553,7 +553,7 @@ otherwise add to start of list."
 (use-package eldoc-box
   :after eglot
   :hook
-  (eglot-managed-mode-hook . (lambda () (eldoc-box-hover-at-point-mode t))))
+  (eglot-managed-mode . (lambda () (eldoc-box-hover-at-point-mode t))))
 
 ;; Debug Adapter Protocol: https://github.com/svaante/dape
 (use-package dape
