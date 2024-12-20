@@ -602,7 +602,9 @@ otherwise add to start of list."
   :if (locate-file "ollama" exec-path exec-suffixes) ;; install only if Ollama is installed: https://ollama.com/
   )
 
+;; Integrate Grammarly with Flymake: https://github.com/emacs-grammarly/flymake-grammarly
 (use-package flymake-grammarly
+  :config (grammarly-load-from-authinfo) ;; See: https://github.com/emacs-grammarly/grammarly
   :hook (text-mode . flymake-grammarly-load))
 
 ;;
