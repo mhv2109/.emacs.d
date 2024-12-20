@@ -201,7 +201,16 @@
         ([escape] . corfu-quit))
   :init
   (global-corfu-mode)
-  (corfu-popupinfo-mode t))
+  (corfu-popupinfo-mode nil))
+
+;; Display eldoc in a childframe: https://github.com/casouri/eldoc-box
+(use-package eldoc-box
+  :hook
+  ;; use for all prog-mode
+  (prog-mode . (lambda ()
+                 ;; eldoc-box-hover-at-point-mode conflicts with corfu popupinfo
+                 ;; eldoc-box-hover-mode is up and out of the way
+                 (eldoc-box-hover-mode t))))
 
 (use-package yasnippet
   :config
@@ -548,12 +557,6 @@ otherwise add to start of list."
                          (eglot-code-action-organize-imports 1)
                        (error nil))
                      (eglot-format-buffer)))))
-
-;; Display eldoc in a childframe: https://github.com/casouri/eldoc-box
-(use-package eldoc-box
-  :after eglot
-  :hook
-  (eglot-managed-mode . (lambda () (eldoc-box-hover-at-point-mode t))))
 
 ;; Debug Adapter Protocol: https://github.com/svaante/dape
 (use-package dape
