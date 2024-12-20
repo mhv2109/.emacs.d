@@ -460,21 +460,10 @@ otherwise add to start of list."
           ,@forms ,append)
        (message "EXEC not found, not adding to EGLOT-SERVER-PROGRAMS: %s" ,exec)))
 
-  (add-server-program-if-found "grammarly-languageserver" t
-                               `((text-mode latex-mode org-mode) ,command "--stdio"
-                                 :initializationOptions (:clientId "client_BaDkMgx4X19X9UxxYRCXZo")))
   (add-server-program-if-found "autotools-language-server" t
                                `((makefile-mode makefile-bsdmake-mode) ,command))
   (add-server-program-if-found "sql-language-server" t
                                `((sql-mode) ,command "up" "--method" "stdio"))
-  ;; unconditionally add LSP for Common Lisp
-  ;; requires alive-lsp: https://github.com/nobody-famous/alive-lsp
-  ;; alive-lsp should be run in the same REPL as Sly/SLIME for best results
-  (defvar *alive-lsp-host* "localhost")
-  (defvar *alive-lsp-port* 8006)
-  (add-to-list 'eglot-server-programs
-               `((lisp-mode) . ,(lambda (_)
-                                  (list *alive-lsp-host* *alive-lsp-port*))) t)
 
   :hook
   ((prog-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
