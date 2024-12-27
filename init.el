@@ -784,5 +784,8 @@ otherwise add to start of list."
 ;; Render PDFs more legibly @ 300dpi
 (setq doc-view-resolution 300)
 
+;; Add remote path to TRAMP path
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
