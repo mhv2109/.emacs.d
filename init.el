@@ -416,6 +416,10 @@
   :config
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   (org-roam-db-autosync-mode)
+
+  ;; add #+filetags: to org-node-find
+  (setq org-roam-node-display-template "${tags:12} ${title}")
+
   :bind
   (("C-c n l" . org-roam-buffer-toggle)
    ("C-c n f" . org-roam-node-find)
