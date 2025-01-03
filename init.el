@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -372,9 +372,11 @@
    '((python . t)
      (shell . t)
      (go . t))))
+
 (use-package ox-md ;; markdown backend for org-mode
   :after org
   :ensure nil)
+
 (use-package ob-go ;; org-babel support for Go: https://github.com/pope/ob-go
   :after org)
 
@@ -383,9 +385,13 @@
   :after org
   :ensure nil)
 
+;; retrieve web pages as org files: https://github.com/alphapapa/org-web-tools
+(use-package org-web-tools
+  :after org)
+
 ;; org-roam: https://www.orgroam.com/
 (use-package org-roam
-  :after org
+  :after (org org-web-tools)
   :init
   (setq org-roam-directory (file-truename org-directory) ;; file-truename required since ~/org is often a symlink
         org-roam-file-exclude-regexp '("data/" "excluded/") ;; exclude special directories
@@ -394,15 +400,18 @@
         org-roam-capture-templates '(("d" "default" plain "%?"
                                       :target (file+head "${slug}.org"
                                                          "#+title: ${title}\n")
-                                      :unnarrowed t)
+                                      :unnarrowed t
+                                      :empty-lines 1)
                                      ("b" "book" plain "%?"
                                       :target (file+head "${slug}.org"
                                                          "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n")
-                                      :unnarrowed t)
-                                     ("w" "website" plain "%?"
+                                      :unnarrowed t
+                                      :empty-lines 1)
+                                     ("w" "website" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
                                       :target (file+head "${slug}.org"
-                                                         "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+website: ${website-name}\n#+date: ${date}\n#+url: ${url}\n#+created: %U\n")
-                                      :unnarrowed t))
+                                                         "#+title: ${title}\n#+filetags: :resources:\n")
+                                      :unnarrowed t
+                                      :empty-lines 1))
         org-roam-dailies-capture-templates '(("j" "journal" entry
                                               "* %?"
                                               :target (file+head "%<%Y-%m-%d>_daily.org"
@@ -413,6 +422,7 @@
                                               :target (file+head "%<%Y-%m-%d>_daily.org"
                                                                  "#+title: %<%Y-%m-%d>\n")
                                               :empty-lines 1)))
+
   :config
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   (org-roam-db-autosync-mode)
@@ -609,7 +619,10 @@ otherwise add to start of list."
 ;; Integrate Grammarly with Flymake: https://github.com/emacs-grammarly/flymake-grammarly
 (use-package flymake-grammarly
   :config (grammarly-load-from-authinfo) ;; See: https://github.com/emacs-grammarly/grammarly
-  :hook (text-mode . flymake-grammarly-load))
+  :hook (text-mode . (lambda ()
+                       ;; this prevents flymake-grammarly from loading in temp buffers (used by org-web-tools)
+                       (when (and (buffer-file-name) (< 0 (buffer-size)))
+                         (flymake-grammarly-load)))))
 
 ;;
 ;; Misc.
