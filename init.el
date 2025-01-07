@@ -643,6 +643,7 @@ otherwise add to start of list."
                   ("https://dave.cheney.net/feed" go tech)
                   ("https://eli.thegreenplace.net/feeds/all.atom.xml" go tech)
                   ("https://benhoyt.com/writings/rss.xml" go tech)
+                  ("https://crawshaw.io/atom.xml" go tech)
                   ("https://peps.python.org/peps.rss" python tech)
                   ("https://feeds.feedburner.com/PythonInsider" python tech)
                   ("https://www.python.org/downloads/feed.rss" python tech)
