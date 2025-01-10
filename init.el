@@ -373,7 +373,16 @@
    'org-babel-load-languages
    '((python . t)
      (shell . t)
-     (go . t))))
+     (go . t)))
+  ;; make bolded text appear red
+  (add-to-list 'org-emphasis-alist
+               '("*" (:foreground "red")))
+  ;; make underlined text appear orange
+  (add-to-list 'org-emphasis-alist
+               '("_" (:foreground "orange")))
+  ;; make italic text appear green
+  (add-to-list 'org-emphasis-alist
+               '("/" (:foreground "green"))))
 
 (use-package ox-md ;; markdown backend for org-mode
   :after org
