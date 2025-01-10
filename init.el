@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -461,6 +461,38 @@
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
   (deft-directory org-roam-directory))
+
+;; Read EPUB from emacs: https://depp.brause.cc/nov.el/
+(use-package nov)
+
+;; Highlight and annotate text and org files: https://github.com/nobiot/org-remark
+;; docs: https://nobiot.github.io/org-remark/
+(use-package org-remark
+  :after (org nov)
+  :custom
+  (org-remark-notes-file-name #'org-remark-notes-file-name-function) ;; since my ~/org is a flat structure with a lot of files, keep notes separate
+  :bind
+  (("C-c m m" . org-remark-mark)
+   ("C-c m l" . org-remark-mark-line)
+   :map org-remark-mode-map
+   ("C-c m o" . org-remark-open)
+   ("C-c m ]" . org-remark-view-next)
+   ("C-c m [" . org-remark-view-prev)
+   ("C-c m r" . org-remark-remove)
+   ("C-c m d" . org-remark-delete))
+  :init
+  (org-remark-global-tracking-mode +1))
+
+;; org-remark integrations
+(use-package org-remark-info
+  :after (org-remark info)
+  :config (org-remark-info-mode +1))
+(use-package org-remark-eww
+  :after (org-remark  eww)
+  :config (org-remark-eww-mode +1))
+(use-package org-remark-nov
+  :after (org-remark nov)
+  :config (org-remark-nov-mode +1))
 
 ;;
 ;; LSP: eglot+dape
