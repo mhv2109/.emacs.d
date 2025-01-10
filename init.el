@@ -418,9 +418,14 @@
                                                          "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("w" "website" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
+                                     ("w" "website (capture page)" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
                                       :target (file+head "${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources:\n")
+                                      :unnarrowed t
+                                      :empty-lines 1)
+                                     ("l" "website (link only)" plain "%?"
+                                      :target (file+head "${slug}.org"
+                                                         "#+title: ${title}\n#+filetags: :resources:\n\nLink: ${ref}")
                                       :unnarrowed t
                                       :empty-lines 1))
         org-roam-dailies-capture-templates '(("j" "journal" entry
