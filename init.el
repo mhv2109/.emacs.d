@@ -491,12 +491,15 @@
 ;; org-remark integrations
 (use-package org-remark-info
   :after (org-remark info)
+  :ensure nil
   :config (org-remark-info-mode +1))
 (use-package org-remark-eww
   :after (org-remark  eww)
+  :ensure nil
   :config (org-remark-eww-mode +1))
 (use-package org-remark-nov
   :after (org-remark nov)
+  :ensure nil
   :config (org-remark-nov-mode +1))
 
 ;;
