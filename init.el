@@ -444,7 +444,9 @@
   (org-roam-db-autosync-mode)
 
   ;; add #+filetags: to org-node-find
-  (setq org-roam-node-display-template "${tags:12} ${title}")
+  (setq org-roam-node-display-template
+        (concat (propertize "${tags} " 'face 'org-tag)
+                "${title}"))
 
   :bind
   (("C-c n l" . org-roam-buffer-toggle)
