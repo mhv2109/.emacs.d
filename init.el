@@ -486,7 +486,12 @@
    ("C-c m r" . org-remark-remove)
    ("C-c m d" . org-remark-delete))
   :init
-  (org-remark-global-tracking-mode +1))
+  (org-remark-global-tracking-mode +1)
+  :config
+  ;; add magenta highlighter
+  (org-remark-create "magenta-highlighter"
+                     '(:background "dark magenta")
+                     '(CATEGORY "important")))
 
 ;; org-remark integrations
 (use-package org-remark-info
