@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile sly-overlay vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit cider fuzzy helm-slime ac-slime auto-complete slime dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit fuzzy auto-complete dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -256,36 +256,8 @@
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
   )
 
-(use-package sly ;; Fork of SLIME for Lisp support: https://github.com/joaotavora/sly
-  :defer
-  :config
-  (setq sly-complete-symbol-function 'sly-flex-completions)
-  ;; Use local docs, if installed
-  (when-let* ((local (expand-file-name "~/.quicklisp/clhs-use-local.el"))
-              (exists? (file-exists-p local)))
-    (load local t)))
-
-(use-package sly-asdf ;; Working with ASDF: https://github.com/mmgeorge/sly-asdf
-  :after sly)
-
-(use-package sly-quicklisp ;; Working with quicklisp: https://github.com/joaotavora/sly-quicklisp
-  :after sly)
-
-(use-package sly-overlay ;; https://github.com/emacsmirror/sly-overlay
-  :after sly
-  :config
-  (define-key sly-editing-mode-map (kbd "C-x C-e") 'sly-overlay-eval-defun)
-  :custom
-  (sly-overlay-eval-result-duration nil))
-
-(use-package cider ;; Clojure support: https://cider.mx/
-  :custom
-  (cider-enrich-classpath t) ;; Doesn't work offline -- can disable temporarily with `(setq cider-enrich-classpath nil)'
-  (cider-font-lock-dynamically '(macro core function var)) ;; higlight all symbols that are known to be defined
-  )
-
 (use-package paredit ;; Lisp programming conveniences: http://paredit.org/
-  :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
+  :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode) . paredit-mode))
 
 (use-package rainbow-delimiters ;; Make reading nested parens easier: https://github.com/Fanael/rainbow-delimiters
   :hook ((prog-mode) . rainbow-delimiters-mode))
@@ -740,6 +712,13 @@ otherwise add to start of list."
 ;; Other customizations
 ;;
 
+;; configure TRAMP: https://www.gnu.org/software/tramp/
+(use-package tramp
+  :ensure nil ;; included with Emacs
+  :config
+  ;; Add remote path to TRAMP path
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+
 ;; Disable startup splash screen
 (setq inhibit-splash-screen t
       inhibit-startup-message t)
@@ -862,8 +841,7 @@ otherwise add to start of list."
 ;; Render PDFs more legibly @ 300dpi
 (setq doc-view-resolution 300)
 
-;; Add remote path to TRAMP path
-(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
 
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
