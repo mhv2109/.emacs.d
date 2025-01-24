@@ -389,17 +389,27 @@
                                                          "#+title: ${title}\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("b" "book" plain "%?"
-                                      :target (file+head "resources/${slug}.org"
-                                                         "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n")
+                                     ("p" "project" plain "%?"
+                                      :target (file+head "projects/${slug}.org"
+                                                         "#+title: ${title}\n#+filetags: :projects:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("w" "website (capture page)" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
+                                     ("r" "resource" plain "%?"
+                                      :target (file+head "resources/${slug}.org"
+                                                         "#+title: ${title}\n#+filetags: :resources\n")
+                                      :unnarrowed t
+                                      :empty-lines 1)
+                                     ("b" "book (resource)" plain "%?"
+                                      :target (file+head "resources/${slug}.org"
+                                                         "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n#+filetags: :resources:\n")
+                                      :unnarrowed t
+                                      :empty-lines 1)
+                                     ("w" "website (resource, capture page)" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("l" "website (link only)" plain "%?"
+                                     ("l" "website (resource, link only)" plain "%?"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources:\n\nLink: ${ref}")
                                       :unnarrowed t
