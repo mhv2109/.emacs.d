@@ -377,8 +377,8 @@
   :after (org org-web-tools)
   :init
   (setq org-roam-directory (file-truename org-directory) ;; file-truename required since ~/org is often a symlink
-        org-roam-file-exclude-regexp '("data/" "excluded/") ;; exclude special directories
-        org-roam-dailies-directory "" ;; I prefer a flat file structure
+        org-roam-file-exclude-regexp '("data/" "archived/") ;; exclude special directories
+        org-roam-dailies-directory "dailies/"
         org-roam-completion-everywhere t ;; automatically autocomplete links for notes
         org-roam-capture-templates '(("d" "default" plain "%?"
                                       :target (file+head "${slug}.org"
