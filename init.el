@@ -354,7 +354,11 @@
                '("_" (:foreground "orange")))
   ;; make italic text appear green
   (add-to-list 'org-emphasis-alist
-               '("/" (:foreground "green"))))
+               '("/" (:foreground "green")))
+  ;; configure attachment directory (absolute)
+  (setq org-attach-id-dir (concat (file-truename org-directory) "/data/"))
+  ;; configure archival (absolute)
+  (setq org-archive-location (concat (file-truename org-directory) "/archived/%s::")))
 
 (use-package ox-md ;; markdown backend for org-mode
   :after org
