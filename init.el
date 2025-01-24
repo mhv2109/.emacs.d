@@ -385,22 +385,22 @@
         org-roam-dailies-directory "dailies/"
         org-roam-completion-everywhere t ;; automatically autocomplete links for notes
         org-roam-capture-templates '(("d" "default" plain "%?"
-                                      :target (file+head "${slug}.org"
+                                      :target (file+head "${directory}/${slug}.org"
                                                          "#+title: ${title}\n")
                                       :unnarrowed t
                                       :empty-lines 1)
                                      ("b" "book" plain "%?"
-                                      :target (file+head "${slug}.org"
+                                      :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n")
                                       :unnarrowed t
                                       :empty-lines 1)
                                      ("w" "website (capture page)" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
-                                      :target (file+head "${slug}.org"
+                                      :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
                                      ("l" "website (link only)" plain "%?"
-                                      :target (file+head "${slug}.org"
+                                      :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources:\n\nLink: ${ref}")
                                       :unnarrowed t
                                       :empty-lines 1))
