@@ -394,6 +394,11 @@
                                                          "#+title: ${title}\n#+filetags: :projects:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
+                                     ("a" "area" plain "%?"
+                                      :target (file+head "areas/${slug}.org"
+                                                         "#+title: ${title}\n#+filetags: :areas:\n")
+                                      :unnarrowed t
+                                      :empty-lines 1)
                                      ("r" "resource" plain "%?"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources\n")
