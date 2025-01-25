@@ -385,27 +385,28 @@
         org-roam-file-exclude-regexp '("data/" "archived/" "#recycle/") ;; exclude special directories
         org-roam-dailies-directory "dailies/"
         org-roam-completion-everywhere t ;; automatically autocomplete links for notes
-        org-roam-capture-templates '(("d" "default" plain "%?"
+        ;; Templates include a top-level heading so we can attach files using org-attach, which doesn't seem to work without a heading
+        org-roam-capture-templates '(("d" "default" plain "* ${title}\n%?"
                                       :target (file+head "${directory}/${slug}.org"
                                                          "#+title: ${title}\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("p" "project" plain "%?"
+                                     ("p" "project" plain "* ${title}\n%?"
                                       :target (file+head "projects/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :projects:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("a" "area" plain "%?"
+                                     ("a" "area" plain "* ${title}\n%?"
                                       :target (file+head "areas/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :areas:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("r" "resource" plain "%?"
+                                     ("r" "resource" plain "* ${title}\n%?"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("b" "book (resource)" plain "%?"
+                                     ("b" "book (resource)" plain "* ${title}\n%?"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n#+filetags: :resources:\n")
                                       :unnarrowed t
@@ -415,21 +416,21 @@
                                                          "#+title: ${title}\n#+filetags: :resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("l" "website (resource, link only)" plain "%?"
+                                     ("l" "website (resource, link only)" plain "* ${title}\n\nLink: ${ref}\n%?"
                                       :target (file+head "resources/${slug}.org"
-                                                         "#+title: ${title}\n#+filetags: :resources:\n\nLink: ${ref}")
+                                                         "#+title: ${title}\n#+filetags: :resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1))
-        org-roam-dailies-capture-templates '(("j" "journal" entry
-                                              "* %?"
+        org-roam-dailies-capture-templates '(("j" "journal" entry "* %?"
                                               :target (file+head "%<%Y-%m-%d>_daily.org"
                                                                  "#+title: %<%Y-%m-%d>\n")
-                                              :empty-lines 1)
-                                             ("t" "todo" entry
-                                              "* TODO %?"
+                                              :empty-lines 1
+                                              :unnarrowed t)
+                                             ("t" "todo" entry "* TODO %?"
                                               :target (file+head "%<%Y-%m-%d>_daily.org"
                                                                  "#+title: %<%Y-%m-%d>\n")
-                                              :empty-lines 1)))
+                                              :empty-lines 1
+                                              :unnarrowed t)))
 
   :config
   (require 'org-roam-dailies) ;; Ensure the keymap is available
