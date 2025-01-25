@@ -461,7 +461,9 @@
   (deft-directory org-roam-directory))
 
 ;; Read EPUB from emacs: https://depp.brause.cc/nov.el/
-(use-package nov)
+(use-package nov
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 ;; Highlight and annotate text and org files: https://github.com/nobiot/org-remark
 ;; docs: https://nobiot.github.io/org-remark/
