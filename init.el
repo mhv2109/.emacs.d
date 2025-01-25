@@ -337,7 +337,8 @@
         org-preview-latex-default-process 'dvisvgm
         org-confirm-babel-evaluate nil
         org-src-tab-acts-natively nil
-        org-startup-with-inline-images t)
+        org-startup-with-inline-images t
+        org-attach-use-inheritance t)
   :config
   ;; setup org-agenda
   (setq org-agenda-files (list org-directory))
