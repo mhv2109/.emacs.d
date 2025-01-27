@@ -29,7 +29,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit fuzzy auto-complete dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(copilot org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit fuzzy auto-complete dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -661,13 +661,8 @@ otherwise add to start of list."
 	    (message "Enabling Codeium in current buffer"))))
   (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
 
-;; GitHub Copilot: https://github.com/zerolfx/copilot.el
-(add-to-list 'load-path "~/.emacs.d/copilot.el/") ;; installed as a Git sumbodule
-(use-package dash)
-(use-package s)
+;; GitHub Copilot: https://github.com/copilot-emacs/copilot.el
 (use-package copilot
-  :ensure nil
-  :after (dash s editorconfig)
   :config
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
