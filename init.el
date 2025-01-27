@@ -341,7 +341,16 @@
         org-attach-use-inheritance t)
   :config
   ;; setup org-agenda
-  (setq org-agenda-files (list org-directory))
+  (let* ((org-dir (file-truename org-directory))
+         (dailies-dir (concat org-dir "/dailies"))
+         (resources-dir (concat org-dir "/resources"))
+         (projects-dir (concat org-dir "/projects"))
+         (areas-dir (concat org-dir "/areas")))
+    (setq org-agenda-files (list org-dir
+                                 dailies-dir
+                                 resources-dir
+                                 projects-dir
+                                 areas-dir)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
