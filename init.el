@@ -677,8 +677,8 @@ otherwise add to start of list."
 (use-package flymake-grammarly
   :config (grammarly-load-from-authinfo) ;; See: https://github.com/emacs-grammarly/grammarly
   :hook (text-mode . (lambda ()
-                       ;; this prevents flymake-grammarly from loading in temp buffers (used by org-web-tools)
-                       (when (and (buffer-file-name) (< 0 (buffer-size)))
+                       (when (and (buffer-file-name) (< 0 (buffer-size)) ;; this prevents flymake-grammarly from loading in temp buffers (used by org-web-tools)
+                                  (not (memq major-mode '(yaml-mode yaml-ts-mode)))) ;; this prevents flymake-grammarly from loading in YAML buffers
                          (flymake-grammarly-load)))))
 
 ;;
