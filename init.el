@@ -688,6 +688,7 @@ otherwise add to start of list."
 ;; RSS Reader: https://github.com/skeeto/elfeed
 (use-package elfeed
   :custom
+  (elfeed-search-title-max-width 120)
   (elfeed-feeds '(("https://aws.amazon.com/about-aws/whats-new/recent/feed/" aws tech)
                   ("https://aws.amazon.com/blogs/aws/feed/" aws tech)
                   ("https://blog.cloudflare.com/rss" cloudflare tech)
