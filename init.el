@@ -729,6 +729,7 @@ otherwise add to start of list."
                   ("https://www.localfirstnews.com/rss/" tech)
                   ("https://wiredream.com/atom.xml" tech)
                   ("https://passo.uno/posts/index.xml" tech writing)
+                  ("https://simonwillison.net/atom/everything/" tech ai)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
