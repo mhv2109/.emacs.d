@@ -101,7 +101,9 @@
         ("S-TAB" . corfu-previous)
         ([backtab] . corfu-previous)
         ("ESC" . corfu-quit)
-        ([escape] . corfu-quit))
+        ([escape] . corfu-quit)
+        ("RET" . nil)
+        ([return] . nil))
   :init
   (global-corfu-mode)
   (corfu-popupinfo-mode nil))
