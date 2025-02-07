@@ -733,6 +733,7 @@ otherwise add to start of list."
                   ("https://qntm.org/rss.php" tech)
                   ("http://research.swtch.com/feed.atom" go tech)
                   ("https://mastodon.sdf.org/@beejjorgensen.rss" tech)
+                  ("https://magazine.sebastianraschka.com/feed" tech ai)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
