@@ -29,7 +29,8 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(copilot org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit fuzzy auto-complete dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(aider copilot org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit fuzzy auto-complete dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+ '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -680,6 +681,16 @@ otherwise add to start of list."
                        (when (and (buffer-file-name) (< 0 (buffer-size)) ;; this prevents flymake-grammarly from loading in temp buffers (used by org-web-tools)
                                   (not (memq major-mode '(yaml-mode yaml-ts-mode)))) ;; this prevents flymake-grammarly from loading in YAML buffers
                          (flymake-grammarly-load)))))
+
+;; AI Pair Programming: https://github.com/tninja/aider.el
+;; https://aider.chat/
+(unless (package-installed-p 'aider)
+  (package-vc-install '(aider :url "https://github.com/tninja/aider.el")))
+(use-package aider
+  :ensure nil
+  :config
+  ;; externalize aider config with standard config file
+  (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml"))))
 
 ;;
 ;; Misc.
