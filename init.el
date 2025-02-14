@@ -637,31 +637,6 @@ otherwise add to start of list."
 ;; AI
 ;;
 
-;; Codeium AI assistant: https://github.com/Exafunction/codeium.el
-(add-to-list 'load-path "~/.emacs.d/codeium.el/") ;; installed as a Git submodule
-(use-package codeium
-  :ensure nil
-  ;;:after corfu
-  :init
-  ;; read API key from environment
-  (setq codeium/metadata/api_key (getenv "CODEIUM_API_KEY"))
-  :config
-  ;; keybinding to enable/disable suggestions (overrides other autocompletion backends)
-  (defun codeium-completion-toggle ()
-    "Toggles Codeium AI autocomplete suggestions. If enabled, overrides any other completion-at-point functions."
-    (interactive)
-    (if (member #'codeium-completion-at-point completion-at-point-functions)
-	    (progn
-	      ;; toggle from ON to OFF
-	      (setq-local completion-at-point-functions previous-completion-at-point-functions)
-	      (message "Disabling Codeium in current buffer"))
-      (progn
-	    ;; toggle from OFF to ON
-	    (setq-local previous-completion-at-point-functions completion-at-point-functions
-		            completion-at-point-functions (list #'codeium-completion-at-point))
-	    (message "Enabling Codeium in current buffer"))))
-  (global-set-key (kbd "M-C-S-<tab>") 'codeium-completion-toggle))
-
 ;; GitHub Copilot: https://github.com/copilot-emacs/copilot.el
 (use-package copilot
   :config

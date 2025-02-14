@@ -1,6 +1,3 @@
-[submodule "codeium.el"]
-	path = codeium.el
-	url = https://github.com/Exafunction/codeium.el.git
 [submodule "org-drill"]
 	path = org-drill
 	url = https://gitlab.com/mhv2109/org-drill
