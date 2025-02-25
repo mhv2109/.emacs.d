@@ -694,7 +694,6 @@ otherwise add to start of list."
                   ("https://pythonspeed.com/atom.xml" python tech)
                   ("https://feeds.feedblitz.com/baeldung&x=1" java tech)
                   ("https://spring.io/blog.atom" java spring tech)
-                  ("https://dev.to/feed" tech)
                   ("http://research.swtch.com/feed.atom" tech)
                   ("https://www.ardanlabs.com/blog/index.xml" tech)
                   ("https://engineering.fb.com/feed/" tech)
