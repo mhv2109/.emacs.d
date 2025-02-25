@@ -51,3 +51,4 @@ org-roam.db
 ellama-sessions/
 forge-database.sqlite
 nov-places
+forge-*.sqlite
