@@ -669,6 +669,7 @@ otherwise add to start of list."
   (package-vc-install '(aider :url "https://github.com/tninja/aider.el")))
 (use-package aider
   :ensure nil
+  :if (package-installed-p 'aider)
   :config
   ;; externalize aider config with standard config file
   (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml"))))
