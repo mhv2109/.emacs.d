@@ -728,6 +728,7 @@ otherwise add to start of list."
                   ("https://magazine.sebastianraschka.com/feed" tech ai)
                   ("https://www.allthingsdistributed.com/atom.xml" tech)
                   ("https://www.gilesthomas.com/feed/rss.xml" tech ai python)
+                  ("https://commandcenter.blogspot.com/feeds/posts/default?alt=rss" tech go)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
