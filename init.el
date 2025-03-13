@@ -29,7 +29,13 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(cider aider copilot org-remark-nov org-remark-eww org-remark-info nov org-remark org-web-tools flymake-grammarly eldoc-box elfeed neotree git-link forge elpy corfu deft ellama gcmh org-roam projectile vline counsel ivy markdown-mode gotest gotest.el dape hotfuzz lsp-grammarly which-key marginalia protobuf-mode lsp-java terraform-mode rainbow-delimiters paredit fuzzy auto-complete dash-at-point treesit-auto ob-go fish-mode yasnippet auto-package-update dockerfile-mode org-drill editorconfig codeium typescript-mode python-mode lsp-python-ms poetry use-package-ensure dap-dlv-go flyspell-mode icicles yaml-mode dap-mode lsp-ui lsp-mode go-mode use-package magit exec-path-from-shell))
+   '(aider auto-package-update cider copilot corfu counsel dape deft
+           dockerfile-mode doom-themes eldoc-box elfeed ellama elpy
+           exec-path-from-shell fish-mode flymake-grammarly forge gcmh
+           git-link go-mode gotest hotfuzz marginalia neotree nov
+           ob-go org-remark org-roam org-web-tools paredit projectile
+           protobuf-mode rainbow-delimiters terraform-mode
+           treesit-auto typescript-mode vline vterm yaml-mode))
  '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -735,6 +741,9 @@ otherwise add to start of list."
                   ("https://www.wcnc.com/feeds/syndication/rss/news" news clt)))
   :bind
   ("C-c r" . elfeed))
+
+;; better integrated terminal: https://github.com/akermu/emacs-libvterm
+(use-package vterm)
 
 ;;
 ;; Other customizations
