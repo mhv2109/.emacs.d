@@ -29,13 +29,14 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(aider auto-package-update cider copilot corfu counsel dape deft
-           dockerfile-mode doom-themes eldoc-box elfeed ellama elpy
-           exec-path-from-shell fish-mode flymake-grammarly forge gcmh
-           git-link go-mode gotest hotfuzz marginalia neotree nov
-           ob-go org-remark org-roam org-web-tools paredit projectile
-           protobuf-mode rainbow-delimiters terraform-mode
-           treesit-auto typescript-mode vline vterm yaml-mode))
+   '(aider auto-package-update cider copilot copilot-chat corfu counsel
+           dape deft dockerfile-mode doom-themes eldoc-box elfeed
+           ellama elpy exec-path-from-shell fish-mode
+           flymake-grammarly forge gcmh git-link go-mode gotest
+           hotfuzz marginalia neotree nov ob-go org-remark org-roam
+           org-web-tools paredit projectile protobuf-mode
+           rainbow-delimiters terraform-mode treesit-auto
+           typescript-mode vline vterm yaml-mode))
  '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -655,6 +656,9 @@ otherwise add to start of list."
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
   (global-set-key (kbd "M-C-<tab>") 'copilot-mode))
+
+;; Chat with GitHub Copilot: https://github.com/chep/copilot-chat.el
+(use-package copilot-chat)
 
 ;; Integrate with Ollama: https://github.com/s-kostyaev/ellama
 (use-package ellama
