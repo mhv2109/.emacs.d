@@ -29,14 +29,14 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(aider auto-package-update cider copilot copilot-chat corfu counsel
-           dape deft dockerfile-mode doom-themes eldoc-box elfeed
-           ellama elpy exec-path-from-shell fish-mode
-           flymake-grammarly forge gcmh git-link go-mode gotest
-           hotfuzz marginalia neotree nov ob-go org-remark org-roam
-           org-web-tools paredit projectile protobuf-mode
-           rainbow-delimiters terraform-mode treesit-auto
-           typescript-mode vline vterm yaml-mode))
+   '(aidermacs auto-package-update cider copilot copilot-chat corfu
+               counsel dape deft dockerfile-mode doom-themes eldoc-box
+               elfeed ellama elpy exec-path-from-shell fish-mode
+               flymake-grammarly forge gcmh git-link go-mode gotest
+               hotfuzz marginalia neotree nov ob-go org-remark
+               org-roam org-web-tools paredit projectile protobuf-mode
+               rainbow-delimiters terraform-mode treesit-auto
+               typescript-mode vline vterm yaml-mode))
  '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -673,16 +673,14 @@ otherwise add to start of list."
                                   (not (memq major-mode '(yaml-mode yaml-ts-mode)))) ;; this prevents flymake-grammarly from loading in YAML buffers
                          (flymake-grammarly-load)))))
 
-;; AI Pair Programming: https://github.com/tninja/aider.el
+;; AI Pair Programming with Aider: https://github.com/MatthewZMD/aidermacs
 ;; https://aider.chat/
-(unless (package-installed-p 'aider)
-  (package-vc-install '(aider :url "https://github.com/tninja/aider.el")))
-(use-package aider
-  :ensure nil
-  :if (package-installed-p 'aider)
-  :config
-  ;; externalize aider config with standard config file
-  (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml"))))
+(use-package aidermacs
+  :if (locate-file "aider" exec-path exec-suffixes) ;; install only if Aider is installed
+  ;; :custom
+  ;; (aidermacs-config-file (expand-file-name "~/.aider.conf.yml")) ;; aider will pick this up automatically
+  :bind
+  (("C-c a" . aidermacs-transient-menu)))
 
 ;;
 ;; Misc.
