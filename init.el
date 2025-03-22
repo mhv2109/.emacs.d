@@ -28,15 +28,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
- '(package-selected-packages
-   '(aidermacs auto-package-update cider copilot copilot-chat corfu
-               counsel dape deft dockerfile-mode doom-themes eldoc-box
-               elfeed ellama elpy exec-path-from-shell fish-mode
-               flymake-grammarly forge gcmh git-link go-mode gotest
-               hotfuzz marginalia neotree nov ob-go org-remark
-               org-roam org-web-tools paredit projectile protobuf-mode
-               rainbow-delimiters terraform-mode treesit-auto
-               typescript-mode vline vterm yaml-mode))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -492,8 +484,21 @@
 
 ;; Highlight and annotate text and org files: https://github.com/nobiot/org-remark
 ;; docs: https://nobiot.github.io/org-remark/
+;; setup docs: https://nobiot.github.io/org-remark/#Setup-with-use_002dpackage-1
+(use-package org-remark-global-tracking
+  ;; It is recommended that `org-remark-global-tracking-mode' be
+  ;; enabled when Emacs initializes. You can set it in
+  ;; `after-init-hook'.
+  :hook after-init
+  :config
+  ;; Selectively keep or comment out the following if you want to use
+  ;; extensions for Info-mode, EWW, and NOV.el (EPUB) respectively.
+  (use-package org-remark-info :after info :config (org-remark-info-mode +1))
+  (use-package org-remark-eww  :after eww  :config (org-remark-eww-mode +1))
+  (use-package org-remark-nov  :after nov  :config (org-remark-nov-mode +1)))
+
 (use-package org-remark
-  :after (org nov)
+  :after org
   :custom
   (org-remark-notes-file-name #'org-remark-notes-file-name-function) ;; since my ~/org is a flat structure with a lot of files, keep notes separate
   :bind
@@ -505,27 +510,11 @@
    ("C-c m [" . org-remark-view-prev)
    ("C-c m r" . org-remark-remove)
    ("C-c m d" . org-remark-delete))
-  :init
-  (org-remark-global-tracking-mode +1)
   :config
   ;; add magenta highlighter
   (org-remark-create "magenta-highlighter"
                      '(:background "dark magenta")
                      '(CATEGORY "important")))
-
-;; org-remark integrations
-(use-package org-remark-info
-  :after (org-remark info)
-  :ensure nil
-  :config (org-remark-info-mode +1))
-(use-package org-remark-eww
-  :after (org-remark  eww)
-  :ensure nil
-  :config (org-remark-eww-mode +1))
-(use-package org-remark-nov
-  :after (org-remark nov)
-  :ensure nil
-  :config (org-remark-nov-mode +1))
 
 ;;
 ;; LSP: eglot+dape
