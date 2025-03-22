@@ -850,9 +850,11 @@ otherwise add to start of list."
       load-prefer-newer t
       backup-by-copying t
       show-trailing-whitespace t)
-(unless backup-directory-alist ;; don't litter directory with backups and autosaves, but still backup and auto-save
-    (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                                   "backups")))))
+
+;; disable backups and autosaves
+;; They've been causing me more problems than they've solved, e.g., it's botching my org-remark notes for some reason
+(setq make-backup-files nil)
+(setq auto-save-default nil)
 
 ;; allow commands in minibuffer
 (setq enable-recursive-minibuffers t)
