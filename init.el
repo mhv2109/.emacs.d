@@ -851,10 +851,11 @@ otherwise add to start of list."
       backup-by-copying t
       show-trailing-whitespace t)
 
-;; disable backups and autosaves
-;; They've been causing me more problems than they've solved, e.g., it's botching my org-remark notes for some reason
-(setq make-backup-files nil)
-(setq auto-save-default nil)
+;; don't litter directory with backups and autosaves
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
+      auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "autosaves/\\1") t))
+      delete-old-versions t
+      auto-save-interval 20)
 
 ;; allow commands in minibuffer
 (setq enable-recursive-minibuffers t)
