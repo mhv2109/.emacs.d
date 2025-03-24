@@ -483,22 +483,9 @@
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 ;; Highlight and annotate text and org files: https://github.com/nobiot/org-remark
-;; docs: https://nobiot.github.io/org-remark/
-;; setup docs: https://nobiot.github.io/org-remark/#Setup-with-use_002dpackage-1
-(use-package org-remark-global-tracking
-  ;; It is recommended that `org-remark-global-tracking-mode' be
-  ;; enabled when Emacs initializes. You can set it in
-  ;; `after-init-hook'.
-  :hook after-init
-  :config
-  ;; Selectively keep or comment out the following if you want to use
-  ;; extensions for Info-mode, EWW, and NOV.el (EPUB) respectively.
-  (use-package org-remark-info :after info :config (org-remark-info-mode +1))
-  (use-package org-remark-eww  :after eww  :config (org-remark-eww-mode +1))
-  (use-package org-remark-nov  :after nov  :config (org-remark-nov-mode +1)))
-
 (use-package org-remark
   :after org
+  :hook after-init
   :custom
   (org-remark-notes-file-name #'org-remark-notes-file-name-function) ;; since my ~/org is a flat structure with a lot of files, keep notes separate
   :bind
@@ -511,6 +498,13 @@
    ("C-c m r" . org-remark-remove)
    ("C-c m d" . org-remark-delete))
   :config
+  ;; automatically enable org-remark when file opened
+  (org-remark-global-tracking-mode +1)
+  ;; Selectively keep or comment out the following if you want to use
+  ;; extensions for Info-mode, EWW, and NOV.el (EPUB) respectively.
+  (use-package org-remark-info :ensure org-remark :after info :config (org-remark-info-mode +1))
+  (use-package org-remark-eww  :ensure org-remark :after eww  :config (org-remark-eww-mode +1))
+  (use-package org-remark-nov  :ensure org-remark :after nov  :config (org-remark-nov-mode +1))
   ;; add magenta highlighter
   (org-remark-create "magenta-highlighter"
                      '(:background "dark magenta")
