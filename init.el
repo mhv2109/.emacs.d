@@ -876,14 +876,6 @@ otherwise add to start of list."
 (setq split-width-threshold nil
       split-height-threshold nil)
 
-;; Save window and buffer layout on exit:
-;; - https://bmag.github.io/2015/12/26/desktop.html
-;; - https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Emacs-Sessions.html
-(when (display-graphic-p) ;; only save desktop when running in GUI mode
-  (desktop-save-mode 1)
-  (setq desktop-path (list (concat user-emacs-directory ".cache"))
-        desktop-save 'ask))
-
 ;; horizontal line highlighting
 (global-hl-line-mode 1)
 
