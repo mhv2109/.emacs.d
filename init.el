@@ -657,7 +657,10 @@ otherwise add to start of list."
 ;; Integrate with Ollama: https://github.com/s-kostyaev/ellama
 (use-package ellama
   :if (locate-file "ollama" exec-path exec-suffixes) ;; install only if Ollama is installed: https://ollama.com/
-  )
+  :custom
+  (ellama-auto-scroll t)
+  :bind
+  ("C-c e" . ellama-transient-main-menu))
 
 ;; Integrate Grammarly with Flymake: https://github.com/emacs-grammarly/flymake-grammarly
 (use-package flymake-grammarly
