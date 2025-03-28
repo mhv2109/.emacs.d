@@ -1,3 +1,10 @@
+;;; init.el --- Emacs configuration -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;; This is my Emacs configuration file.
+
+;;; Code:
+
 (setq max-lisp-eval-depth 10000) ;; This is covering up a deeper problem, but hasn't been an issue on my hardware. Blame our Java dependency management.
 
 (require 'package)
@@ -652,7 +659,9 @@ otherwise add to start of list."
    ([esc] . copilot-clear-overlay)))
 
 ;; Chat with GitHub Copilot: https://github.com/chep/copilot-chat.el
-(use-package copilot-chat)
+(use-package copilot-chat
+  :bind
+  ("C-c x" . copilot-chat-transient))
 
 ;; Integrate with Ollama: https://github.com/s-kostyaev/ellama
 (use-package ellama
@@ -888,3 +897,5 @@ otherwise add to start of list."
 
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
+
+;;; init.el ends here
