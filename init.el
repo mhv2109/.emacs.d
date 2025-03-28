@@ -885,7 +885,8 @@ otherwise add to start of list."
 ;; Render PDFs more legibly @ 300dpi
 (setq doc-view-resolution 300)
 
-
+;; Enable smooth scrolling pixel-by-pixel vs line-by-line
+(pixel-scroll-mode +1)
 
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
