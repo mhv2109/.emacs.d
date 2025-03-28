@@ -671,8 +671,9 @@ otherwise add to start of list."
 ;; https://aider.chat/
 (use-package aidermacs
   :if (locate-file "aider" exec-path exec-suffixes) ;; install only if Aider is installed
-  ;; :custom
-  ;; (aidermacs-config-file (expand-file-name "~/.aider.conf.yml")) ;; aider will pick this up automatically
+  :after vterm
+  :custom
+  (aidermacs-backend 'vterm)
   :bind
   (("C-c a" . aidermacs-transient-menu)))
 
