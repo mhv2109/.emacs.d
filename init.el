@@ -749,6 +749,7 @@ otherwise add to start of list."
                   ("https://rachelbythebay.com/w/atom.xml" tech)
                   ("https://www.masteringemacs.org/feed" tech emacs)
                   ("https://queue.acm.org/rss/feeds/queuecontent.xml" tech)
+                  ("https://www.seangoedecke.com/rss.xml" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
