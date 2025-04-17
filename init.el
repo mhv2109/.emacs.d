@@ -697,6 +697,7 @@ otherwise add to start of list."
 (use-package elfeed
   :custom
   (elfeed-search-title-max-width 120)
+  (elfeed-search-filter "@1-days-ago +unread")
   (elfeed-feeds '(("https://aws.amazon.com/about-aws/whats-new/recent/feed/" aws tech)
                   ("https://aws.amazon.com/blogs/aws/feed/" aws tech)
                   ("https://blog.cloudflare.com/rss" cloudflare tech)
