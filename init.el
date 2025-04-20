@@ -81,7 +81,7 @@
 
 (use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
   :config
-  (load-theme 'doom-horizon t))
+  (load-theme 'doom-gruvbox t))
 
 ;; Syntax highlighting, built-in
 (use-package flymake
