@@ -749,6 +749,7 @@ otherwise add to start of list."
                   ("https://commandcenter.blogspot.com/feeds/posts/default?alt=rss" tech go)
                   ("https://rachelbythebay.com/w/atom.xml" tech)
                   ("https://www.masteringemacs.org/feed" tech emacs)
+                  ("https://nullprogram.com/feed/" tech)
                   ("https://queue.acm.org/rss/feeds/queuecontent.xml" tech)
                   ("https://www.seangoedecke.com/rss.xml" tech)
                   ("https://funcall.blogspot.com/feeds/posts/default" tech lisp)
