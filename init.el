@@ -758,8 +758,27 @@ otherwise add to start of list."
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
                   ("https://www.wcnc.com/feeds/syndication/rss/news" news clt)))
+  :config
+  ;; function to open entries in another window: https://github.com/skeeto/elfeed/pull/383/commits/9c15ba2549f31a484953964e33114d7833348569
+  (defun elfeed-entry-other-window ()
+    "In elfeed-search mode, open elfeed entry in the other window
+if other window is present, else sensibly splits the frame if
+there is only a single window and opens the elfeed entry in the
+other window."
+
+  (interactive)
+  (if (get-buffer "*elfeed-search*")
+      (progn
+	(split-window-sensibly (selected-window))
+	(switch-to-buffer-other-window "*elfeed-search*")
+	(call-interactively #'elfeed-search-show-entry)
+	(other-window 1)
+	(forward-line))
+    (message "Start elfeed first!")))
   :bind
-  ("C-c r" . elfeed))
+  (("C-c r" . elfeed)
+   :map elfeed-search-mode-map
+   ("o" . elfeed-entry-other-window)))
 
 ;; better integrated terminal: https://github.com/akermu/emacs-libvterm
 (use-package vterm)
