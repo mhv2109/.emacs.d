@@ -35,7 +35,15 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(aidermacs auto-package-update cider copilot copilot-chat corfu
+               counsel dape deft dockerfile-mode doom-themes eldoc-box
+               elfeed ellama elpy exec-path-from-shell fish-mode
+               flymake-grammarly forge gcmh git-link go-mode gotest
+               hotfuzz hydra marginalia minimap neotree nov ob-go
+               org-remark org-roam org-web-tools paredit projectile
+               protobuf-mode rainbow-delimiters terraform-mode
+               treesit-auto typescript-mode vline vterm yaml-mode))
  '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -337,6 +345,17 @@
   :after treesit-auto
   :config
   (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
+
+;; minimap for prog-mode
+;; - https://www.emacswiki.org/emacs/MiniMap
+;; - https://github.com/dengste/minimap
+(use-package minimap
+  :custom
+  (minimap-minimum-width 20)
+  (minimap-width-fraction 0.10)
+  (minimap-window-location 'right)
+  (minimap-update-delay 0.05)
+  (minimap-hide-fringes t))
 
 ;;
 ;; Org mode
