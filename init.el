@@ -350,12 +350,16 @@
 ;; - https://www.emacswiki.org/emacs/MiniMap
 ;; - https://github.com/dengste/minimap
 (use-package minimap
+  :bind ("<f7>" . minimap-mode)
   :custom
   (minimap-minimum-width 20)
   (minimap-width-fraction 0.10)
   (minimap-window-location 'right)
   (minimap-update-delay 0.05)
-  (minimap-hide-fringes t))
+  (minimap-automatically-delete-window nil)
+  (minimap-dedicated-window nil)
+  (minimap-hide-fringes t)
+  (minimap-major-modes '(prog-mode text-mode)))
 
 ;;
 ;; Org mode
