@@ -37,14 +37,18 @@
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
    '(aidermacs auto-package-update cider copilot copilot-chat corfu
-               counsel dape deft dockerfile-mode doom-themes eldoc-box
-               elfeed ellama elpy exec-path-from-shell fish-mode
-               flymake-grammarly forge gcmh git-link go-mode gotest
-               hotfuzz hydra marginalia minimap neotree nov ob-go
-               org-remark org-roam org-web-tools paredit projectile
-               protobuf-mode rainbow-delimiters terraform-mode
-               treesit-auto typescript-mode vline vterm yaml-mode))
- '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
+	       counsel dape deft dockerfile-mode doom-themes eldoc-box
+	       elfeed ellama elpy exec-path-from-shell fish-mode
+	       flymake-golangci flymake-grammarly forge gcmh git-link
+	       go-mode gotest hotfuzz hydra marginalia minimap neotree
+	       nov ob-go org-remark org-roam org-web-tools paredit
+	       projectile protobuf-mode rainbow-delimiters
+	       terraform-mode treesit-auto typescript-mode vline vterm
+	       yaml-mode))
+ '(package-vc-selected-packages
+   '((flymake-golangci :url
+		       "https://github.com/storvik/flymake-golangci.git")
+     (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -261,6 +265,16 @@
 
 ;; quickly run Go unit tests:
 (use-package gotest)
+
+;; integrate flymake and golangci-lint: https://github.com/storvik/flymake-golangci
+(use-package flymake-golangci
+  :after go-mode
+  :vc (:url "https://github.com/storvik/flymake-golangci.git" :rev :newest)
+  :hook ((eglot-managed-mode . (lambda ()
+                                 (when (derived-mode-p '(go-mode go-ts-mode))
+                                   (flymake-golangci-load-backend)))) ;; using flymake-golangci with eglot
+         ((go-mode go-ts-mode) . flymake-golangci-load-backend) ;; using flymake-golangci with go-mode
+         ))
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
 (use-package typescript-mode)
