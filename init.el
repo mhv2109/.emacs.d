@@ -35,19 +35,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
- '(package-selected-packages
-   '(aidermacs auto-package-update cider copilot copilot-chat corfu
-	       counsel dape deft dockerfile-mode doom-themes eldoc-box
-	       elfeed ellama elpy exec-path-from-shell fish-mode
-	       flymake-golangci flymake-grammarly forge gcmh git-link
-	       go-mode gotest hotfuzz hydra marginalia minimap neotree
-	       nov ob-go org-remark org-roam org-web-tools paredit
-	       projectile protobuf-mode rainbow-delimiters
-	       terraform-mode treesit-auto typescript-mode vline vterm
-	       yaml-mode))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
    '((flymake-golangci :url
-		       "https://github.com/storvik/flymake-golangci.git")
+                       "https://github.com/storvik/flymake-golangci.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -155,16 +146,12 @@
 
 ;; project management utilities: https://github.com/bbatsov/projectile
 (use-package projectile
-  :after neotree
   :custom
   (projectile-switch-project-action 'neotree-projectile-action)
-  :config
-  (projectile-mode 1)
-  ;; setup keybindings
-  (if (memq window-system '(mac ns x))
-      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map) ;; Recommended keymap prefix on macOS
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map) ;; Recommended keymap prefix on Windows/Linux
-    ))
+  :bind-keymap
+  (("C-c p" . projectile-command-map))
+  :hook
+  (after-init . projectile-mode))
 
 ;; minibuffer autocomplete config
 ;; https://github.com/abo-abo/swiper
