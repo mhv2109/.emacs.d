@@ -938,6 +938,10 @@ other window."
 
 ;; Enable smooth scrolling pixel-by-pixel vs line-by-line
 (pixel-scroll-mode +1)
+(setq pixel-dead-time 0
+      pixel-resolution-fine-flag t
+      mouse-wheel-scroll-amount '(1)
+      mouse-wheel-progressive-speed nil)
 
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
