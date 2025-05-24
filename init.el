@@ -35,7 +35,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(aidermacs auto-package-update cider copilot copilot-chat corfu
+               counsel dape deft dockerfile-mode doom-themes eldoc-box
+               elfeed ellama elpy exec-path-from-shell fish-mode
+               flymake-golangci flymake-grammarly forge gcmh git-link
+               go-mode gotest gptel hotfuzz marginalia minimap neotree
+               nov ob-go org-remark org-roam org-web-tools paredit
+               projectile protobuf-mode rainbow-delimiters
+               terraform-mode treesit-auto typescript-mode vline vterm
+               yaml-mode))
  '(package-vc-selected-packages
    '((flymake-golangci :url
                        "https://github.com/storvik/flymake-golangci.git")
@@ -713,6 +722,41 @@ otherwise add to start of list."
   :bind
   (("C-c a" . aidermacs-transient-menu)))
 
+;; LLM Chat client: https://github.com/karthink/gptel
+(use-package gptel
+  :config
+  ;; configure Ollama, if installed
+  (when (locate-file "ollama" exec-path exec-suffixes)
+    (setq gptel-ollama-backend (gptel-make-ollama "Ollama"
+                                 :host "localhost:11434"
+                                 :stream t
+                                 :models '(devstral:24b
+                                           qwen2.5-coder:14b
+                                           qwen2.5-coder:32b
+                                           phi4:14b
+                                           gemma3:4b
+                                           gemma3:12b))
+          ;; set as ollama + gemma3 as default
+          gptel-backend gptel-ollama-backend
+          gptel-model 'gemma3:4b))
+  ;; configure Anthropic, if configured
+  (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
+    (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
+                                    :stream t
+                                    :key api-key)
+          gptel-anthropic-thinking-backend (gptel-make-anthropic "Claude-thinking"
+                                             :stream t
+                                             :key api-key
+                                             :header (lambda () (when-let* ((key (gptel--get-api-key)))
+                                                                  `(("x-api-key" . ,key)
+                                                                    ("anthropic-beta" . "pdfs-2024-09-25")
+                                                                    ("anthropic-beta" . "output-128k-2025-02-19")
+                                                                    ("anthropic-beta" . "prompt-caching-2024-07-31"))))
+                                             :request-params '(:thinking (:type "enabled" :budget_tokens 32000)
+                                                                         :max_tokens 64000))))
+  :bind
+  (("C-c g" . gptel-menu)))
+
 ;;
 ;; Misc.
 ;;
@@ -791,15 +835,15 @@ if other window is present, else sensibly splits the frame if
 there is only a single window and opens the elfeed entry in the
 other window."
 
-  (interactive)
-  (if (get-buffer "*elfeed-search*")
-      (progn
-	(split-window-sensibly (selected-window))
-	(switch-to-buffer-other-window "*elfeed-search*")
-	(call-interactively #'elfeed-search-show-entry)
-	(other-window 1)
-	(forward-line))
-    (message "Start elfeed first!")))
+    (interactive)
+    (if (get-buffer "*elfeed-search*")
+        (progn
+	      (split-window-sensibly (selected-window))
+	      (switch-to-buffer-other-window "*elfeed-search*")
+	      (call-interactively #'elfeed-search-show-entry)
+	      (other-window 1)
+	      (forward-line))
+      (message "Start elfeed first!")))
   :bind
   (("C-c r" . elfeed)
    :map elfeed-search-mode-map
