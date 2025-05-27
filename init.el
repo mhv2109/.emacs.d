@@ -38,7 +38,7 @@
  '(package-selected-packages
    '(aidermacs auto-package-update cider copilot copilot-chat corfu
                counsel dape deft dockerfile-mode doom-themes eldoc-box
-               elfeed ellama elpy exec-path-from-shell fish-mode
+               elfeed ellama exec-path-from-shell fish-mode
                flymake-golangci flymake-grammarly forge gcmh git-link
                go-mode gotest gptel hotfuzz marginalia minimap neotree
                nov ob-go org-remark org-roam org-web-tools paredit
@@ -312,11 +312,6 @@
   (when-let ((found (executable-find "ipython")))
     (setq python-shell-interpreter found
           python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " (file-name-directory user-init-file) "autoload.ipy"))))
-
-;; Python IDE for emacs: https://github.com/jorgenschaefer/elpy
-(use-package elpy
-  :init
-  (elpy-enable))
 
 ;; markdown-mode: https://jblevins.org/projects/markdown-mode/
 (use-package markdown-mode
