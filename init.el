@@ -127,6 +127,8 @@
 
 ;; Display eldoc in a childframe: https://github.com/casouri/eldoc-box
 (use-package eldoc-box
+  :custom
+  (eldoc-box-max-pixel-height 350)
   :hook
   ;; use for all prog-mode
   (prog-mode . (lambda ()
