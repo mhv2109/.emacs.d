@@ -820,6 +820,7 @@ otherwise add to start of list."
                   ("https://funcall.blogspot.com/feeds/posts/default" tech lisp)
                   ("https://blog.christianposta.com/feed.xml" tech)
                   ("https://lobste.rs/rss" tech)
+                  ("https://antirez.com/rss" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
