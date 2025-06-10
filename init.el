@@ -36,18 +36,9 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(aidermacs auto-package-update cider copilot copilot-chat corfu
-               counsel dape deft dockerfile-mode doom-themes eldoc-box
-               elfeed ellama exec-path-from-shell fish-mode
-               flymake-golangci flymake-grammarly forge gcmh git-link
-               go-mode gotest gptel hotfuzz marginalia minimap neotree
-               nov ob-go org-remark org-roam org-web-tools paredit
-               projectile protobuf-mode rainbow-delimiters
-               terraform-mode treesit-auto typescript-mode vline vterm
-               yaml-mode))
+   '(pyvenv-auto pyvenv yasnippet magit which-key ivy editorconfig aidermacs auto-package-update cider copilot copilot-chat corfu counsel dape deft dockerfile-mode doom-themes eldoc-box elfeed ellama exec-path-from-shell fish-mode flymake-golangci flymake-grammarly forge gcmh git-link go-mode gotest gptel hotfuzz marginalia minimap neotree nov ob-go org-remark org-roam org-web-tools paredit projectile protobuf-mode rainbow-delimiters terraform-mode treesit-auto typescript-mode vline vterm yaml-mode))
  '(package-vc-selected-packages
-   '((flymake-golangci :url
-                       "https://github.com/storvik/flymake-golangci.git")
+   '((flymake-golangci :url "https://github.com/storvik/flymake-golangci.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -307,11 +298,22 @@
   :custom
   (python-indent-offset 4)
   :config
-  ;; if ipython is available, use it w/ autoloads
-  ;; autoloads lets you use a lisp-like repl-driven development where you can load a buffer into the repl and modify imported modules
-  (when-let ((found (executable-find "ipython")))
-    (setq python-shell-interpreter found
-          python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " (file-name-directory user-init-file) "autoload.ipy"))))
+  (defun set-python-shell-interpreter-ipython ()
+    "If ipython is available, configure `python-shell-interpreter' to use it with autoloads."
+    (interactive)
+    (when-let ((found (executable-find "ipython")))
+      (setq python-shell-interpreter found
+            python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " (file-name-directory user-init-file) "autoload.ipy"))))
+  (set-python-shell-interpreter-ipython))
+
+(use-package pyvenv
+  :after python
+  :config
+  ;; update python shell to use project-local ipython
+  (add-to-list 'pyvenv-post-activate-hooks #'set-python-shell-interpreter-ipython))
+
+(use-package pyvenv-auto
+  :after pyvenv)
 
 ;; markdown-mode: https://jblevins.org/projects/markdown-mode/
 (use-package markdown-mode
