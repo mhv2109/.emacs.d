@@ -203,20 +203,17 @@
 
 ;; Git integration
 (use-package magit
-  :pin melpa-stable
   :config
   (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1) ;; open magit buffer in same window: https://magit.vc/manual/magit/Switching-Buffers.html#index-magit_002ddisplay_002dbuffer_002dfunction
   )
 
 ;; Git forge (GitHub) integration: https://magit.vc/manual/forge/
 (use-package forge
-  :after magit
-  :pin melpa-stable)
+  :after magit)
 
 ;; GitHub Permalink at Point (what I was using github.el for):
 (use-package git-link
- :after magit
- :pin melpa-stable)
+ :after magit)
 
 ;;
 ;; Major+minor modes
