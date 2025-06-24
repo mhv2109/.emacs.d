@@ -733,15 +733,12 @@ otherwise add to start of list."
     (setq gptel-ollama-backend (gptel-make-ollama "Ollama"
                                  :host "localhost:11434"
                                  :stream t
-                                 :models '(devstral:24b
-                                           qwen2.5-coder:14b
+                                 :models '(qwen2.5-coder:14b
                                            qwen2.5-coder:32b
-                                           phi4:14b
-                                           gemma3:4b
-                                           gemma3:12b))
+                                           qwen3:4b))
           ;; set as ollama + gemma3 as default
           gptel-backend gptel-ollama-backend
-          gptel-model 'gemma3:4b))
+          gptel-model 'qwen3:4b))
   ;; configure Anthropic, if configured
   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
     (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
@@ -762,14 +759,15 @@ otherwise add to start of list."
 
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
-  :after gptel
   :if (version<= "30.1" emacs-version)
   :custom (mcp-hub-servers `(("context7" . (:url "https://mcp.context7.com/mcp"))
                              ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME"))))))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
-  :hook (after-init . mcp-hub-start-all-server))
+  :hook
+  (after-init . mcp-hub-start-all-server)
+  (after-init . gptel-mcp-connect))
 
 ;;
 ;; Misc.
