@@ -720,7 +720,13 @@ otherwise add to start of list."
 
 ;; LLM Chat client: https://github.com/karthink/gptel
 (use-package gptel
+  :custom
+  (gptel-default-mode 'org-mode)
+  (gptel-track-media t)
   :config
+  ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
+        (alist-get 'org-mode gptel-response-prefix-alist) "** Response:\n\n")
   ;; configure Ollama, if installed
   (when (locate-file "ollama" exec-path exec-suffixes)
     (setq gptel-ollama-backend (gptel-make-ollama "Ollama"
@@ -752,6 +758,15 @@ otherwise add to start of list."
                                                                          :max_tokens 64000))))
   :bind
   (("C-c g" . gptel-menu)))
+
+;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
+(use-package mcp
+  :after gptel
+  :custom (mcp-hub-servers `(("context7" . (:url "https://mcp.context7.com/mcp"))))
+  :config
+  (require 'mcp-hub)
+  (require 'gptel-integrations)
+  :hook (after-init . mcp-hub-start-all-server))
 
 ;;
 ;; Misc.
