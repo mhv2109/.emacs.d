@@ -36,7 +36,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior 'ask)
  '(package-selected-packages
-   '(pyvenv-auto pyvenv yasnippet magit which-key ivy editorconfig aidermacs auto-package-update cider copilot copilot-chat corfu counsel dape deft dockerfile-mode doom-themes eldoc-box elfeed ellama exec-path-from-shell fish-mode flymake-golangci flymake-grammarly forge gcmh git-link go-mode gotest gptel hotfuzz marginalia minimap neotree nov ob-go org-remark org-roam org-web-tools paredit projectile protobuf-mode rainbow-delimiters terraform-mode treesit-auto typescript-mode vline vterm yaml-mode))
+   '(mcp pyvenv-auto pyvenv yasnippet magit which-key ivy editorconfig aidermacs auto-package-update cider copilot copilot-chat corfu counsel dape deft dockerfile-mode doom-themes eldoc-box elfeed ellama exec-path-from-shell fish-mode flymake-golangci flymake-grammarly forge gcmh git-link go-mode gotest gptel hotfuzz marginalia minimap neotree nov ob-go org-remark org-roam org-web-tools paredit projectile protobuf-mode rainbow-delimiters terraform-mode treesit-auto typescript-mode vline vterm yaml-mode))
  '(package-vc-selected-packages
    '((flymake-golangci :url "https://github.com/storvik/flymake-golangci.git")
      (aider :url "https://github.com/tninja/aider.el")))
@@ -763,7 +763,9 @@ otherwise add to start of list."
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
   :after gptel
-  :custom (mcp-hub-servers `(("context7" . (:url "https://mcp.context7.com/mcp"))))
+  :if (version<= "30.1" emacs-version)
+  :custom (mcp-hub-servers `(("context7" . (:url "https://mcp.context7.com/mcp"))
+                             ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME"))))))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
