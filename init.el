@@ -689,6 +689,7 @@ otherwise add to start of list."
 
 ;; Chat with GitHub Copilot: https://github.com/chep/copilot-chat.el
 (use-package copilot-chat
+  :demand
   :bind
   ("C-c x" . copilot-chat-transient))
 
