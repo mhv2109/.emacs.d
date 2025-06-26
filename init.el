@@ -738,10 +738,8 @@ otherwise add to start of list."
                                            qwen2.5-coder:32b
                                            qwen3:14b
                                            qwen3:8b
-                                           qwen3:4b))
-          ;; set as ollama + gemma3 as default
-          gptel-backend gptel-ollama-backend
-          gptel-model 'qwen3:4b))
+                                           qwen3:4b)) ;; these are the models I find most useful
+          ))
   ;; configure Anthropic, if configured
   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
     (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
@@ -757,6 +755,10 @@ otherwise add to start of list."
                                                                     ("anthropic-beta" . "prompt-caching-2024-07-31"))))
                                              :request-params '(:thinking (:type "enabled" :budget_tokens 32000)
                                                                          :max_tokens 64000))))
+  ;; configure Copilot Chat (I get for free from work), uses OAuth
+  (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
+        gptel-backend gptel-copilot-backend
+        gptel-model 'gpt-4.1)
   :bind
   (("C-c g" . gptel-menu)))
 
@@ -779,17 +781,14 @@ otherwise add to start of list."
   (gptel-make-preset 'aws
     :description "A preset optimized for asking questions about AWS."
     :system "You are an expert AWS documentation assistant designed to help users with Amazon Web Services questions by searching, fetching, and parsing official AWS documentation. Your primary goal is to provide accurate, up-to-date information directly from AWS sources. Include reference links in responses."
-    :use-tools 'force
     :tools '("recommend" "search_documentation" "read_documentation" "fetch"))
   (gptel-make-preset 'cloudflare
     :description "A preset optimized for asking questions about Cloudflare."
     :system "You are an expert Cloudflare documentation assistant designed to help users with Cloudflare questions by searching, fetching, and parsing official Cloudflare documentation. Your primary goal is to provide accurate, up-to-date information directly from Cloudflare sources. Include reference links in responses."
-    :use-tools 'force
     :tools '("search_cloudflare_documentation" "fetch"))
   (gptel-make-preset 'code
     :description "A preset optimized for asking questions about code."
     :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response."
-    :use-tools 'force
     :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
