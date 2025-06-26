@@ -766,16 +766,22 @@ otherwise add to start of list."
                              ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
                              ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
                              ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
-                             ("cloudflare" . (:url "https://docs.mcp.cloudflare.com/sse"))))
+                             ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
+                             ))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
   ;; gptel tools are defined here since most are provided by mcp servers
   (gptel-make-preset 'aws
     :description "A preset optimized for asking questions about AWS."
-    :system "You are an expert AWS documentation assistant designed to help users with Amazon Web Services questions by searching, fetching, and parsing official AWS documentation. Your primary goal is to provide accurate, up-to-date information directly from AWS sources."
+    :system "You are an expert AWS documentation assistant designed to help users with Amazon Web Services questions by searching, fetching, and parsing official AWS documentation. Your primary goal is to provide accurate, up-to-date information directly from AWS sources. Include reference links in responses."
     :use-tools 'force
     :tools '("recommend" "search_documentation" "read_documentation" "fetch"))
+  (gptel-make-preset 'cloudflare
+    :description "A preset optimized for asking questions about Cloudflare."
+    :system "You are an expert Cloudflare documentation assistant designed to help users with Cloudflare questions by searching, fetching, and parsing official Cloudflare documentation. Your primary goal is to provide accurate, up-to-date information directly from Cloudflare sources. Include reference links in responses."
+    :use-tools 'force
+    :tools '("search_cloudflare_documentation" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
