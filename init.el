@@ -762,7 +762,6 @@ otherwise add to start of list."
   :if (version<= "30.1" emacs-version)
   :custom (mcp-hub-servers `(("context7" . (:url "https://mcp.context7.com/mcp"))
                              ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; requires node+npm+npx
-                             ("git" . (:command "uvx" :args ("mcp-server-git"))) ;; requires uvx
                              ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
                              ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
                              ("cloudflare" . (:url "https://docs.mcp.cloudflare.com/sse"))))
