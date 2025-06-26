@@ -725,7 +725,6 @@ otherwise add to start of list."
   (gptel-default-mode 'org-mode)
   (gptel-track-media t)
   (gptel-include-tool-results t)
-  (gptel-use-tools 'force)
   :config
   ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
@@ -771,6 +770,12 @@ otherwise add to start of list."
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
+  ;; gptel tools are defined here since most are provided by mcp servers
+  (gptel-make-preset 'aws
+    :description "A preset optimized for asking questions about AWS."
+    :system "You are an expert AWS documentation assistant designed to help users with Amazon Web Services questions by searching, fetching, and parsing official AWS documentation. Your primary goal is to provide accurate, up-to-date information directly from AWS sources."
+    :use-tools 'force
+    :tools '("recommend" "search_documentation" "read_documentation" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
