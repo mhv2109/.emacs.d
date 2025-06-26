@@ -736,6 +736,8 @@ otherwise add to start of list."
                                  :stream t
                                  :models '(qwen2.5-coder:14b
                                            qwen2.5-coder:32b
+                                           qwen3:14b
+                                           qwen3:8b
                                            qwen3:4b))
           ;; set as ollama + gemma3 as default
           gptel-backend gptel-ollama-backend
