@@ -761,13 +761,15 @@ otherwise add to start of list."
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
   :if (version<= "30.1" emacs-version)
-  :custom (mcp-hub-servers `(("context7" . (:url "https://mcp.context7.com/mcp"))
-                             ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; requires node+npm+npx
-                             ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
-                             ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
-                             ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
-                             ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
-                             ))
+  :custom
+  ;; not sure why, but getting better results with mcp-remote vs. using :url
+  (mcp-hub-servers `(("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; requires npx
+                     ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; requires node+npm+npx
+                     ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
+                     ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
+                     ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
+                     ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
+                     ))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
@@ -782,6 +784,11 @@ otherwise add to start of list."
     :system "You are an expert Cloudflare documentation assistant designed to help users with Cloudflare questions by searching, fetching, and parsing official Cloudflare documentation. Your primary goal is to provide accurate, up-to-date information directly from Cloudflare sources. Include reference links in responses."
     :use-tools 'force
     :tools '("search_cloudflare_documentation" "fetch"))
+  (gptel-make-preset 'code
+    :description "A preset optimized for asking questions about code."
+    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response."
+    :use-tools 'force
+    :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
