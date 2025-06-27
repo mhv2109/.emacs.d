@@ -12,11 +12,12 @@
 
 (defun gt--join-strings-into-csv (strings)
   "Join a list of STRINGS into a single CSV-formatted string.
-Strings containing commas or double quotes are properly escaped."
+Strings containing commas or double quotes are properly escaped,
+but already escaped characters are ignored."
   (mapconcat
    (lambda (s)
      (if (string-match-p "[,\"]" s)
-         (concat "\"" (replace-regexp-in-string "\"" "\"\"" s) "\"")
+         (concat "\"" (replace-regexp-in-string "\\([^\"]\\)\"" "\\1\"\"" s) "\"")
        s))
    strings
    ","))
