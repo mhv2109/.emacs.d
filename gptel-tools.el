@@ -8,6 +8,19 @@
 
 (require 'gptel)
 
+;;; common
+
+(defun gt--join-strings-into-csv (strings)
+  "Join a list of STRINGS into a single CSV-formatted string.
+Strings containing commas or double quotes are properly escaped."
+  (mapconcat
+   (lambda (s)
+     (if (string-match-p "[,\"]" s)
+         (concat "\"" (replace-regexp-in-string "\"" "\"\"" s) "\"")
+       s))
+   strings
+   ","))
+
 ;;; elfeed tools
 
 (require 'elfeed)
@@ -34,9 +47,8 @@
  :function (lambda ()
              (string-join
               (mapcar (lambda (entry)
-                        (string-join `(,(concat "\"" (elfeed-entry-title entry) "\"")
-                                       ,(elfeed-entry-link entry))
-                                     ","))
+                        (gt--join-strings-into-csv `(,(elfeed-entry-title entry)
+                                                     ,(elfeed-entry-link entry))))
                       (gt--elfeed-get-entries))
               "\n"))
  :description "Return news headlines and urls from Elfeed RSS feed."
