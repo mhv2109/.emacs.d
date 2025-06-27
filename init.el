@@ -759,6 +759,8 @@ otherwise add to start of list."
   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
         gptel-backend gptel-copilot-backend
         gptel-model 'gpt-4.1)
+  ;; custom gptel tools
+  (load (concat user-emacs-directory  "gptel-tools.el"))
   :bind
   (("C-c g" . gptel-menu)))
 
@@ -790,6 +792,10 @@ otherwise add to start of list."
     :description "A preset optimized for asking questions about code."
     :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response."
     :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch"))
+  (gptel-make-preset 'rss
+    :description "A preset optimized for asking questions about news from RSS feeds.."
+    :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
+    :tools '("elfeed_get_headlines" "elfeed_get_entries" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
