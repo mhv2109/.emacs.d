@@ -795,6 +795,10 @@ otherwise add to start of list."
     :description "A preset optimized for asking questions about news from RSS feeds.."
     :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
     :tools '("elfeed_get_headlines" "elfeed_get_entries" "fetch"))
+  (gptel-make-preset 'org
+    :description "A preset optimized for asking questions about orm-mode notes."
+    :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
+    :tools '("deft_search_files" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
