@@ -504,7 +504,6 @@
 ;; Full Text Search for org files: https://jblevins.org/projects/deft/
 ;; Config adapted from: https://www.orgroam.com/manual.html#Full_002dtext-search-with-Deft
 (use-package deft
-  :after (org org-roam)
   :bind ("<f9>" . deft)
   :commands (deft)
   :custom
