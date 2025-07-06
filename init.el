@@ -413,11 +413,6 @@
 (use-package ob-go ;; org-babel support for Go: https://github.com/pope/ob-go
   :after org)
 
-(add-to-list 'load-path "~/.emacs.d/org-drill/") ;; installed as a Git submodule (includes a bugfix)
-(use-package org-drill ;; Spaced repetition for Org mode: https://orgmode.org/worg/org-contrib/org-drill.html
-  :after org
-  :ensure nil)
-
 ;; retrieve web pages as org files: https://github.com/alphapapa/org-web-tools
 (use-package org-web-tools
   :after org)
