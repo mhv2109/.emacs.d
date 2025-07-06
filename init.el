@@ -271,12 +271,6 @@
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
   )
 
-(use-package cider ;; Clojure support: https://cider.mx/
-  :custom
-  (cider-enrich-classpath t) ;; Doesn't work offline -- can disable temporarily with `(setq cider-enrich-classpath nil)'
-  (cider-font-lock-dynamically '(macro core function var)) ;; higlight all symbols that are known to be defined
-  )
-
 (use-package paredit ;; Lisp programming conveniences: http://paredit.org/
   :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
 
