@@ -510,7 +510,8 @@
   (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
-  (deft-directory org-roam-directory))
+  (deft-directory org-roam-directory)
+  (deft-recursive-ignore-dir-regexp "\\(?:\\.\\|\\.\\.\\|archived\\)$"))
 
 ;; Read EPUB from emacs: https://depp.brause.cc/nov.el/
 (use-package nov
