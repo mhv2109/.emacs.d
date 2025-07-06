@@ -146,6 +146,21 @@
   (neo-window-width 48)
   (neo-vc-integration '(face char)))
 
+;; minimap for prog-mode
+;; - https://www.emacswiki.org/emacs/MiniMap
+;; - https://github.com/dengste/minimap
+(use-package minimap
+  :bind ("<f7>" . minimap-mode)
+  :custom
+  (minimap-minimum-width 20)
+  (minimap-width-fraction 0.10)
+  (minimap-window-location 'right)
+  (minimap-update-delay 0.05)
+  (minimap-automatically-delete-window nil)
+  (minimap-dedicated-window nil)
+  (minimap-hide-fringes t)
+  (minimap-major-modes '(prog-mode text-mode)))
+
 ;; project management utilities: https://github.com/bbatsov/projectile
 (use-package projectile
   :custom
@@ -196,6 +211,9 @@
   :config
   (setq completion-styles '(hotfuzz)
         completion-ignore-case t))
+
+;; better integrated terminal: https://github.com/akermu/emacs-libvterm
+(use-package vterm)
 
 ;;
 ;; Git
@@ -345,21 +363,6 @@
   :after treesit-auto
   :config
   (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
-
-;; minimap for prog-mode
-;; - https://www.emacswiki.org/emacs/MiniMap
-;; - https://github.com/dengste/minimap
-(use-package minimap
-  :bind ("<f7>" . minimap-mode)
-  :custom
-  (minimap-minimum-width 20)
-  (minimap-width-fraction 0.10)
-  (minimap-window-location 'right)
-  (minimap-update-delay 0.05)
-  (minimap-automatically-delete-window nil)
-  (minimap-dedicated-window nil)
-  (minimap-hide-fringes t)
-  (minimap-major-modes '(prog-mode text-mode)))
 
 ;;
 ;; Org mode
@@ -867,9 +870,6 @@ other window."
   (("C-c r" . elfeed)
    :map elfeed-search-mode-map
    ("o" . elfeed-entry-other-window)))
-
-;; better integrated terminal: https://github.com/akermu/emacs-libvterm
-(use-package vterm)
 
 ;;
 ;; Other customizations
