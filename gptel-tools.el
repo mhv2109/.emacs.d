@@ -79,8 +79,8 @@ responses."
         (progn
           (deft) ;; needed to initialize deft
           (deft-filter str t)
-          (setq result (deft-current-files))))
-    (switch-to-buffer orig-buffer)
+          (setq result (deft-current-files)))
+      (switch-to-buffer orig-buffer))
     result))
 
 (gptel-make-tool
@@ -92,8 +92,8 @@ responses."
                 "\n\n")))
  :description "Use deft to search contents of org-mode notes and return filenames and contents."
  :args (list '(:name "term"
-               :type string
-               :description "term or regexp for which to search in file contents"))
+                     :type string
+                     :description "term or regexp for which to search in file contents"))
  :category "org")
 
 (provide 'gptel-tools)
