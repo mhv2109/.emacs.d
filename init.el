@@ -690,16 +690,6 @@ otherwise add to start of list."
                                   (not (memq major-mode '(yaml-mode yaml-ts-mode)))) ;; this prevents flymake-grammarly from loading in YAML buffers
                          (flymake-grammarly-load)))))
 
-;; AI Pair Programming with Aider: https://github.com/MatthewZMD/aidermacs
-;; https://aider.chat/
-(use-package aidermacs
-  :if (locate-file "aider" exec-path exec-suffixes) ;; install only if Aider is installed
-  :after vterm
-  :custom
-  (aidermacs-backend 'vterm)
-  :bind
-  (("C-c a" . aidermacs-transient-menu)))
-
 ;; LLM Chat client: https://github.com/karthink/gptel
 (use-package gptel
   :custom
