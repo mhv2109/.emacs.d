@@ -882,6 +882,8 @@ other window."
         gnus-use-cache t
         gnus-auto-select-first nil
         gnus-summary-display-arrow nil
+        gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date
+                                     (not gnus-thread-sort-by-number))
         user-full-name "Marshall Van Loon"
         user-mail-address "marshall.vanloon@gmail.com"))
 
