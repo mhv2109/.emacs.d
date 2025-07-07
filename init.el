@@ -779,7 +779,7 @@ otherwise add to start of list."
   (after-init . gptel-mcp-connect))
 
 ;;
-;; Misc.
+;; News and email
 ;;
 
 ;; RSS Reader: https://github.com/skeeto/elfeed
@@ -870,6 +870,20 @@ other window."
   (("C-c r" . elfeed)
    :map elfeed-search-mode-map
    ("o" . elfeed-entry-other-window)))
+
+;; Usenet and email: https://www.gnu.org/software/emacs/manual/html_mono/gnus.html
+;; not setup separately since I only plan to use in emacs
+(use-package gnus
+  :ensure nil ;; built-in
+  :config
+  (setq gnus-select-method '(nnnil "")
+        gnus-secondary-select-methods '((nnml "")
+                                        (nnimap "imap.gmail.com"))
+        gnus-use-cache t
+        gnus-auto-select-first nil
+        gnus-summary-display-arrow nil
+        user-full-name "Marshall Van Loon"
+        user-mail-address "marshall.vanloon@gmail.com"))
 
 ;;
 ;; Other customizations
