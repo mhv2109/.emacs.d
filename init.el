@@ -418,7 +418,9 @@
 
 ;; retrieve web pages as org files: https://github.com/alphapapa/org-web-tools
 (use-package org-web-tools
-  :after org)
+  :after org
+  :custom
+  (org-web-tools-pandoc-sleep-time 1.0)) ;; 5x longer than default
 
 ;; org-roam: https://www.orgroam.com/
 (use-package org-roam
