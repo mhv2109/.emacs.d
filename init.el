@@ -453,7 +453,7 @@
                                       :empty-lines 1)
                                      ("b" "book (resource)" plain "* ${title}\n%?"
                                       :target (file+head "resources/${slug}.org"
-                                                         "#+title: ${title}\n#+author: ${author-lastname}, ${author-firstname}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n#+filetags: :resources:\n")
+                                                         "#+title: ${title}\n#+author: ${author}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n#+filetags: :resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
                                      ("w" "website (resource, capture page)" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
