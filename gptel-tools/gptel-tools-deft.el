@@ -31,7 +31,7 @@ Unique results are combined."
  :name "deft_search_files"
  :function (lambda (term)
              (when-let ((found (gt--deft-search term)))
-               (string-join found "\n")))
+               (json-encode (list :files (vconcat found)))))
  :description "Use deft to search contents of org-mode notes and return filenames."
  :args (list '(:name "term"
                      :type string
