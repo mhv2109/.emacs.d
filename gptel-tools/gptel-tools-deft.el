@@ -9,16 +9,22 @@
 (require 'gptel)
 (require 'deft)
 
-(defun gt--deft-search (str)
-  "Use deft to search configured files for regexp STR and return filenames."
-  (let ((orig-buffer (current-buffer)) ;; (deft) will swap to dedicated buffer
+(defun gt--deft-search (term)
+  "Use deft to search configured files for TERM and return filenames.
+TERM is split on spaces and each individual element is used in search.
+Unique results are combined."
+  (let ((splitted (split-string term))
+        (orig-buffer (current-buffer)) ;; (deft) will swap to dedicated buffer
         (result))
-    (unwind-protect ;; swap works even on exceptions
-        (progn
-          (deft) ;; needed to initialize deft
-          (deft-filter str t)
-          (setq result (deft-current-files)))
-      (switch-to-buffer orig-buffer))
+    (dolist (element splitted)
+      (unwind-protect ;; swap works even on exceptions
+          (progn
+            (deft) ;; needed to initialize deft
+            (deft-filter element t)
+            (dolist (filename (deft-current-files))
+              (when (not (member filename result))
+                (add-to-list 'result filename))))
+        (switch-to-buffer orig-buffer)))
     result))
 
 (gptel-make-tool
