@@ -735,10 +735,13 @@ otherwise add to start of list."
   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
         gptel-backend gptel-copilot-backend
         gptel-model 'gpt-4.1)
-  ;; custom gptel tools
-  (load (concat user-emacs-directory  "gptel-tools.el"))
   :bind
   (("C-c g" . gptel-menu)))
+
+;; additional tools for gptel
+(add-to-list 'load-path (expand-file-name (concat user-emacs-directory "gptel-tools")))
+(use-package gptel-tools
+  :ensure nil)
 
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
@@ -767,7 +770,7 @@ otherwise add to start of list."
   (gptel-make-preset 'code
     :description "A preset optimized for asking questions about code."
     :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response."
-    :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch"))
+    :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch" "read_file"))
   (gptel-make-preset 'rss
     :description "A preset optimized for asking questions about news from RSS feeds.."
     :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
@@ -775,7 +778,7 @@ otherwise add to start of list."
   (gptel-make-preset 'org
     :description "A preset optimized for asking questions about orm-mode notes."
     :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
-    :tools '("deft_search_files" "fetch"))
+    :tools '("deft_search_files" "fetch" "read_file"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
