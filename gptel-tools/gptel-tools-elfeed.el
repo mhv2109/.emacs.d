@@ -1,10 +1,8 @@
-;;; gptel-tools-elfeed -- efleed-related tools.
+;;; gptel-tools-elfeed -- efleed-related tools. -*- lexical-binding: t -*-
 
 ;;; Commentary:
 
 ;;; Code:
-
-;; -*- lexical-binding: t; -*-
 
 (require 'gptel)
 (require 'elfeed)

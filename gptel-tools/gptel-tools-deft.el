@@ -1,10 +1,8 @@
-;;; gptel-tools-deft -- deft-related tools.
+;;; gptel-tools-deft -- deft-related tools. -*- lexical-binding: t -*-
 
 ;;; Commentary:
 
 ;;; Code:
-
-;; -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
 (require 'gptel)

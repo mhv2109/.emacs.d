@@ -1,12 +1,10 @@
-;;; gptel-tools-tfidf.el --- TF-IDF Implementation in Emacs Lisp
+;;; gptel-tools-tfidf.el --- TF-IDF Implementation in Emacs Lisp. -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;; This file implements TF-IDF (Term Frequency-Inverse Document Frequency)
 ;; text vectorization from scratch in Emacs Lisp.
 
 ;;; Code:
-
-;; -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
 
