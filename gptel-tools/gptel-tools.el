@@ -1,13 +1,12 @@
-;;; gptel-tools -- additional tools for gptel.
+;;; gptel-tools -- additional tools for gptel. -*- lexical-binding: t -*-
 
 ;;; Commentary:
 
 ;;; Code:
 
-;; -*- lexical-binding: t; -*-
-
 (require 'gptel-tools-deft)
 (require 'gptel-tools-elfeed)
+(require 'gptel-tools-pdf)
 
 (provide 'gptel-tools)
 

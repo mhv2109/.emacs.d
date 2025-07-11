@@ -778,7 +778,7 @@ otherwise add to start of list."
   (gptel-make-preset 'org
     :description "A preset optimized for asking questions about orm-mode notes."
     :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
-    :tools '("deft_search_files" "fetch" "read_file"))
+    :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
