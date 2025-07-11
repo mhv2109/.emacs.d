@@ -21,7 +21,7 @@
  :name "elfeed_get_headlines"
  :function (lambda ()
              (json-encode `(:headlines ,(mapcar #'elfeed-entry-title (gt--elfeed-get-entries)))))
- :description "Return news headlines from Elfeed RSS feed."
+ :description "Return news headlines from Elfeed RSS feed in JSON format."
  :category "rss")
 
 (gptel-make-tool
@@ -32,7 +32,7 @@
                                                                (link (elfeed-entry-link entry)))
                                                            (list :title title :link link)))
                                                        (gt--elfeed-get-entries))))))
- :description "Return news headlines and urls from Elfeed RSS feed."
+ :description "Return news headlines and urls from Elfeed RSS feed in JSON format."
  :category "rss")
 
 (provide 'gptel-tools-elfeed)

@@ -45,7 +45,7 @@ Unique results are combined."
                       (document-matrix (cl-rest matrix)))
                  (json-encode (list :files (vconcat (cl-loop for i from 0 below (length found)
                                                              collect (list :path (nth i found) :score (gt--tfidf-cosine-similarity search-vector (nth i document-matrix))))))))))
- :description "Use deft to search contents of org-mode notes and return filenames."
+ :description "Use deft to search contents of org-mode notes and return filenames and cosine similarity scores in JSON format."
  :args (list '(:name "term"
                      :type string
                      :description "term for which to search in file contents"))
