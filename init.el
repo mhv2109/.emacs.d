@@ -782,7 +782,7 @@ otherwise add to start of list."
     :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
   (gptel-make-preset 'web
     :description "A preset optimized for searching the web."
-    :system "You are an assistant for searching the web, and fetching and summarizing web content. Your primary goal is to provide accurate, up-to-date information directly from the web. Prefer using 'search' tool from mcp-duckduckgo. Include links in responses."
+    :system "You are an assistant for searching the web, and fetching and summarizing web content. Your primary goal is to provide accurate, up-to-date information directly from the web by using 'search' tool from mcp-duckduckgo and 'fetch_content' tool to gather details from relevant webpages. Include links in responses."
     :tools '("search" "fetch_content" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
