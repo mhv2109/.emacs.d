@@ -714,8 +714,8 @@ otherwise add to start of list."
                                            qwen2.5-coder:32b
                                            qwen3:14b
                                            qwen3:8b
-                                           qwen3:4b)) ;; these are the models I find most useful
-          ))
+                                           qwen3:4b) ;; these are the models I find most useful
+                                 :request-params '(:num_ctx 32768))))
   ;; configure Anthropic, if configured
   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
     (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
