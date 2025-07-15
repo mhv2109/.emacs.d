@@ -754,6 +754,7 @@ otherwise add to start of list."
                      ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
                      ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
+                     ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server"))) ;; requires uvx
                      ))
   :config
   (require 'mcp-hub)
@@ -779,6 +780,10 @@ otherwise add to start of list."
     :description "A preset optimized for asking questions about orm-mode notes."
     :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
     :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
+  (gptel-make-preset 'web
+    :description "A preset optimized for searching the web."
+    :system "You are an assistant for searching the web, and fetching and summarizing web content. Your primary goal is to provide accurate, up-to-date information directly from the web. Prefer using 'search' tool from mcp-duckduckgo. Include links in responses."
+    :tools '("search" "fetch_content" "fetch"))
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
