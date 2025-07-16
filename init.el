@@ -34,7 +34,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auth-source-save-behavior 'ask)
+ '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(mcp pyvenv-auto pyvenv yasnippet magit which-key ivy editorconfig aidermacs auto-package-update cider copilot copilot-chat corfu counsel dape deft dockerfile-mode doom-themes eldoc-box elfeed ellama exec-path-from-shell fish-mode flymake-golangci flymake-grammarly forge gcmh git-link go-mode gotest gptel hotfuzz marginalia minimap neotree nov ob-go org-remark org-roam org-web-tools paredit projectile protobuf-mode rainbow-delimiters terraform-mode treesit-auto typescript-mode vline vterm yaml-mode))
  '(package-vc-selected-packages
