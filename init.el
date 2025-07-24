@@ -36,9 +36,20 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(mcp pyvenv-auto pyvenv yasnippet magit which-key ivy editorconfig aidermacs auto-package-update cider copilot copilot-chat corfu counsel dape deft dockerfile-mode doom-themes eldoc-box elfeed ellama exec-path-from-shell fish-mode flymake-golangci flymake-grammarly forge gcmh git-link go-mode gotest gptel hotfuzz marginalia minimap neotree nov ob-go org-remark org-roam org-web-tools paredit projectile protobuf-mode rainbow-delimiters terraform-mode treesit-auto typescript-mode vline vterm yaml-mode))
+   '(aidermacs auto-package-update cider copilot copilot-chat corfu
+               counsel dape deft dockerfile-mode doom-themes
+               editorconfig eldoc-box elfeed ellama embark
+               embark-consult exec-path-from-shell fish-mode
+               flymake-golangci flymake-grammarly forge gcmh git-link
+               go-mode gotest gptel hotfuzz ivy magit marginalia mcp
+               minimap neotree nov ob-go org-remark org-roam
+               org-web-tools paredit projectile protobuf-mode pyvenv
+               pyvenv-auto rainbow-delimiters terraform-mode
+               treesit-auto typescript-mode vline vterm which-key
+               yaml-mode yasnippet))
  '(package-vc-selected-packages
-   '((flymake-golangci :url "https://github.com/storvik/flymake-golangci.git")
+   '((flymake-golangci :url
+                       "https://github.com/storvik/flymake-golangci.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -193,8 +204,19 @@
 
 ;; Additional docs in minibuffer: https://github.com/minad/marginalia
 (use-package marginalia
-  :init
+  :config
   (marginalia-mode))
+
+;; Like right-click context menu for emacs: https://github.com/oantolin/embark
+(use-package embark
+  :bind
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings)))
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package uniquify ;; Overrides Emacs’ default mechanism for making buffer names unique, from: https://git.sr.ht/~technomancy/better-defaults
   :ensure nil
