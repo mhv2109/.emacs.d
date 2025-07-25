@@ -729,30 +729,6 @@ otherwise add to start of list."
 ;; AI
 ;;
 
-;; GitHub Copilot: https://github.com/copilot-emacs/copilot.el
-(use-package copilot
-  :custom
-  (copilot-idle-delay nil) ;; disable auto-complete
-  :bind ;; bindings enable similar behavior to my corfu setup
-  (("C-c c" . copilot-mode)
-   :map copilot-mode-map
-   ("TAB" . copilot-complete)
-   ([tab] . copilot-complete)
-   :map copilot-completion-map
-   ("RET" . copilot-accept-completion)
-   ([ret] . copilot-accept-completion)
-   ("TAB" . copilot-next-completion)
-   ([tab] . copilot-next-completion)
-   ("S-TAB" . coplilot-previous-completion)
-   ("ESC" . copilot-clear-overlay)
-   ([esc] . copilot-clear-overlay)))
-
-;; Chat with GitHub Copilot: https://github.com/chep/copilot-chat.el
-(use-package copilot-chat
-  :demand
-  :bind
-  ("C-c x" . copilot-chat-transient))
-
 ;; Integrate Grammarly with Flymake: https://github.com/emacs-grammarly/flymake-grammarly
 (use-package flymake-grammarly
   :config (grammarly-load-from-authinfo) ;; See: https://github.com/emacs-grammarly/grammarly
