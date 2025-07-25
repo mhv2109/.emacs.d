@@ -41,10 +41,10 @@
                editorconfig eldoc-box elfeed ellama elysium embark
                embark-consult exec-path-from-shell fish-mode
                flymake-golangci flymake-grammarly forge gcmh git-link
-               go-mode gotest gptel hotfuzz ivy magit marginalia mcp
-               minimap neotree nov ob-go org-remark org-roam
-               org-web-tools paredit projectile protobuf-mode pyvenv
-               pyvenv-auto rainbow-delimiters terraform-mode
+               go-mode gotest gptel gptel-commit hotfuzz ivy magit
+               marginalia mcp minimap neotree nov ob-go org-remark
+               org-roam org-web-tools paredit projectile protobuf-mode
+               pyvenv pyvenv-auto rainbow-delimiters terraform-mode
                treesit-auto typescript-mode vline vterm which-key
                yaml-mode yasnippet))
  '(package-vc-selected-packages
@@ -859,6 +859,9 @@ otherwise add to start of list."
 
 ;; AI-generated code changes with gptel: https://github.com/lanceberge/elysium
 (use-package elysium)
+
+;; AI-generated commit messages with gptel: https://github.com/lakkiy/gptel-commit
+(use-package gptel-commit)
 
 ;;
 ;; Misc.
