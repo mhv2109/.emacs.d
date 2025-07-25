@@ -38,7 +38,7 @@
  '(package-selected-packages
    '(aidermacs auto-package-update cider copilot copilot-chat corfu
                counsel dape deft dockerfile-mode doom-themes
-               editorconfig eldoc-box elfeed ellama embark
+               editorconfig eldoc-box elfeed ellama elysium embark
                embark-consult exec-path-from-shell fish-mode
                flymake-golangci flymake-grammarly forge gcmh git-link
                go-mode gotest gptel hotfuzz ivy magit marginalia mcp
@@ -293,6 +293,11 @@ targets."
 ;; GitHub Permalink at Point (what I was using github.el for):
 (use-package git-link
  :after magit)
+
+;; Handle diff3 in the editor
+(use-package smerge-mode
+  :ensure nil ;; built-in
+  :hook (prog-mode))
 
 ;;
 ;; Major+minor modes
@@ -851,6 +856,9 @@ otherwise add to start of list."
   :hook
   (after-init . mcp-hub-start-all-server)
   (after-init . gptel-mcp-connect))
+
+;; AI-generated code changes with gptel: https://github.com/lanceberge/elysium
+(use-package elysium)
 
 ;;
 ;; Misc.
