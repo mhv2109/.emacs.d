@@ -9,7 +9,8 @@
 (require 'cl-lib)
 
 (defconst gt--tfidf-stop-words
-  '("the" "is" "are" "and" "or" "but" "a" "an" "on" "over")
+  '("the" "is" "isn" "isnt" "isn't" "are" "aren" "arent" "aren't"
+    "was" "wasn" "wasnt" "wasn't" "as" "and" "or" "but" "a" "an" "on" "over" "t")
   "Default stop words used with GT--TFIDF-VECTORIZER.")
 
 ;; Data structure to hold our TF-IDF vectorizer
@@ -22,17 +23,21 @@
   feature-names)   ; List of feature names in order
 
 (defun gt--tfidf-tokenize (text &optional stop-words)
-  "Tokenize TEXT by converting to lowercase, removing punctuation, and splitting.
-Optionally remove STOP-WORDS."
-  (let* ((lowercase-text (downcase text))
-         ;; Remove punctuation and split on whitespace
-         (tokens (split-string
-                  (replace-regexp-in-string "[[:punct:]]" "" lowercase-text)
-                  "[ \t\n\r\f]+" t)))
-    ;; Remove stop words if provided
-    (if stop-words
-        (cl-remove-if (lambda (word) (member word stop-words)) tokens)
-      tokens)))
+  "Tokenize TEXT in a simple and effective way.
+Converts to lowercase, removes punctuation, and splits on word boundaries.
+Optionally removes STOP-WORDS, which defaults to GT--TFIDF-STOP-WORDS."
+  (cl-flet ((remove-stopwords (words)
+              (let ((stop-words (or stop-words gt--tfidf-stop-words)))
+                (cl-remove-if (lambda (word)
+                                (or (string-empty-p word) (member word stop-words)))
+                              words))))
+    (let* ((lowercase-text (downcase text))
+           ;; Use a regular expression to match words, avoiding punctuation
+           (splitted (remove-stopwords (split-string lowercase-text "\\W+")))
+           ;; Keep original words as well
+           (orig (remove-stopwords (split-string lowercase-text "[ \t\n\r\f]+"))))
+      ;; Combine decomposed and original strings
+      (sort (cl-union orig splitted :test #'string=) #'string<))))
 
 (defun gt--tfidf-count-word-frequencies (tokens)
   "Count frequency of each word in TOKENS.
