@@ -815,7 +815,7 @@ otherwise add to start of list."
     :tools '("search_cloudflare_documentation" "fetch"))
   (gptel-make-preset 'code
     :description "A preset optimized for asking questions about code."
-    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response."
+    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response. Minimize git tool calls to preserve available context tokens."
     :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch" "read_file" "git_branch" "git_checkout" "git_cherry_pick" "git_clear_working_dir" "git_commit" "git_diff" "git_init" "git_log" "git_merge" "git_rebase" "git_reset" "git_set_working_dir" "git_show" "git_stash" "git_status" "git_tag" "git_worktree" "git_wrapup_instructions"))
   (gptel-make-preset 'rss
     :description "A preset optimized for asking questions about news from RSS feeds.."
