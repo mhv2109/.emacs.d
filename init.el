@@ -795,6 +795,7 @@ otherwise add to start of list."
   (mcp-hub-servers `(("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; requires npx
                      ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; requires node+npm+npx
                      ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
+                     ("git" . (:command "npx" :args ("-y" "@cyanheads/git-mcp-server@v2.2.2"))) ;; scanned with snyk cli
                      ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
                      ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
@@ -815,7 +816,7 @@ otherwise add to start of list."
   (gptel-make-preset 'code
     :description "A preset optimized for asking questions about code."
     :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response."
-    :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch" "read_file"))
+    :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch" "read_file" "git_branch" "git_checkout" "git_cherry_pick" "git_clear_working_dir" "git_commit" "git_diff" "git_init" "git_log" "git_merge" "git_rebase" "git_reset" "git_set_working_dir" "git_show" "git_stash" "git_status" "git_tag" "git_worktree" "git_wrapup_instructions"))
   (gptel-make-preset 'rss
     :description "A preset optimized for asking questions about news from RSS feeds.."
     :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
