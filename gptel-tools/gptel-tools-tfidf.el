@@ -9,8 +9,9 @@
 (require 'cl-lib)
 
 (defconst gt--tfidf-stop-words
-  '("the" "is" "isn" "isnt" "isn't" "are" "aren" "arent" "aren't"
-    "was" "wasn" "wasnt" "wasn't" "as" "and" "or" "but" "a" "an" "on" "over" "t")
+  '("is" "isn" "isnt" "isn't" "are" "aren" "arent" "aren't" "t"
+    "was" "wasn" "wasnt" "wasn't" "as" "and" "or" "but"
+    "the" "a" "an" "on" "over" "it")
   "Default stop words used with GT--TFIDF-VECTORIZER.")
 
 ;; Data structure to hold our TF-IDF vectorizer
@@ -26,18 +27,15 @@
   "Tokenize TEXT in a simple and effective way.
 Converts to lowercase, removes punctuation, and splits on word boundaries.
 Optionally removes STOP-WORDS, which defaults to GT--TFIDF-STOP-WORDS."
-  (cl-flet ((remove-stopwords (words)
-              (let ((stop-words (or stop-words gt--tfidf-stop-words)))
-                (cl-remove-if (lambda (word)
-                                (or (string-empty-p word) (member word stop-words)))
-                              words))))
-    (let* ((lowercase-text (downcase text))
-           ;; Use a regular expression to match words, avoiding punctuation
-           (splitted (remove-stopwords (split-string lowercase-text "\\W+")))
-           ;; Keep original words as well
-           (orig (remove-stopwords (split-string lowercase-text "[ \t\n\r\f]+"))))
-      ;; Combine decomposed and original strings
-      (sort (cl-union orig splitted :test #'string=) #'string<))))
+  (let* ((lowercase-text (downcase text))
+         ;; Use a regular expression to match words, avoiding punctuation
+         (tokens (split-string lowercase-text "\\W+"))
+         ;; Use default STOP-WORDS if not provided
+         (stop-words (or stop-words gt--tfidf-stop-words)))
+    ;; remove empty strings and stopwords
+    (cl-remove-if (lambda (token)
+                    (or (string-empty-p token) (member token stop-words)))
+                  tokens)))
 
 (defun gt--tfidf-count-word-frequencies (tokens)
   "Count frequency of each word in TOKENS.
