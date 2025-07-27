@@ -9,9 +9,24 @@
 (require 'cl-lib)
 
 (defconst gt--tfidf-stop-words
-  '("is" "isn" "isnt" "isn't" "are" "aren" "arent" "aren't" "t"
-    "was" "wasn" "wasnt" "wasn't" "as" "and" "or" "but"
-    "the" "a" "an" "on" "over" "it")
+  '("i" "me" "my" "myself" "we" "our" "ours" "ourselves" "you" "your"
+    "yours" "yourself" "yourselves" "he" "him" "his" "himself" "she"
+    "her" "hers" "herself" "it" "its" "itself" "they" "theyre" "them"
+    "their" "theirs" "themselves" "what" "which" "who" "whom" "this"
+    "that" "these" "those" "am" "is" "isn" "isnt" "are" "arent" "was"
+    "wasnt" "were" "werent" "be" "been" "being" "have" "haven" "havent"
+    "has" "hasn" "hasnt" "had" "hadn" "hadnt" "having" "do" "dont"
+    "does" "doesn" "doesnt" "did" "didn" "didnt" "doing" "a" "an" "the"
+    "and" "but" "if" "or" "because" "as" "until" "while" "of" "at" "by"
+    "for" "with" "about" "against" "between" "into" "through" "during"
+    "before" "after" "above" "below" "to" "from" "up" "down" "in" "out"
+    "on" "off" "over" "under" "again" "further" "then" "once" "here"
+    "heres" "there" "theres" "when" "where" "why" "how" "hows" "all"
+    "any" "both" "each" "few" "more" "most" "other" "some" "such" "no"
+    "nor" "not" "only" "own" "same" "so" "than" "too" "very" "re" "nt"
+    "s" "t" "can" "will" "just" "don" "should" "shouldn" "shouldnt"
+    "now" "would" "wouldn" "wouldnt" "could" "couldn" "couldnt" "won"
+    "wont")
   "Default stop words used with GT--TFIDF-VECTORIZER.")
 
 ;; Data structure to hold our TF-IDF vectorizer
