@@ -36,16 +36,19 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(auto-package-update corfu counsel dape deft dockerfile-mode doom-themes
-                         editorconfig eldoc-box elfeed elysium embark
-                         embark-consult exec-path-from-shell fish-mode
-                         flymake-golangci flymake-grammarly forge gcmh git-link
-                         go-mode gotest gptel gptel-commit hotfuzz ivy magit
-                         marginalia mcp minimap neotree nov ob-go org-remark
-                         org-roam org-web-tools paredit projectile protobuf-mode
-                         pyvenv pyvenv-auto rainbow-delimiters terraform-mode
-                         treesit-auto typescript-mode vline vterm which-key
-                         yaml-mode yasnippet))
+   '(auto-package-update corfu counsel dape deft dockerfile-mode
+                         doom-themes editorconfig eldoc-box elfeed
+                         elysium embark embark-consult
+                         exec-path-from-shell fish-mode
+                         flymake-golangci flymake-grammarly forge gcmh
+                         git-link go-mode gotest gptel gptel-commit
+                         hotfuzz ivy lua-mode magit marginalia mcp
+                         minimap neotree nov ob-go org-remark org-roam
+                         org-web-tools paredit projectile
+                         protobuf-mode pyvenv pyvenv-auto
+                         rainbow-delimiters terraform-mode
+                         treesit-auto typescript-mode vline vterm
+                         which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((flymake-golangci :url
                        "https://github.com/storvik/flymake-golangci.git")
@@ -393,6 +396,9 @@ targets."
 (use-package markdown-mode
   :ensure t
   :mode ("README\\.md\\'" . gfm-mode))
+
+;; lua editing: https://github.com/immerrr/lua-mode
+(use-package lua-mode)
 
 ;;
 ;; Treesitter
