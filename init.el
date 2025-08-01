@@ -757,8 +757,7 @@ otherwise add to start of list."
     (setq gptel-ollama-backend (gptel-make-ollama "Ollama"
                                  :host "localhost:11434"
                                  :stream t
-                                 :models '(qwen2.5-coder:14b
-                                           qwen2.5-coder:32b
+                                 :models '(qwen3-coder:30b
                                            qwen3:30b-a3b-instruct-2507-q4_K_M
                                            mistral-nemo:12b) ;; these are the models I find most useful
                                  :request-params '(:num_ctx 32768))))
