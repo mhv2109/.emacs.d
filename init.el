@@ -757,9 +757,12 @@ otherwise add to start of list."
     (setq gptel-ollama-backend (gptel-make-ollama "Ollama"
                                  :host "localhost:11434"
                                  :stream t
-                                 :models '(qwen3-coder:30b
-                                           qwen3:30b-a3b-instruct-2507-q4_K_M
-                                           mistral-nemo:12b) ;; these are the models I find most useful
+                                 :models '(qwen3-coder:30b ;; coding assistant
+                                           qwen3:30b-a3b-instruct-2507-q4_K_M ;; general-purpose
+                                           mistral-nemo:12b ;; general-purpose
+                                           gemma3n:e2b ;; for resource-constrained devices (no tools
+                                           llama3.2:3b ;; for resource-constrained devices (with tools)
+                                           )
                                  :request-params '(:num_ctx 32768))))
   ;; configure Anthropic, if configured
   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
