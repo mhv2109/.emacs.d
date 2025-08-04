@@ -834,8 +834,8 @@ otherwise add to start of list."
     :system "You are an assistant for searching the web, and fetching and summarizing web content. Your primary goal is to provide accurate, up-to-date information directly from the web by using 'search' tool from mcp-duckduckgo and 'fetch_content' tool to gather details from relevant webpages. Include links in responses."
     :tools '("search" "fetch_content" "fetch" "sequentialthinking"))
   :hook
-  (after-init . mcp-hub-start-all-server)
-  (after-init . gptel-mcp-connect))
+  (gptel-mode . mcp-hub-start-all-server)
+  (gptel-mode . gptel-mcp-connect))
 
 ;; AI-generated code changes with gptel: https://github.com/lanceberge/elysium
 (use-package elysium)
