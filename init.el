@@ -763,7 +763,7 @@ otherwise add to start of list."
                                            gemma3n:e2b ;; for resource-constrained devices (no tools
                                            llama3.2:3b ;; for resource-constrained devices (with tools)
                                            )
-                                 :request-params '(:options (:num_ctx 32768)))))
+                                 :request-params '(:options (:num_ctx 8192)))))
   ;; configure Anthropic, if configured
   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
     (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
