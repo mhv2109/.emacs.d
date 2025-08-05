@@ -46,7 +46,7 @@
                          minimap neotree nov ob-go org-remark org-roam
                          org-web-tools paredit projectile
                          protobuf-mode pyvenv pyvenv-auto
-                         rainbow-delimiters terraform-mode
+                         rainbow-delimiters rg terraform-mode
                          treesit-auto typescript-mode vline vterm
                          which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
@@ -173,6 +173,9 @@
   (minimap-dedicated-window nil)
   (minimap-hide-fringes t)
   (minimap-major-modes '(prog-mode text-mode)))
+
+;; search w/ ripgrep: https://rgel.readthedocs.io/en/latest/index.html
+(use-package rg)
 
 ;; project management utilities: https://github.com/bbatsov/projectile
 (use-package projectile
