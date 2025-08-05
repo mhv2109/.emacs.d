@@ -761,8 +761,9 @@ otherwise add to start of list."
                                  :host "localhost:11434"
                                  :stream t
                                  :models '(qwen3-coder:30b ;; coding assistant
-                                           qwen3:30b-a3b-instruct-2507-q4_K_M ;; general-purpose
-                                           mistral-nemo:12b ;; general-purpose
+                                           qwen3:30b-a3b-instruct-2507-q4_K_M ;; general-purpose (non-thinking)
+                                           gpt-oss:20b ;; general-purpose (thinking)
+                                           mistral-nemo:12b ;; general-purpose (non-thinking)
                                            gemma3n:e2b ;; for resource-constrained devices (no tools
                                            llama3.2:3b ;; for resource-constrained devices (with tools)
                                            )
