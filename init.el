@@ -813,18 +813,21 @@ otherwise add to start of list."
   (require 'mcp-hub)
   (require 'gptel-integrations)
   ;; gptel tools are defined here since most are provided by mcp servers
-  (gptel-make-preset 'aws
-    :description "A preset optimized for asking questions about AWS."
-    :system "You are an expert AWS documentation assistant designed to help users with Amazon Web Services questions by searching, fetching, and parsing official AWS documentation. Your primary goal is to provide accurate, up-to-date information directly from AWS sources. Include reference links in responses."
-    :tools '("recommend" "search_documentation" "read_documentation" "fetch"))
-  (gptel-make-preset 'cloudflare
-    :description "A preset optimized for asking questions about Cloudflare."
-    :system "You are an expert Cloudflare documentation assistant designed to help users with Cloudflare questions by searching, fetching, and parsing official Cloudflare documentation. Your primary goal is to provide accurate, up-to-date information directly from Cloudflare sources. Include reference links in responses."
-    :tools '("search_cloudflare_documentation" "fetch"))
   (gptel-make-preset 'code
-    :description "A preset optimized for asking questions about code."
-    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories and Context7 to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response. Minimize git tool calls to preserve available context tokens."
-    :tools '("resolve-library-id" "get-library-docs" "search_repositories" "search_code" "fetch" "read_file" "git_branch" "git_checkout" "git_cherry_pick" "git_clear_working_dir" "git_commit" "git_diff" "git_init" "git_log" "git_merge" "git_rebase" "git_reset" "git_set_working_dir" "git_show" "git_stash" "git_status" "git_tag" "git_worktree" "git_wrapup_instructions"))
+    :description "A preset optimized for asking questions about code and software architecture."
+    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories, Context7, Cloudflare, and AWS to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response. Minimize git tool calls to preserve available context tokens."
+    :tools '(;; context7
+             "resolve-library-id" "get-library-docs"
+             ;; github
+             "search_repositories" "search_code"
+             ;; fetch+filesystem
+             "fetch" "read_file"
+             ;; git
+             "git_branch" "git_checkout" "git_cherry_pick" "git_clear_working_dir" "git_commit" "git_diff" "git_init" "git_log" "git_merge" "git_rebase" "git_reset" "git_set_working_dir" "git_show" "git_stash" "git_status" "git_tag" "git_worktree" "git_wrapup_instructions"
+             ;; cloudflare
+             "search_cloudflare_documentation"
+             ;; aws
+             "search_documentation" "read_documentation" "recommend"))
   (gptel-make-preset 'rss
     :description "A preset optimized for asking questions about news from RSS feeds.."
     :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
