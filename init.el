@@ -924,6 +924,7 @@ otherwise add to start of list."
                   ("https://github.blog/feed/" tech github)
                   ("https://brianchambers.substack.com/feed" tech cfa)
                   ("https://developer.mozilla.org/en-US/blog/rss.xml" tech web)
+                  ("https://lowendbox.com/feed/" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
