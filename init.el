@@ -790,7 +790,7 @@ otherwise add to start of list."
   ;; configure Copilot Chat (I get for free from work), uses OAuth
   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
         gptel-backend gptel-copilot-backend
-        gptel-model 'gpt-4.1)
+        gptel-model 'claude-sonnet-4)
   :bind
   (("C-c g" . gptel-menu)))
 
