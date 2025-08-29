@@ -818,7 +818,7 @@ otherwise add to start of list."
   ;; gptel tools are defined here since most are provided by mcp servers
   (gptel-make-preset 'code
     :description "A preset optimized for asking questions about code and software architecture."
-    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories, Context7, Cloudflare, and AWS to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response. Minimize git tool calls to preserve available context tokens."
+    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories, Context7, Cloudflare, and AWS to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation, source code, and the web. Include reference links in response. Minimize git tool calls to preserve available context tokens."
     :tools '(;; context7
              "resolve-library-id" "get-library-docs"
              ;; fetch+filesystem
@@ -828,7 +828,9 @@ otherwise add to start of list."
              ;; cloudflare
              "search_cloudflare_documentation"
              ;; aws
-             "search_documentation" "read_documentation" "recommend"))
+             "search_documentation" "read_documentation" "recommend"
+             ;; web
+             "search" "fetch_content"))
   (gptel-make-preset 'rss
     :description "A preset optimized for asking questions about news from RSS feeds.."
     :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
