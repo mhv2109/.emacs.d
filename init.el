@@ -795,9 +795,9 @@ otherwise add to start of list."
   (("C-c g" . gptel-menu)))
 
 ;; additional tools for gptel
-(add-to-list 'load-path (expand-file-name (concat user-emacs-directory "gptel-tools")))
-(use-package gptel-tools
-  :ensure nil)
+;; (add-to-list 'load-path (expand-file-name (concat user-emacs-directory "gptel-tools")))
+;; (use-package gptel-tools
+;;   :ensure nil)
 
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
@@ -808,7 +808,6 @@ otherwise add to start of list."
                      ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; requires node+npm+npx
                      ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
                      ("git" . (:command "npx" :args ("-y" "@cyanheads/git-mcp-server@v2.2.2"))) ;; scanned with snyk cli
-                     ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
                      ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
                      ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server"))) ;; requires uvx
@@ -822,8 +821,6 @@ otherwise add to start of list."
     :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories, Context7, Cloudflare, and AWS to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation and sources. Include reference links in response. Minimize git tool calls to preserve available context tokens."
     :tools '(;; context7
              "resolve-library-id" "get-library-docs"
-             ;; github
-             "search_repositories" "search_code"
              ;; fetch+filesystem
              "fetch" "read_file"
              ;; git
@@ -832,20 +829,19 @@ otherwise add to start of list."
              "search_cloudflare_documentation"
              ;; aws
              "search_documentation" "read_documentation" "recommend"))
-  (gptel-make-preset 'rss
-    :description "A preset optimized for asking questions about news from RSS feeds.."
-    :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
-    :tools '("elfeed_get_headlines" "elfeed_get_entries" "fetch"))
-  (gptel-make-preset 'org
-    :description "A preset optimized for asking questions about orm-mode notes."
-    :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
-    :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
+  ;; (gptel-make-preset 'rss
+  ;;   :description "A preset optimized for asking questions about news from RSS feeds.."
+  ;;   :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
+  ;;   :tools '("elfeed_get_headlines" "elfeed_get_entries" "fetch"))
+  ;; (gptel-make-preset 'org
+  ;;   :description "A preset optimized for asking questions about orm-mode notes."
+  ;;   :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
+  ;;   :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
   (gptel-make-preset 'web
     :description "A preset optimized for searching the web."
     :system "You are an assistant for searching the web, and fetching and summarizing web content. Your primary goal is to provide accurate, up-to-date information directly from the web by using 'search' tool from mcp-duckduckgo and 'fetch_content' tool to gather details from relevant webpages. Include links in responses."
     :tools '("search" "fetch_content" "fetch"))
   :hook
-  (gptel-mode . mcp-hub-start-all-server)
   (gptel-mode . gptel-mcp-connect))
 
 ;; AI-generated code changes with gptel: https://github.com/lanceberge/elysium
