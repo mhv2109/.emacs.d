@@ -183,6 +183,15 @@
   (projectile-switch-project-action 'neotree-projectile-action)
   :bind-keymap
   (("C-c p" . projectile-command-map))
+  :config
+  (defun copy-projectile-project-path ()
+    "Copy the current Projectile project root directory to the kill ring."
+    (interactive)
+    (if (projectile-project-p)
+        (let ((project-root (projectile-project-root)))
+          (kill-new project-root)
+          (message "Project root copied to kill ring: %s" project-root))
+      (message "Not in a Projectile project")))
   :hook
   (after-init . projectile-mode))
 
@@ -952,6 +961,15 @@ other window."
 ;;
 ;; Other customizations
 ;;
+
+(defun copy-buffer-file-path ()
+  "Copy the current buffer's file path to the kill ring."
+  (interactive)
+  (if-let ((filename (buffer-file-name)))
+      (progn
+        (kill-new filename)
+        (message "Copied to kill ring: %s" filename))
+    (message "Buffer is not visiting a file")))
 
 ;; configure TRAMP: https://www.gnu.org/software/tramp/
 (use-package tramp
