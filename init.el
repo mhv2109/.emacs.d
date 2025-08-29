@@ -481,7 +481,11 @@ targets."
   ;; configure attachment directory (absolute)
   (setq org-attach-id-dir (concat (file-truename org-directory) "/data/"))
   ;; configure archival (absolute)
-  (setq org-archive-location (concat (file-truename org-directory) "/archived/%s::")))
+  (setq org-archive-location (concat (file-truename org-directory) "/archived/%s::"))
+  :hook
+  ;; auto-format all tables on save
+  (before-save . (lambda ()
+                   (org-table-map-tables 'org-table-align))))
 
 (use-package ox-md ;; markdown backend for org-mode
   :after org
