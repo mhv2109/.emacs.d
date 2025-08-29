@@ -795,9 +795,9 @@ otherwise add to start of list."
   (("C-c g" . gptel-menu)))
 
 ;; additional tools for gptel
-;; (add-to-list 'load-path (expand-file-name (concat user-emacs-directory "gptel-tools")))
-;; (use-package gptel-tools
-;;   :ensure nil)
+(add-to-list 'load-path (expand-file-name (concat user-emacs-directory "gptel-tools")))
+(use-package gptel-tools
+  :ensure nil)
 
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
@@ -829,14 +829,14 @@ otherwise add to start of list."
              "search_cloudflare_documentation"
              ;; aws
              "search_documentation" "read_documentation" "recommend"))
-  ;; (gptel-make-preset 'rss
-  ;;   :description "A preset optimized for asking questions about news from RSS feeds.."
-  ;;   :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
-  ;;   :tools '("elfeed_get_headlines" "elfeed_get_entries" "fetch"))
-  ;; (gptel-make-preset 'org
-  ;;   :description "A preset optimized for asking questions about orm-mode notes."
-  ;;   :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
-  ;;   :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
+  (gptel-make-preset 'rss
+    :description "A preset optimized for asking questions about news from RSS feeds.."
+    :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
+    :tools '("elfeed_get_headlines" "elfeed_get_entries" "fetch"))
+  (gptel-make-preset 'org
+    :description "A preset optimized for asking questions about orm-mode notes."
+    :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
+    :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
   (gptel-make-preset 'web
     :description "A preset optimized for searching the web."
     :system "You are an assistant for searching the web, and fetching and summarizing web content. Your primary goal is to provide accurate, up-to-date information directly from the web by using 'search' tool from mcp-duckduckgo and 'fetch_content' tool to gather details from relevant webpages. Include links in responses."
