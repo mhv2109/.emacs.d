@@ -37,21 +37,21 @@
  '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(auto-package-update corfu counsel dape deft dockerfile-mode
-			 doom-themes editorconfig eldoc-box elfeed
-			 elysium embark embark-consult
-			 exec-path-from-shell fish-mode
-			 flymake-golangci flymake-grammarly forge gcmh
-			 git-link go-mode gotest gptel gptel-commit
-			 hotfuzz ivy lua-mode magit marginalia mcp
-			 minimap neotree nov ob-go org-remark org-roam
-			 org-web-tools paredit projectile
-			 protobuf-mode pyvenv pyvenv-auto
-			 rainbow-delimiters rg terraform-mode
-			 treesit-auto typescript-mode vline vterm
-			 which-key yaml-mode yasnippet))
+			             doom-themes editorconfig eldoc-box elfeed
+			             elysium embark embark-consult
+			             exec-path-from-shell fish-mode
+			             flymake-golangci forge gcmh
+			             git-link go-mode gotest gptel gptel-commit
+			             hotfuzz ivy lua-mode magit marginalia mcp
+			             nov ob-go org-remark org-roam
+			             org-web-tools paredit projectile
+			             protobuf-mode pyvenv pyvenv-auto
+			             rainbow-delimiters rg terraform-mode
+			             treesit-auto typescript-mode vline vterm
+			             which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((flymake-golangci :url
-		       "https://github.com/storvik/flymake-golangci.git")
+		               "https://github.com/storvik/flymake-golangci.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -148,31 +148,6 @@
 ;; horizontal and vertical line highlighting
 ;; super slow
 (use-package vline)
-
- ;; file tree UI: https://github.com/jaypei/emacs-neotree
-(use-package neotree
-  :bind ("<f8>" . neotree-toggle)
-  :custom
-  (neo-smart-open t)
-  (neo-show-hidden-files t)
-  (neo-autorefresh t)
-  (neo-window-width 48)
-  (neo-vc-integration '(face char)))
-
-;; minimap for prog-mode
-;; - https://www.emacswiki.org/emacs/MiniMap
-;; - https://github.com/dengste/minimap
-(use-package minimap
-  :bind ("<f7>" . minimap-mode)
-  :custom
-  (minimap-minimum-width 20)
-  (minimap-width-fraction 0.10)
-  (minimap-window-location 'right)
-  (minimap-update-delay 0.05)
-  (minimap-automatically-delete-window nil)
-  (minimap-dedicated-window nil)
-  (minimap-hide-fringes t)
-  (minimap-major-modes '(prog-mode text-mode)))
 
 ;; search w/ ripgrep: https://rgel.readthedocs.io/en/latest/index.html
 (use-package rg)
@@ -749,14 +724,6 @@ otherwise add to start of list."
 ;;
 ;; AI
 ;;
-
-;; Integrate Grammarly with Flymake: https://github.com/emacs-grammarly/flymake-grammarly
-(use-package flymake-grammarly
-  :config (grammarly-load-from-authinfo) ;; See: https://github.com/emacs-grammarly/grammarly
-  :hook (text-mode . (lambda ()
-                       (when (and (buffer-file-name) (< 0 (buffer-size)) ;; this prevents flymake-grammarly from loading in temp buffers (used by org-web-tools)
-                                  (not (memq major-mode '(yaml-mode yaml-ts-mode)))) ;; this prevents flymake-grammarly from loading in YAML buffers
-                         (flymake-grammarly-load)))))
 
 ;; LLM Chat client: https://github.com/karthink/gptel
 (use-package gptel
