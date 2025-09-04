@@ -37,21 +37,22 @@
  '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(auto-package-update corfu counsel dape deft dockerfile-mode
-			             doom-themes editorconfig eldoc-box elfeed
-			             elysium embark embark-consult
-			             exec-path-from-shell fish-mode
-			             flymake-golangci forge gcmh
-			             git-link go-mode gotest gptel gptel-commit
-			             hotfuzz ivy lua-mode magit marginalia mcp
-			             nov ob-go org-remark org-roam
-			             org-web-tools paredit projectile
-			             protobuf-mode pyvenv pyvenv-auto
-			             rainbow-delimiters rg terraform-mode
-			             treesit-auto typescript-mode vline vterm
-			             which-key yaml-mode yasnippet))
+                         doom-themes editorconfig eldoc-box elfeed
+                         elysium embark embark-consult
+                         exec-path-from-shell fish-mode
+                         flymake-golangci flymake-grammarly forge gcmh
+                         git-link go-mode gotest gptel gptel-commit
+                         hotfuzz ivy lua-mode macher magit marginalia
+                         mcp minimap neotree nov ob-go org-remark
+                         org-roam org-web-tools paredit projectile
+                         protobuf-mode pyvenv pyvenv-auto
+                         rainbow-delimiters rg terraform-mode
+                         treesit-auto typescript-mode vline vterm
+                         which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
-   '((flymake-golangci :url
-		               "https://github.com/storvik/flymake-golangci.git")
+   '((macher :url "https://github.com/kmontag/macher.git")
+     (flymake-golangci :url
+                       "https://github.com/storvik/flymake-golangci.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -822,11 +823,20 @@ otherwise add to start of list."
   :hook
   (gptel-mode . gptel-mcp-connect))
 
-;; AI-generated code changes with gptel: https://github.com/lanceberge/elysium
-(use-package elysium)
+;; Project-aware file editing with LLMs based on gptel: https://github.com/kmontag/macher
+(use-package macher
+  :vc (:url "https://github.com/kmontag/macher.git" :rev :newest)
+  :after gptel
+  :custom
+  ;; The org UI has structured navigation and nice content folding.
+  (macher-action-buffer-ui 'org)
+  :config
+  ;; Register presets with gptel
+  (macher-install))
 
 ;; AI-generated commit messages with gptel: https://github.com/lakkiy/gptel-commit
-(use-package gptel-commit)
+(use-package gptel-commit
+  :after gptel)
 
 ;;
 ;; Misc.
