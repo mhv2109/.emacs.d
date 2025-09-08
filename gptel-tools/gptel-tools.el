@@ -5,7 +5,6 @@
 ;;; Code:
 
 (require 'gptel-tools-deft)
-(require 'gptel-tools-elfeed)
 (require 'gptel-tools-pdf)
 
 (provide 'gptel-tools)

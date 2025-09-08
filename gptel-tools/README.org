@@ -6,12 +6,11 @@
 
 * Overview
 
-=gptel-tools= is an Emacs Lisp package that extends [[https://github.com/karthink/gptel][gptel]] with additional tools for enhanced AI interaction. The package provides tools for searching org-mode notes, RSS feeds, and PDF files, making it easier to integrate external content into your AI conversations.
+=gptel-tools= is an Emacs Lisp package that extends [[https://github.com/karthink/gptel][gptel]] with additional tools for enhanced AI interaction. The package provides tools for searching org-mode notes and PDF files, making it easier to integrate external content into your AI conversations.
 
 * Features
 
 - *Deft Integration*: Search org-mode notes using deft with TF-IDF similarity scoring
-- *Elfeed Integration*: Fetch RSS feed headlines and entries
 - *PDF Processing*: Extract text content from PDF files
 - *TF-IDF Implementation*: Custom text vectorization for document similarity
 
@@ -22,7 +21,6 @@
 - Emacs with =lexical-binding= support
 - [[https://github.com/karthink/gptel][gptel]]
 - [[https://github.com/jrblevin/deft][deft]] (for note searching)
-- [[https://github.com/skeeto/elfeed][elfeed]] (for RSS feeds)
 - =pdftotext= command-line utility (for PDF processing)
 
 ** Manual Installation
@@ -51,25 +49,6 @@ Searches org-mode notes using deft and returns results with TF-IDF similarity sc
 *Example usage in AI conversation:*
 #+BEGIN_EXAMPLE
 Search my notes for "machine learning"
-#+END_EXAMPLE
-
-** Elfeed RSS Tools
-
-*** =elfeed_get_headlines=
-
-Returns news headlines from your Elfeed RSS feeds.
-
-*Returns:* JSON object with headlines array
-
-*** =elfeed_get_entries=
-
-Returns news headlines with their corresponding URLs from Elfeed RSS feeds.
-
-*Returns:* JSON object with entries containing titles and links
-
-*Example usage in AI conversation:*
-#+BEGIN_EXAMPLE
-What are the latest news headlines?
 #+END_EXAMPLE
 
 ** PDF Processing Tool
@@ -105,7 +84,6 @@ The package includes a complete TF-IDF (Term Frequency-Inverse Document Frequenc
 gptel-tools/
 ├── gptel-tools.el              # Main package file
 ├── gptel-tools-deft.el         # Deft integration
-├── gptel-tools-elfeed.el       # Elfeed integration
 ├── gptel-tools-pdf.el          # PDF processing
 └── gptel-tools-tfidf.el        # TF-IDF implementation
 #+END_EXAMPLE
@@ -119,16 +97,6 @@ Ensure deft is properly configured with your notes directory:
 #+BEGIN_SRC emacs-lisp
 (setq deft-directory "~/notes")
 (setq deft-extensions '("org" "md" "txt"))
-#+END_SRC
-
-** Elfeed Configuration
-
-Configure your RSS feeds in elfeed:
-
-#+BEGIN_SRC emacs-lisp
-(setq elfeed-feeds
-      '("https://example.com/feed.xml"
-        "https://another-site.com/rss"))
 #+END_SRC
 
 ** PDF Tool Requirements
@@ -157,13 +125,6 @@ When chatting with an AI assistant through gptel, you can use natural language:
 "Find notes about productivity workflows"
 #+END_EXAMPLE
 
-** Accessing News
-
-#+BEGIN_EXAMPLE
-"What are today's tech headlines?"
-"Show me the latest articles from my RSS feeds"
-#+END_EXAMPLE
-
 ** Processing PDFs
 
 #+BEGIN_EXAMPLE
@@ -189,14 +150,6 @@ Make sure your deft configuration is correct and your notes directory exists:
 (deft-refresh)  ; Refresh deft file cache
 #+END_SRC
 
-** Elfeed Empty Results
-
-Ensure elfeed has fetched content:
-
-#+BEGIN_SRC emacs-lisp
-(elfeed-update)  ; Update all feeds
-#+END_SRC
-
 * Contributing
 
 This package is designed to be modular. To add new tools:
@@ -220,4 +173,3 @@ This package is designed to be modular. To add new tools:
 
 - [[https://github.com/karthink/gptel][gptel]] - GPT client for Emacs
 - [[https://github.com/jrblevin/deft][deft]] - Quickly browse, filter, and edit plain text notes
-- [[https://github.com/skeeto/elfeed][elfeed]] - Emacs web feed reader

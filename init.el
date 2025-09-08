@@ -37,22 +37,22 @@
  '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(auto-package-update corfu counsel dape deft dockerfile-mode
-                         doom-themes editorconfig eldoc-box elfeed
-                         elysium embark embark-consult
-                         exec-path-from-shell fish-mode
-                         flymake-golangci flymake-grammarly forge gcmh
-                         git-link go-mode gotest gptel gptel-commit
-                         hotfuzz ivy lua-mode macher magit marginalia
-                         mcp minimap neotree nov ob-go org-remark
-                         org-roam org-web-tools paredit projectile
-                         protobuf-mode pyvenv pyvenv-auto
-                         rainbow-delimiters rg terraform-mode
-                         treesit-auto typescript-mode vline vterm
-                         which-key yaml-mode yasnippet))
+			 doom-themes editorconfig eldoc-box elfeed
+			 elysium embark embark-consult
+			 exec-path-from-shell fish-mode
+			 flymake-golangci flymake-grammarly forge gcmh
+			 git-link go-mode gotest gptel gptel-commit
+			 hotfuzz ivy lua-mode macher magit marginalia
+			 mcp minimap neotree nov ob-go org-remark
+			 org-roam org-web-tools paredit projectile
+			 protobuf-mode pyvenv pyvenv-auto
+			 rainbow-delimiters rg terraform-mode
+			 treesit-auto typescript-mode vline vterm
+			 which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((macher :url "https://github.com/kmontag/macher.git")
      (flymake-golangci :url
-                       "https://github.com/storvik/flymake-golangci.git")
+		       "https://github.com/storvik/flymake-golangci.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -808,10 +808,6 @@ otherwise add to start of list."
              "search_documentation" "read_documentation" "recommend"
              ;; web
              "search" "fetch_content"))
-  (gptel-make-preset 'rss
-    :description "A preset optimized for asking questions about news from RSS feeds.."
-    :system "You are an RSS feed summarizer. Your task is to create concise, informative summaries of RSS feed entries while preserving the key information and context. Your primary goal is to provide accurate, up-to-date information directly from RSS feeds. Include links for popular stories."
-    :tools '("elfeed_get_headlines" "elfeed_get_entries" "fetch"))
   (gptel-make-preset 'org
     :description "A preset optimized for asking questions about orm-mode notes."
     :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
