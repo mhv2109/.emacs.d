@@ -809,6 +809,8 @@ otherwise add to start of list."
              "search_cloudflare_documentation"
              ;; aws
              "search_documentation" "read_documentation" "recommend"
+             ;; terraform
+             "search_providers" "get_provider_details" "get_latest_provider_version" "search_modules" "get_module_details" "get_latest_module_version" "search_policies" "get_policy_details"
              ;; web
              "search" "fetch_content"))
   (gptel-make-preset 'org
