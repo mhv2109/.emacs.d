@@ -781,13 +781,16 @@ otherwise add to start of list."
   :if (version<= "30.1" emacs-version)
   :custom
   ;; not sure why, but getting better results with mcp-remote vs. using :url
-  (mcp-hub-servers `(("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; requires npx
+  (mcp-hub-servers `(;; general
                      ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; requires node+npm+npx
                      ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
+                     ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server"))) ;; requires uvx
+                     ;; programming libraries, platforms, and tools
+                     ("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; requires npx
                      ("git" . (:command "npx" :args ("-y" "@cyanheads/git-mcp-server@v2.2.2"))) ;; scanned with snyk cli
                      ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
-                     ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server"))) ;; requires uvx
+                     ("terraform" . (:command "go" :args ("run" "github.com/hashicorp/terraform-mcp-server/cmd/terraform-mcp-server@main" "stdio"))) ;; requires go
                      ))
   :config
   (require 'mcp-hub)
