@@ -781,6 +781,7 @@ otherwise add to start of list."
                      ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
                      ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server"))) ;; requires uvx
                      ("desktop-commander" . (:command "npx" :args ("-y" "@wonderwhy-er/desktop-commander@latest")))
+                     ("sequential-thinking" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-sequential-thinking")))
                      ;; programming libraries, platforms, and tools
                      ("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; requires npx
                      ("git" . (:command "npx" :args ("-y" "@cyanheads/git-mcp-server@v2.2.2"))) ;; scanned with snyk cli
