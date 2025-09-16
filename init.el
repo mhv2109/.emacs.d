@@ -772,11 +772,6 @@ otherwise add to start of list."
   :bind
   (("C-c g" . gptel-menu)))
 
-;; additional tools for gptel
-;; (add-to-list 'load-path (expand-file-name (concat user-emacs-directory "gptel-tools")))
-;; (use-package gptel-tools
-;;   :ensure nil)
-
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
   :if (version<= "30.1" emacs-version)
