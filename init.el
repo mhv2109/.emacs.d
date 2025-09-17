@@ -790,7 +790,9 @@ otherwise add to start of list."
                                                                       "mcp/desktop-commander:latest"))) ;; run in docker so desktop-commander has free reign to install tools
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ;; programming libraries, platforms, and tools
-                     ("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; Library docs (uses mcp-remote)
+                     ("context7" . (:command "docker" :args ("run" "-i" "--rm"
+                                                             "-e" "MCP_TRANSPORT=stdio" ;; use stdin/stdout vs HTTP API
+                                                             "mcp/context7:latest"))) ;; Library docs
                      ("aws" . (:command "docker" :args ("run" "-i" "--rm" "mcp/aws-documentation:latest"))) ;; AWS documentation
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; Cloudflare docs (uses mcp-remote)
                      ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
