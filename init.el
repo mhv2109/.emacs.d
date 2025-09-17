@@ -778,8 +778,8 @@ otherwise add to start of list."
   :custom
   ;; not sure why, but getting better results with mcp-remote vs. using :url
   (mcp-hub-servers `(;; general
-                     ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
-                     ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server"))) ;; requires uvx
+                     ("fetch" . (:command "docker" :args ("run" "-i" "--rm" "mcp/fetch:latest"))) ;; fetch web content
+                     ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
                      ("desktop-commander" . (:command "docker" :args ("run" "-i" "--rm"
                                                                       ;; volume mounting strategy copied from install script: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/refs/heads/main/install-docker.sh
                                                                       "-v" ,(concat (getenv "HOME") ":" "/home/" (getenv "USER")) ;; mount and limit access to my home directory
@@ -788,13 +788,12 @@ otherwise add to start of list."
                                                                       "-v" "dc-workspace:/workspace" ;; development files
                                                                       "-v" "dc-packages:/var" ;; package databases, caches, logs
                                                                       "mcp/desktop-commander:latest"))) ;; run in docker so desktop-commander has free reign to install tools
-                     ("sequential-thinking" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-sequential-thinking")))
+                     ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ;; programming libraries, platforms, and tools
-                     ("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; requires npx
-                     ("git" . (:command "npx" :args ("-y" "@cyanheads/git-mcp-server@v2.2.2"))) ;; scanned with snyk cli
-                     ("aws" . (:command "uvx" :args ("awslabs.aws-documentation-mcp-server@latest"))) ;; requires uvx
-                     ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; requires npx
-                     ("terraform" . (:command "go" :args ("run" "github.com/hashicorp/terraform-mcp-server/cmd/terraform-mcp-server@main" "stdio"))) ;; requires go
+                     ("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; Library docs (uses mcp-remote)
+                     ("aws" . (:command "docker" :args ("run" "-i" "--rm" "mcp/aws-documentation:latest"))) ;; AWS documentation
+                     ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; Cloudflare docs (uses mcp-remote)
+                     ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
                      ))
   :config
   (require 'mcp-hub)
