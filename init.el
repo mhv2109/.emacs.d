@@ -800,34 +800,6 @@ otherwise add to start of list."
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
-  ;; gptel tools are defined here since most are provided by mcp servers
-  (gptel-make-preset 'code
-    :description "A preset optimized for asking questions about code and software architecture."
-    :system "You are a specialized programming assistant that helps developers by searching, fetching, and analyzing documentation from GitHub repositories, Context7, Cloudflare, and AWS to answer programming questions accurately and comprehensively. Your primary goal is to provide accurate, up-to-date information directly from documentation, source code, and the web. Include reference links in response. Minimize git tool calls to preserve available context tokens."
-    :tools '(;; context7
-             "resolve-library-id" "get-library-docs"
-             ;; fetch
-             "fetch"
-             ;; desktop-commander
-             "start_process" "interact_with_process" "read_process_output" "force_terminate" "list_sessions" "list_processes" "kill_process" "read_file" "read_multiple_files" "write_file" "create_directory" "list_directory" "move_file" "start_search" "get_more_search_results" "stop_search" "list_searches" "get_file_info" "edit_block"
-             ;; git
-             "git_branch" "git_checkout" "git_cherry_pick" "git_clear_working_dir" "git_commit" "git_diff" "git_init" "git_log" "git_merge" "git_rebase" "git_reset" "git_set_working_dir" "git_show" "git_stash" "git_status" "git_tag" "git_worktree" "git_wrapup_instructions"
-             ;; cloudflare
-             "search_cloudflare_documentation"
-             ;; aws
-             "search_documentation" "read_documentation" "recommend"
-             ;; terraform
-             "search_providers" "get_provider_details" "get_latest_provider_version" "search_modules" "get_module_details" "get_latest_module_version" "search_policies" "get_policy_details"
-             ;; web
-             "search" "fetch_content"))
-  ;; (gptel-make-preset 'org
-  ;;   :description "A preset optimized for asking questions about orm-mode notes."
-  ;;   :system "You are an assistant for examining and summarizing org-mode notes. Your primary goal is to provide accurate, up-to-date information directly from my org-mode notes. Include reference links to files in response."
-  ;;   :tools '("deft_search_files" "fetch" "read_file" "pdf_to_text"))
-  (gptel-make-preset 'web
-    :description "A preset optimized for searching the web."
-    :system "You are an assistant for searching the web, and fetching and summarizing web content. Your primary goal is to provide accurate, up-to-date information directly from the web by using 'search' tool from mcp-duckduckgo and 'fetch_content' tool to gather details from relevant webpages. Include links in responses."
-    :tools '("search" "fetch_content" "fetch"))
   :hook
   (gptel-mode . gptel-mcp-connect))
 
