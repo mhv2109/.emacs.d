@@ -780,7 +780,14 @@ otherwise add to start of list."
   (mcp-hub-servers `(;; general
                      ("fetch" . (:command "uvx" :args ("mcp-server-fetch"))) ;; requires uvx
                      ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server"))) ;; requires uvx
-                     ("desktop-commander" . (:command "npx" :args ("-y" "@wonderwhy-er/desktop-commander@latest")))
+                     ("desktop-commander" . (:command "docker" :args ("run" "-i" "--rm"
+                                                                      ;; volume mounting strategy copied from install script: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/refs/heads/main/install-docker.sh
+                                                                      "-v" ,(concat (getenv "HOME") ":" "/home/" (getenv "USER")) ;; mount and limit access to my home directory
+                                                                      "-v" "dc-system:/usr" ;; system packages and libraries
+                                                                      "-v" "dc-home:/root" ;; user configs
+                                                                      "-v" "dc-workspace:/workspace" ;; development files
+                                                                      "-v" "dc-packages:/var" ;; package databases, caches, logs
+                                                                      "mcp/desktop-commander:latest"))) ;; run in docker so desktop-commander has free reign to install tools
                      ("sequential-thinking" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-sequential-thinking")))
                      ;; programming libraries, platforms, and tools
                      ("context7" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.context7.com/mcp"))) ;; requires npx
