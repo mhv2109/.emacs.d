@@ -781,6 +781,8 @@ otherwise add to start of list."
                      ("fetch" . (:command "docker" :args ("run" "-i" "--rm" "mcp/fetch:latest"))) ;; fetch web content
                      ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
                      ("desktop-commander" . (:command "docker" :args ("run" "-i" "--rm"
+                                                                      ;; allow container to access mounted directories (potentially insecure, but limited to this container)
+                                                                      "--security-opt" "label=disable"
                                                                       ;; volume mounting strategy copied from install script: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/refs/heads/main/install-docker.sh
                                                                       "-v" ,(concat (getenv "HOME") ":" "/home/" (getenv "USER")) ;; mount and limit access to my home directory
                                                                       "-v" "dc-system:/usr" ;; system packages and libraries
