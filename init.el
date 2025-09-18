@@ -804,7 +804,7 @@ otherwise add to start of list."
 
 Use the tools at your disposal to solve problems and answer questions.
 
-Your desktop environment is a self-contained Alpine Linux Docker Container with the user's home directory mounted at '/home/%s'. Use 'apk' to install packages." (getenv "USER")))))
+Your desktop environment is a self-contained Alpine Linux Docker Container with the user's home directory mounted at '/home/%s'. Use 'apk' to install packages. Minimize the number of commands run to complete the task at hand in order to preserve context." (getenv "USER")))))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
