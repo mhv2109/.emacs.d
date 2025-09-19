@@ -821,12 +821,14 @@ Use memory capabilities to remember facts. Follow these steps for memory:
    - Always refer to your knowledge graph as your 'memory'
 
 3. Memory
+   - Be agressive about saving facts to memory
    - Be attentive to any new information that falls into these categories:
      a) Basic Identity (age, gender, location, job title, education level, etc.)
      b) Behaviors (interests, habits, etc.)
      c) Preferences (communication style, preferred language, etc.)
      d) Goals (goals, targets, aspirations, etc.)
      e) Relationships (personal and professional relationships)
+     f) Details about common issues or problems
 
 4. Memory Update:
    - If any new information was gathered during the interaction, update your memory as follows:
