@@ -780,18 +780,19 @@ otherwise add to start of list."
   (mcp-hub-servers `(;; general
                      ("fetch" . (:command "docker" :args ("run" "-i" "--rm" "mcp/fetch:latest"))) ;; fetch web content
                      ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
-                     ("desktop-commander" . (:command "docker" :args ("run" "-i" "--rm"
-                                                                      ;; allow container to access mounted directories (potentially insecure, but limited to this container)
-                                                                      "--security-opt" "label=disable"
-                                                                      ;; volume mounting strategy copied from install script: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/refs/heads/main/install-docker.sh
-                                                                      "-v" ,(concat (getenv "HOME") ":" "/home/" (getenv "USER")) ;; mount and limit access to my home directory
-                                                                      "-v" "dc-system:/usr" ;; system packages and libraries
-                                                                      "-v" "dc-home:/root" ;; user configs
-                                                                      "-v" "dc-workspace:/workspace" ;; development files
-                                                                      "-v" "dc-packages:/var" ;; package databases, caches, logs
-                                                                      "mcp/desktop-commander:latest"))) ;; run in docker so desktop-commander has free reign to install tools
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ;; programming libraries, platforms, and tools
+                     ("serena" . (:command "docker" :args ("run" "--rm" "-i"
+                                                           ;; mount ~/src/
+                                                           "-v" ,(concat (getenv "HOME") "/src" ":/workspaces/src")
+                                                           "-v" "serena-system:/usr" ;; system packages and libraries
+                                                           "-v" "serena-packages:/var" ;; package databases, caches, logs
+                                                           ;; UI ports
+                                                           "-p" "9121:9121"
+                                                           "-p" "24282:24282"
+                                                           "-e" "SERENA_DOCKER=1"
+                                                           "ghcr.io/oraios/serena:latest"
+                                                           "serena" "start-mcp-server" "--transport" "stdio" "--mode" "interactive")))
                      ("context7" . (:command "docker" :args ("run" "-i" "--rm"
                                                              "-e" "MCP_TRANSPORT=stdio" ;; use stdin/stdout vs HTTP API
                                                              "mcp/context7:latest"))) ;; Library docs
@@ -802,11 +803,12 @@ otherwise add to start of list."
   ;; since most capabilities are provided by MCP servers, system prompt is defined here
   (gptel-directives `((default . ,(format "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Use the tools at your disposal to solve problems and answer questions.
 
-You have access to a self-contained Alpine Linux Docker Container as a desktop environment. Follow the following guidelines when working with the desktop environment:
-- The user's home directory mounted at '/home/%s'. Assume this is the path referred to by '~/'.
-- Use 'apk' to install packages. For Python, avoid 'pip' and virtualenvs.
-- Minimize the number of commands run to complete the task at hand in order to preserve context."
-                                          (getenv "USER")))))
+You have access to a self-contained Debian Linux Docker Container as a desktop environment. Follow the following guidelines when working with the desktop environment:
+- The user's workspace directory mounted at '/workspaces/src'. Assume this is the directory referred to as '~/src' or 'src/'.
+  - When no project is activated, assume this directory is $PWD when provided relative paths.
+  - When a project is activated, assume the project root is $PWD when provided relative paths.
+- Use 'apt' to install packages.
+- Minimize the number of commands run to complete the task at hand in order to preserve context."))))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
