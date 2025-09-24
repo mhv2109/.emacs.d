@@ -781,6 +781,7 @@ otherwise add to start of list."
                      ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ("markitdown" . (:command "uvx" :args ("markitdown-mcp"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
+                     ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; grant filesystem access to home directory
                      ;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ("context7" . (:command "docker" :args ("run" "-i" "--rm"
@@ -794,7 +795,9 @@ otherwise add to start of list."
   (require 'mcp-hub)
   (require 'gptel-integrations)
   :hook
-  (gptel-mode . gptel-mcp-connect))
+  (gptel-mode . (lambda ()
+                  ;; choose tools interactively
+                  (gptel-mcp-connect nil nil t))))
 
 ;; AI-generated commit messages with gptel: https://github.com/lakkiy/gptel-commit
 (use-package gptel-commit
