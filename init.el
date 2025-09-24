@@ -800,11 +800,13 @@ otherwise add to start of list."
                      ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
                      ))
   ;; since most capabilities are provided by MCP servers, system prompt is defined here
-  (gptel-directives `((default . ,(format "You are a large language model living in Emacs and a helpful assistant. Respond concisely.
+  (gptel-directives `((default . ,(format "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Use the tools at your disposal to solve problems and answer questions.
 
-Use the tools at your disposal to solve problems and answer questions.
-
-Your desktop environment is a self-contained Alpine Linux Docker Container with the user's home directory mounted at '/home/%s'. Use 'apk' to install packages. Minimize the number of commands run to complete the task at hand in order to preserve context." (getenv "USER")))))
+You have access to a self-contained Alpine Linux Docker Container as a desktop environment. Follow the following guidelines when working with the desktop environment:
+- The user's home directory mounted at '/home/%s'. Assume this is the path referred to by '~/'.
+- Use 'apk' to install packages. For Python, avoid 'pip' and virtualenvs.
+- Minimize the number of commands run to complete the task at hand in order to preserve context."
+                                          (getenv "USER")))))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
