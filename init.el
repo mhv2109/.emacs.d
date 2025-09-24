@@ -732,7 +732,6 @@ otherwise add to start of list."
   (gptel-default-mode 'org-mode)
   (gptel-track-media t)
   (gptel-include-tool-results t)
-  (gptel-confirm-tool-calls t) ;; some tools are potentially destructive
   :config
   ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
@@ -782,17 +781,7 @@ otherwise add to start of list."
                      ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ;; programming libraries, platforms, and tools
-                     ("serena" . (:command "docker" :args ("run" "--rm" "-i"
-                                                           ;; mount ~/src/
-                                                           "-v" ,(concat (getenv "HOME") "/src" ":/workspaces/src")
-                                                           "-v" "serena-system:/usr" ;; system packages and libraries
-                                                           "-v" "serena-packages:/var" ;; package databases, caches, logs
-                                                           ;; UI ports
-                                                           "-p" "9121:9121"
-                                                           "-p" "24282:24282"
-                                                           "-e" "SERENA_DOCKER=1"
-                                                           "ghcr.io/oraios/serena:latest"
-                                                           "serena" "start-mcp-server" "--transport" "stdio" "--mode" "interactive")))
+                     ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ("context7" . (:command "docker" :args ("run" "-i" "--rm"
                                                              "-e" "MCP_TRANSPORT=stdio" ;; use stdin/stdout vs HTTP API
                                                              "mcp/context7:latest"))) ;; Library docs
@@ -800,15 +789,6 @@ otherwise add to start of list."
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; Cloudflare docs (uses mcp-remote)
                      ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
                      ))
-  ;; since most capabilities are provided by MCP servers, system prompt is defined here
-  (gptel-directives `((default . ,(format "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Use the tools at your disposal to solve problems and answer questions.
-
-You have access to a self-contained Debian Linux Docker Container as a desktop environment. Follow the following guidelines when working with the desktop environment:
-- The user's workspace directory mounted at '/workspaces/src'. Assume this is the directory referred to as '~/src' or 'src/'.
-  - When no project is activated, assume this directory is $PWD when provided relative paths.
-  - When a project is activated, assume the project root is $PWD when provided relative paths.
-- Use 'apt' to install packages.
-- Minimize the number of commands run to complete the task at hand in order to preserve context."))))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
