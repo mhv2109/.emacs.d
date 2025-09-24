@@ -795,17 +795,6 @@ otherwise add to start of list."
   :hook
   (gptel-mode . gptel-mcp-connect))
 
-;; Project-aware file editing with LLMs based on gptel: https://github.com/kmontag/macher
-(use-package macher
-  :vc (:url "https://github.com/kmontag/macher.git" :rev :newest)
-  :after gptel
-  :custom
-  ;; The org UI has structured navigation and nice content folding.
-  (macher-action-buffer-ui 'org)
-  :config
-  ;; Register presets with gptel
-  (macher-install))
-
 ;; AI-generated commit messages with gptel: https://github.com/lakkiy/gptel-commit
 (use-package gptel-commit
   :after gptel)
