@@ -651,6 +651,20 @@ otherwise add to start of list."
   :config
   ;; kubebuilder tests take a little bit to start
   (setq dape-request-timeout 30)
+  ;; Debug Go file under point
+  (add-to-list 'dape-configs
+               `(dlv-current-file
+                 modes (go-mode go-ts-mode)
+                 ensure dape-ensure-command
+                 fn dape-config-autoport
+                 command "dlv"
+                 command-args ("dap" "--listen" "127.0.0.1::autoport")
+                 command-cwd ,(lambda () (file-name-directory (buffer-file-name)))
+                 port :autoport
+                 :type "debug"
+                 :request "launch"
+                 :mode "debug"
+                 :program ,(lambda () (buffer-file-name))))
   ;; Run Go unit test under point: https://github.com/svaante/dape/wiki#go---dlv
   (add-to-list 'dape-configs
                `(dlv-unit-test
