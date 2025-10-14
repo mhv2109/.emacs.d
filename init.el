@@ -37,22 +37,22 @@
  '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(auto-package-update corfu counsel dape deft dockerfile-mode
-			 doom-themes editorconfig eldoc-box elfeed
-			 elysium embark embark-consult
-			 exec-path-from-shell fish-mode
-			 flymake-golangci flymake-grammarly forge gcmh
-			 git-link go-mode gotest gptel gptel-commit
-			 hotfuzz ivy lua-mode macher magit marginalia
-			 mcp minimap neotree nov ob-go org-remark
-			 org-roam org-web-tools paredit projectile
-			 protobuf-mode pyvenv pyvenv-auto
-			 rainbow-delimiters rg terraform-mode
-			 treesit-auto typescript-mode vline vterm
-			 which-key yaml-mode yasnippet))
+                         doom-themes editorconfig eldoc-box elfeed
+                         elysium embark embark-consult
+                         exec-path-from-shell fish-mode
+                         flymake-golangci flymake-grammarly forge gcmh
+                         git-link go-mode gotest gptel gptel-commit
+                         hotfuzz ivy lua-mode macher magit marginalia
+                         mcp minimap neotree nov ob-go org-remark
+                         org-roam org-web-tools paredit projectile
+                         protobuf-mode pyvenv pyvenv-auto
+                         rainbow-delimiters rg terraform-mode
+                         treesit-auto typescript-mode ultra-scroll
+                         vline vterm which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
-   '((macher :url "https://github.com/kmontag/macher.git")
-     (flymake-golangci :url
-		       "https://github.com/storvik/flymake-golangci.git")
+   '((flymake-golangci :url
+                       "https://github.com/storvik/flymake-golangci.git")
+     (macher :url "https://github.com/kmontag/macher.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
@@ -265,6 +265,11 @@ targets."
 
 ;; better integrated terminal: https://github.com/akermu/emacs-libvterm
 (use-package vterm)
+
+;; smoother scrolling on mac: https://github.com/jdtsmith/ultra-scroll
+(use-package ultra-scroll
+  :if (memq window-system '(mac ns))
+  :config (ultra-scroll-mode 1))
 
 ;;
 ;; Git
@@ -1058,6 +1063,9 @@ other window."
       pixel-resolution-fine-flag t
       mouse-wheel-scroll-amount '(1)
       mouse-wheel-progressive-speed nil)
+
+;; more gracefully handle files with long lines
+(global-so-long-mode 1)
 
 ;; I know this is bad, but...
 (setq warning-minimum-level :emergency)
