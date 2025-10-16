@@ -37,21 +37,21 @@
  '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(auto-package-update corfu counsel dape deft dockerfile-mode
-                         doom-themes editorconfig eldoc-box elfeed
-                         elysium embark embark-consult
-                         exec-path-from-shell fish-mode
-                         flymake-golangci flymake-grammarly forge gcmh
-                         git-link go-mode gotest gptel gptel-commit
-                         hotfuzz ivy lua-mode macher magit marginalia
-                         mcp minimap neotree nov ob-go org-remark
-                         org-roam org-web-tools paredit projectile
-                         protobuf-mode pyvenv pyvenv-auto
-                         rainbow-delimiters rg terraform-mode
-                         treesit-auto typescript-mode ultra-scroll
-                         vline vterm which-key yaml-mode yasnippet))
+			 doom-themes editorconfig eldoc-box elfeed
+			 elysium embark embark-consult
+			 exec-path-from-shell fish-mode
+			 flymake-golangci flymake-grammarly forge gcmh
+			 git-link go-mode gotest gptel gptel-commit
+			 hotfuzz ivy lua-mode macher magit marginalia
+			 mcp minimap neotree nov ob-go org-remark
+			 org-roam org-web-tools paredit projectile
+			 protobuf-mode pyvenv pyvenv-auto
+			 rainbow-delimiters rg terraform-mode
+			 treesit-auto typescript-mode vline vterm
+			 which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((flymake-golangci :url
-                       "https://github.com/storvik/flymake-golangci.git")
+		       "https://github.com/storvik/flymake-golangci.git")
      (macher :url "https://github.com/kmontag/macher.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
@@ -800,6 +800,7 @@ otherwise add to start of list."
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ("markitdown" . (:command "uvx" :args ("markitdown-mcp"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
                      ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; grant filesystem access to home directory
+                     ("memory" . (:command "memory-mcp" :args ("-memory-file-path" ,(concat (getenv "HOME") "/.memory-mcp/memory.db"))))
                      ;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ("context7" . (:command "docker" :args ("run" "-i" "--rm"
