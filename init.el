@@ -266,9 +266,8 @@ targets."
 ;; better integrated terminal: https://github.com/akermu/emacs-libvterm
 (use-package vterm)
 
-;; smoother scrolling on mac: https://github.com/jdtsmith/ultra-scroll
+;; smoother scrolling: https://github.com/jdtsmith/ultra-scroll
 (use-package ultra-scroll
-  :if (memq window-system '(mac ns))
   :config (ultra-scroll-mode 1))
 
 ;;
