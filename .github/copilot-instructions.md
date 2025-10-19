@@ -1,3 +1,0 @@
-- Write idiomatic elisp that is *correct*, *clear*, and *efficient*, in that order.
-- Prefer lexical scoping.
-- Keep documentation and comments up-to-date. Use concise, clear comments and docstrings.
