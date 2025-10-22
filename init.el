@@ -44,7 +44,7 @@
                          git-link go-mode gotest gptel gptel-commit
                          hotfuzz ivy lua-mode macher magit marginalia
                          mcp minimap neotree nov ob-go org-remark
-                         org-roam org-web-tools paredit projectile
+                         org-roam org-web-tools paredit
                          protobuf-mode pyvenv pyvenv-auto
                          rainbow-delimiters rg terraform-mode
                          treesit-auto typescript-mode ultra-scroll
@@ -152,24 +152,6 @@
 
 ;; search w/ ripgrep: https://rgel.readthedocs.io/en/latest/index.html
 (use-package rg)
-
-;; project management utilities: https://github.com/bbatsov/projectile
-(use-package projectile
-  :custom
-  (projectile-switch-project-action 'neotree-projectile-action)
-  :bind-keymap
-  (("C-c p" . projectile-command-map))
-  :config
-  (defun copy-projectile-project-path ()
-    "Copy the current Projectile project root directory to the kill ring."
-    (interactive)
-    (if (projectile-project-p)
-        (let ((project-root (projectile-project-root)))
-          (kill-new project-root)
-          (message "Project root copied to kill ring: %s" project-root))
-      (message "Not in a Projectile project")))
-  :hook
-  (after-init . projectile-mode))
 
 ;; minibuffer autocomplete config
 ;; https://github.com/abo-abo/swiper
@@ -932,6 +914,16 @@ other window."
         (kill-new filename)
         (message "Copied to kill ring: %s" filename))
     (message "Buffer is not visiting a file")))
+
+(defun copy-project-path ()
+  "Copy the current project's root directory to the kill ring."
+  (interactive)
+  (if-let ((current (project-current))
+           (project-root (car (last current))))
+      (progn
+        (kill-new project-root)
+        (message "Project root copied to kill ring: %s" project-root))
+    (message "Not in a project")))
 
 ;; configure TRAMP: https://www.gnu.org/software/tramp/
 (use-package tramp
