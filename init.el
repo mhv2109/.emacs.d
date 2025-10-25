@@ -730,10 +730,11 @@ otherwise add to start of list."
   (gptel-default-mode 'org-mode)
   (gptel-track-media t)
   (gptel-include-tool-results t)
+  (gptel-org-branching-context t)
   :config
   ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
-  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
-        (alist-get 'org-mode gptel-response-prefix-alist) "** Response:\n\n")
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "*@User:*\n\n"
+        (alist-get 'org-mode gptel-response-prefix-alist) "*@Assistant:*\n\n")
   ;; configure Ollama, if installed
   (when (locate-file "ollama" exec-path exec-suffixes)
     (setq gptel-ollama-backend (gptel-make-ollama "Ollama"
