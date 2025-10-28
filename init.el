@@ -37,20 +37,18 @@
  '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(auto-package-update corfu counsel dape deft dockerfile-mode
-                         doom-themes editorconfig eldoc-box elfeed
-                         elysium embark embark-consult
+                         doom-themes eldoc-box elfeed embark-consult
                          exec-path-from-shell fish-mode
-                         flymake-golangci flymake-grammarly forge gcmh
-                         git-link go-mode gotest gptel gptel-commit
-                         hotfuzz ivy lua-mode macher magit marginalia
-                         mcp minimap neotree nov ob-go org-remark
-                         org-roam org-web-tools paredit
-                         protobuf-mode pyvenv pyvenv-auto
-                         rainbow-delimiters rg terraform-mode
-                         treesit-auto typescript-mode ultra-scroll
-                         vline vterm which-key yaml-mode yasnippet))
+                         flymake-golangci forge gcmh git-link go-mode
+                         gotest gptel-commit gptel-prompts hotfuzz
+                         lua-mode marginalia mcp nov ob-go org-remark
+                         org-roam org-web-tools paredit protobuf-mode
+                         pyvenv-auto rainbow-delimiters rg
+                         terraform-mode treesit-auto typescript-mode
+                         ultra-scroll vline vterm yaml-mode yasnippet))
  '(package-vc-selected-packages
-   '((flymake-golangci :url
+   '((gptel-prompts :url "https://github.com/jwiegley/gptel-prompts.git")
+     (flymake-golangci :url
                        "https://github.com/storvik/flymake-golangci.git")
      (macher :url "https://github.com/kmontag/macher.git")
      (aider :url "https://github.com/tninja/aider.el")))
@@ -770,6 +768,17 @@ otherwise add to start of list."
         gptel-model 'claude-sonnet-4.5)
   :bind
   (("C-c g" . gptel-menu)))
+
+;; Prompt management: https://github.com/jwiegley/gptel-prompts
+;; Great source for prompts: https://github.com/github/awesome-copilot
+(use-package gptel-prompts
+  :after gptel
+  :demand t
+  :vc (:url "https://github.com/jwiegley/gptel-prompts.git" :rev :newest)
+  :config
+  (gptel-prompts-update)
+  ;; Ensure prompts are updated if prompt files change
+  (gptel-prompts-add-update-watchers))
 
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
