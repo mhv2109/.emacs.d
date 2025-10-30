@@ -920,20 +920,22 @@ other window."
 (defun copy-buffer-file-path ()
   "Copy the current buffer's file path to the kill ring."
   (interactive)
-  (if-let ((filename (buffer-file-name)))
+  (if-let ((filename (buffer-file-name))
+           (filename-absolute (expand-file-name filename)))
       (progn
-        (kill-new filename)
-        (message "Copied to kill ring: %s" filename))
+        (kill-new filename-absolute)
+        (message "Copied to kill ring: %s" filename-absolute))
     (message "Buffer is not visiting a file")))
 
 (defun copy-project-path ()
   "Copy the current project's root directory to the kill ring."
   (interactive)
   (if-let ((current (project-current))
-           (project-root (car (last current))))
+           (project-root (car (last current)))
+           (project-root-absolute (expand-file-name project-root)))
       (progn
-        (kill-new project-root)
-        (message "Project root copied to kill ring: %s" project-root))
+        (kill-new project-root-absolute)
+        (message "Project root copied to kill ring: %s" project-root-absolute))
     (message "Not in a project")))
 
 ;; configure TRAMP: https://www.gnu.org/software/tramp/
