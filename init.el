@@ -766,6 +766,11 @@ otherwise add to start of list."
   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
         gptel-backend gptel-copilot-backend
         gptel-model 'claude-sonnet-4.5)
+  ;; always open gptel in same window
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name &rest args)
+                   (buffer-local-value 'gptel-mode (get-buffer buffer-or-name)))
+                 (display-buffer-same-window)))
   :bind
   (("C-c g" . gptel-menu)))
 
@@ -913,6 +918,28 @@ other window."
    ("o" . elfeed-entry-other-window)))
 
 ;;
+;; Window and buffer management
+;;
+
+;; quickly cycle buffers
+(global-set-key (kbd "M-[") 'previous-buffer)
+(global-set-key (kbd "M-]") 'next-buffer)
+
+;; quickly swap between windows
+(windmove-default-keybindings)
+(setq windmove-wrap-around nil)
+
+;; See "Recommended Settings": https://www.masteringemacs.org/article/demystifying-emacs-window-manager
+(setq switch-to-buffer-in-dedicated-window 'pop
+      switch-to-buffer-obey-display-actions t)
+
+;; display org-agenda in same window vs. closing others+splitting
+(add-to-list 'display-buffer-alist
+             '("\\*Agenda Commands\\*" (display-buffer-same-window)))
+(add-to-list 'display-buffer-alist
+             '("\\*Org Agenda\\*" (display-buffer-same-window)))
+
+;;
 ;; Other customizations
 ;;
 
@@ -961,14 +988,6 @@ other window."
 (setq display-fill-column-indicator-column 80) ;; default
 (add-hook 'java-mode-hook (lambda () (setq-local display-fill-column-indicator-column 100))) ;; java
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
-
-;; quickly cycle buffers
-(global-set-key (kbd "M-[") 'previous-buffer)
-(global-set-key (kbd "M-]") 'next-buffer)
-
-;; quickly swap between windows
-(windmove-default-keybindings)
-(setq windmove-wrap-around nil)
 
 ;; Treat snake_case as one word
 (global-superword-mode 1)
