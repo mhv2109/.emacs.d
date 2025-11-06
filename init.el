@@ -794,8 +794,16 @@ otherwise add to start of list."
                      ("fetch" . (:command "docker" :args ("run" "-i" "--rm" "mcp/fetch:latest"))) ;; fetch web content
                      ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
-                     ("markitdown" . (:command "uvx" :args ("markitdown-mcp"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
-                     ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,(getenv "HOME")))) ;; grant filesystem access to home directory
+                     ("markitdown" . (:command "docker" :args ("run" "-i" "--rm"
+                                                               "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
+                                                               "mcp/markitdown:latest"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
+                     ("desktop-commander" . (:command "docker" :args ("run" "-i" "--rm"
+                                                                      ;; volume mounting strategy copied from install script: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/refs/heads/main/install-docker.sh
+                                                                      "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
+                                                                      "-v" "dc-system:/usr" ;; system packages and libraries
+                                                                      "-v" "dc-home:/root" ;; user configs
+                                                                      "-v" "dc-packages:/var" ;; package databases, caches, logs
+                                                                      "mcp/desktop-commander:latest"))) ;; run in docker so desktop-commander has free reign to install tools
                      ;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
