@@ -795,9 +795,13 @@ otherwise add to start of list."
                      ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ("markitdown" . (:command "docker" :args ("run" "-i" "--rm"
+                                                               ;; allow container to access mounted directories (potentially insecure, but limited to this container)
+                                                               "--security-opt" "label=disable"
                                                                "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
                                                                "mcp/markitdown:latest"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
                      ("desktop-commander" . (:command "docker" :args ("run" "-i" "--rm"
+                                                                      ;; allow container to access mounted directories (potentially insecure, but limited to this container)
+                                                                      "--security-opt" "label=disable"
                                                                       ;; volume mounting strategy copied from install script: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/refs/heads/main/install-docker.sh
                                                                       "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
                                                                       "-v" "dc-system:/usr" ;; system packages and libraries
