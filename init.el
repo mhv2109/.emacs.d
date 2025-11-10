@@ -451,6 +451,12 @@ targets."
   (setq org-attach-id-dir (concat (file-truename org-directory) "/data/"))
   ;; configure archival (absolute)
   (setq org-archive-location (concat (file-truename org-directory) "/archived/%s::"))
+  ;; open org in ~/org directory in same window
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-name action)
+                   (and (string-match-p "\\.org\\'" buffer-name)
+                        (string-match-p org-directory (buffer-file-name (get-buffer buffer-name)))))
+                 (display-buffer-same-window)))
   :hook
   ;; auto-format all tables on save
   (before-save . (lambda ()
