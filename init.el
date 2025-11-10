@@ -533,6 +533,13 @@ targets."
         (concat (propertize "${tags} " 'face 'org-tag)
                 "${title}"))
 
+  ;; open capture buffers in same window
+  (add-to-list 'display-buffer-alist
+             '((lambda (buffer-name action)
+                 (and (string-prefix-p "CAPTURE-" buffer-name)
+                      (string-match-p "\\.org\\'" buffer-name)))
+               (display-buffer-same-window)))
+
   :bind
   (("C-c n l" . org-roam-buffer-toggle)
    ("C-c n f" . org-roam-node-find)
