@@ -458,6 +458,9 @@ targets."
                         (string-match-p org-directory (buffer-file-name (get-buffer buffer-name)))))
                  (display-buffer-same-window)))
   :hook
+  ;; disable electric-indent-mode for org (annoying with lists
+  (org-mode . (lambda ()
+                (electric-indent-local-mode -1)))
   ;; auto-format all tables on save
   (before-save . (lambda ()
                    (org-table-map-tables 'org-table-align))))
