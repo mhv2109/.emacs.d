@@ -824,6 +824,7 @@ otherwise add to start of list."
                                                                       "-v" "dc-home:/root" ;; user configs
                                                                       "-v" "dc-packages:/var" ;; package databases, caches, logs
                                                                       "mcp/desktop-commander:latest"))) ;; run in docker so desktop-commander has free reign to install tools
+                     ("memory" . (:command "go" :args ("run" "github.com/mhv2109/memory-mcp@latest" "-memory-file-path" ,(concat (getenv "HOME") "/memory.db"))))
                      ;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
