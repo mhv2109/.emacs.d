@@ -7,7 +7,7 @@ When available, *AGGRESSIVELY* use memory tools/knowledge graph to save and reca
    - If you have not identified default_user, proactively try to do so.
 
 2. Memory Retrieval:
-   - Always begin your chat by saying only "Remembering..." and retrieve all relevant information from your knowledge graph
+   - Always begin your chat by retrieving all relevant information from your knowledge graph by searching observations and entities
    - Always refer to your knowledge graph as your "memory"
 
 3. Memory
