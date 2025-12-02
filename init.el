@@ -35,19 +35,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
- '(package-selected-packages
-   '(auto-package-update corfu counsel dape deft dockerfile-mode
-                         doom-themes eldoc-box elfeed embark-consult
-                         exec-path-from-shell fish-mode
-                         flymake-golangci forge gcmh git-link go-mode
-                         gotest gptel-commit gptel-prompts hotfuzz
-                         lua-mode marginalia mcp nov ob-go org-remark
-                         org-roam org-web-tools paredit protobuf-mode
-                         pyvenv-auto rainbow-delimiters rg
-                         terraform-mode treesit-auto typescript-mode
-                         ultra-scroll vline vterm yaml-mode yasnippet))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
-   '((gptel-prompts :url "https://github.com/jwiegley/gptel-prompts.git")
+   '((mcp :url "https://github.com/mhv2109/mcp.el.git")
+     (gptel-prompts :url
+                    "https://github.com/jwiegley/gptel-prompts.git")
      (flymake-golangci :url
                        "https://github.com/storvik/flymake-golangci.git")
      (macher :url "https://github.com/kmontag/macher.git")
@@ -804,6 +796,7 @@ otherwise add to start of list."
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
   :if (version<= "30.1" emacs-version)
+  :vc (:url "https://github.com/mhv2109/mcp.el.git" :rev "bug/trailing-data") ;; custom fork w/ bugfix for Go MCP 'level=ERROR msg="error running server" error="invalid trailing data at the end of stream"'
   :custom
   ;; not sure why, but getting better results with mcp-remote vs. using :url
   (mcp-hub-servers `(;; general
