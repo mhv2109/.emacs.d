@@ -827,7 +827,7 @@ otherwise add to start of list."
                                                              "-e" "MCP_TRANSPORT=stdio" ;; use stdin/stdout vs HTTP API
                                                              "mcp/context7:latest"))) ;; Library docs
                      ("aws" . (:command "docker" :args ("run" "-i" "--rm" "mcp/aws-documentation:latest"))) ;; AWS documentation
-                     ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/sse"))) ;; Cloudflare docs (uses mcp-remote)
+                     ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/mcp"))) ;; Cloudflare docs (uses mcp-remote)
                      ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
                      ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/sse"))) ;; Access to Jira and Confluence
                      ))
