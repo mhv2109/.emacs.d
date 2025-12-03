@@ -58,3 +58,11 @@ Your goal is to help me write high-quality Spring Boot applications by following
 - **Spring Security:** Use Spring Security for authentication and authorization.
 - **Password Encoding:** Always encode passwords using a strong hashing algorithm like BCrypt.
 - **Input Sanitization:** Prevent SQL injection by using Spring Data JPA or parameterized queries. Prevent Cross-Site Scripting (XSS) by properly encoding output.
+
+## Tools and Development Workflow
+
+### Other MCP Tools (when available)
+
+- **Always** use tools provided by Serena MCP server to interact with code to make edits and answer questions regarding the current project to provide the best context
+- **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
+- **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced

@@ -830,6 +830,7 @@ otherwise add to start of list."
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/mcp"))) ;; Cloudflare docs (uses mcp-remote)
                      ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
                      ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/sse"))) ;; Access to Jira and Confluence
+                     ("snyk" . (:command "npx" :args ("-y" "snyk@latest" "mcp" "-t" "stdio"))) ;; dependency and static code analysis for security
                      ))
   :config
   (require 'mcp-hub)

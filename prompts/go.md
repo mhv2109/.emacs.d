@@ -336,7 +336,7 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 
 ## Tools and Development Workflow
 
-### Essential Tools
+### Essential Commands
 
 - `go fmt`: Format code
 - `go vet`: Find suspicious constructs
@@ -352,6 +352,12 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Keep commits focused and atomic
 - Write meaningful commit messages
 - Review diffs before committing
+
+### Other MCP Tools (when available)
+
+- **Always** use tools provided by Serena MCP server to interact with code to make edits and answer questions regarding the current project to provide the best context
+- **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
+- **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
 
 ## Common Pitfalls to Avoid
 
