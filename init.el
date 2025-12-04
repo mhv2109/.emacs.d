@@ -796,7 +796,6 @@ otherwise add to start of list."
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
   :if (version<= "30.1" emacs-version)
-  :vc (:url "https://github.com/mhv2109/mcp.el.git" :rev "bug/trailing-data") ;; custom fork w/ bugfix for Go MCP 'level=ERROR msg="error running server" error="invalid trailing data at the end of stream"'
   :custom
   ;; not sure why, but getting better results with mcp-remote vs. using :url
   (mcp-hub-servers `(;; general
@@ -832,6 +831,7 @@ otherwise add to start of list."
                      ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/sse"))) ;; Access to Jira and Confluence
                      ("snyk" . (:command "npx" :args ("-y" "snyk@latest" "mcp" "-t" "stdio"))) ;; dependency and static code analysis for security
                      ))
+  (jsonrpc-default-request-timeout 120) ;; some requests are very slow
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
