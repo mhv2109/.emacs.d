@@ -916,6 +916,7 @@ otherwise add to start of list."
                   ("https://developer.mozilla.org/en-US/blog/rss.xml" tech web)
                   ("https://lowendbox.com/feed/" tech)
                   ("https://kagifeedback.org/atom/t/release-notes" tech kagi)
+                  ("https://inside.java/feed.xml" java tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
