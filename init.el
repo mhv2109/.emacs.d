@@ -848,7 +848,7 @@ otherwise add to start of list."
 - **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
 - When needed, break down problems using sequential-thinking MCP server"))
   (gptel-make-preset 'java-springboot
-    :description "Preset optimized for Go development."
+    :description "Preset optimized for Java & Spring Boot development."
     :tools '("mcp-serena" "mcp-context7" "mcp-snyk" "mcp-sequential-thinking")
     :system '(:function
               (lambda (_)
@@ -862,7 +862,7 @@ otherwise add to start of list."
 - **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
 - When needed, break down problems using sequential-thinking MCP server"))
   (gptel-make-preset 'owasp
-    :description "Preset optimized for Go development."
+    :description "Preset optimized for security review based on the OWASP Top 10."
     :tools '("mcp-serena" "mcp-context7" "mcp-snyk" "mcp-sequential-thinking")
     :system '(:function
               (lambda (_)
