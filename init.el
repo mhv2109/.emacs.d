@@ -832,6 +832,9 @@ otherwise add to start of list."
                      ("snyk" . (:command "npx" :args ("-y" "snyk@latest" "mcp" "-t" "stdio"))) ;; dependency and static code analysis for security
                      ))
   (jsonrpc-default-request-timeout 120) ;; some requests are very slow
+  :config
+  (require 'mcp-hub)
+  (require 'gptel-integrations)
   ;; add presets
   (gptel-make-preset 'go
     :description "Preset optimized for Go development."
@@ -875,9 +878,32 @@ otherwise add to start of list."
 - **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
 - **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
 - When needed, break down problems using sequential-thinking MCP server"))
-  :config
-  (require 'mcp-hub)
-  (require 'gptel-integrations)
+  (gptel-make-preset 'agile
+    :description "Preset optimized for Agile planning with Jira and GitHub."
+    :tools '("mcp-atlassian" "mcp-github" "mcp-sequential-thinking")
+    :system '(:function
+              (lambda (_)
+                (alist-get 'atlassian-requirements-to-jira gptel-directives))
+              :append
+              "
+# Available MCP Tools
+
+- **Always** use tools provided by Atlassian MCP server to access information in Jira and Confluence
+- **Always** use tools provided by GitHub MCP server to interact with code, repos, pull requests, and issues in GitHub
+- When needed, break down problems using sequential-thinking MCP server"))
+  (gptel-make-preset 'web
+    :description "Preset optimized for Web search."
+    :tools '("mcp-duckduckgo" "mcp-fetch" "mcp-sequential-thinking")
+    :system '(:function
+              (lambda (_)
+                (alist-get 'web-search gptel-directives))
+              :append
+              "
+# Available MCP Tools
+
+- **Always** use tools provided by DuckDuckGo MCP server to perform search
+- **Always** use Fetch MCP server to retrieve data from specific URLs
+- When needed, break down problems using sequential-thinking MCP server"))
   :hook
   (gptel-mode . (lambda ()
                   ;; choose tools interactively
