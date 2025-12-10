@@ -903,7 +903,7 @@ otherwise add to start of list."
 
 - **Always** use tools provided by DuckDuckGo MCP server to perform search
 - **Always** use Fetch MCP server to retrieve data from specific URLs
-- When needed, break down problems using sequential-thinking MCP server"))
+- **Always** break down research problems using sequential-thinking MCP server"))
   :hook
   (gptel-mode . (lambda ()
                   ;; choose tools interactively
