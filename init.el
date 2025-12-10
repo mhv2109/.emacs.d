@@ -835,6 +835,8 @@ otherwise add to start of list."
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
+  ;; enable debug commands
+  (setq gptel-expert-commands t)
   ;; add presets
   (gptel-make-preset 'go
     :description "Preset optimized for Go development."
