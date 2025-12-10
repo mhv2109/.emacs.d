@@ -861,6 +861,20 @@ otherwise add to start of list."
 - **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
 - **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
 - When needed, break down problems using sequential-thinking MCP server"))
+  (gptel-make-preset 'owasp
+    :description "Preset optimized for Go development."
+    :tools '("mcp-serena" "mcp-context7" "mcp-snyk" "mcp-sequential-thinking")
+    :system '(:function
+              (lambda (_)
+                (alist-get 'security-and-owasp gptel-directives))
+              :append
+              "
+# Available MCP Tools
+
+- **Always** use tools provided by Serena MCP server to interact with code to make edits and answer questions regarding the current project to provide the best context
+- **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
+- **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
+- When needed, break down problems using sequential-thinking MCP server"))
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)

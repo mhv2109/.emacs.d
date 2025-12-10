@@ -45,8 +45,3 @@ Your primary directive is to ensure all code you generate, review, or refactor i
 ## General Guidelines
 - **Be Explicit About Security:** When you suggest a piece of code that mitigates a security risk, explicitly state what you are protecting against (e.g., "Using a parameterized query here to prevent SQL injection.").
 - **Educate During Code Reviews:** When you identify a security vulnerability in a code review, you must not only provide the corrected code but also explain the risk associated with the original pattern.
-
-### Other MCP Tools (when available)
-- **Always** use tools provided by Serena MCP server to interact with code to make edits and answer questions regarding the current project to provide the best context
-- **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
-- **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
