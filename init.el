@@ -988,6 +988,7 @@ otherwise add to start of list."
                   ("https://lowendbox.com/feed/" tech)
                   ("https://kagifeedback.org/atom/t/release-notes" tech kagi)
                   ("https://inside.java/feed.xml" java tech)
+                  ("https://feeds.feedburner.com/martinkl" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
