@@ -35,7 +35,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(auto-package-update corfu counsel dape deft dockerfile-mode
+                         doom-themes eldoc-box elfeed embark-consult
+                         exec-path-from-shell fish-mode
+                         flymake-golangci forge gcmh git-link go-mode
+                         gotest gptel-agent gptel-commit gptel-prompts
+                         hotfuzz lua-mode marginalia mcp nov ob-go
+                         org-remark org-roam org-web-tools paredit
+                         protobuf-mode pyvenv-auto rainbow-delimiters
+                         rg terraform-mode treesit-auto
+                         typescript-mode ultra-scroll vline vterm
+                         yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((mcp :url "https://github.com/mhv2109/mcp.el.git")
      (gptel-prompts :url
@@ -782,6 +793,13 @@ otherwise add to start of list."
   :bind
   (("C-c g" . gptel-menu)))
 
+;; Tools and prompts to use gptel "agentically": https://github.com/karthink/gptel-agent
+(use-package gptel-agent
+  :after gptel
+  :config
+  (add-to-list 'gptel-agent-dirs (expand-file-name "agents/" user-emacs-directory))
+  (gptel-agent-update))
+
 ;; Prompt management: https://github.com/jwiegley/gptel-prompts
 ;; Great source for prompts: https://github.com/github/awesome-copilot
 (use-package gptel-prompts
@@ -796,26 +814,16 @@ otherwise add to start of list."
 ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
 (use-package mcp
   :if (version<= "30.1" emacs-version)
+  :vc (:url "https://github.com/mhv2109/mcp.el.git" :rev "main") ;; custom fork w/ bugfix for Go MCP 'level=ERROR msg="error running server" error="invalid trailing data at the end of stream"'
   :custom
   ;; not sure why, but getting better results with mcp-remote vs. using :url
   (mcp-hub-servers `(;; general
-                     ("fetch" . (:command "docker" :args ("run" "-i" "--rm" "mcp/fetch:latest"))) ;; fetch web content
-                     ("duckduckgo" . (:command "docker" :args ("run" "-i" "--rm" "mcp/duckduckgo:latest"))) ;; search web content
                      ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
                      ("markitdown" . (:command "docker" :args ("run" "-i" "--rm"
                                                                ;; allow container to access mounted directories (potentially insecure, but limited to this container)
                                                                "--security-opt" "label=disable"
                                                                "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
                                                                "mcp/markitdown:latest"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
-                     ("desktop-commander" . (:command "docker" :args ("run" "-i" "--rm"
-                                                                      ;; allow container to access mounted directories (potentially insecure, but limited to this container)
-                                                                      "--security-opt" "label=disable"
-                                                                      ;; volume mounting strategy copied from install script: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/refs/heads/main/install-docker.sh
-                                                                      "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
-                                                                      "-v" "dc-system:/usr" ;; system packages and libraries
-                                                                      "-v" "dc-home:/root" ;; user configs
-                                                                      "-v" "dc-packages:/var" ;; package databases, caches, logs
-                                                                      "mcp/desktop-commander:latest"))) ;; run in docker so desktop-commander has free reign to install tools
                      ("memory" . (:command "go" :args ("run" "github.com/mhv2109/memory-mcp@latest" "-memory-file-path" ,(concat (getenv "HOME") "/memory.db"))))
                      ("time" . (:command "docker" :args ("run" "-i" "--rm"
                                                          "mcp/time")))
@@ -838,74 +846,6 @@ otherwise add to start of list."
   ;; enable debug commands
   (setq gptel-expert-commands t)
   ;; add presets
-  (gptel-make-preset 'go
-    :description "Preset optimized for Go development."
-    :tools '("mcp-serena" "mcp-context7" "mcp-snyk" "mcp-sequential-thinking")
-    :system '(:function
-              (lambda (_)
-                (alist-get 'go gptel-directives))
-              :append
-              "
-# Available MCP Tools
-
-- **Always** use tools provided by Serena MCP server to interact with code to make edits and answer questions regarding the current project to provide the best context
-- **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
-- **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
-- When needed, break down problems using sequential-thinking MCP server"))
-  (gptel-make-preset 'java-springboot
-    :description "Preset optimized for Java & Spring Boot development."
-    :tools '("mcp-serena" "mcp-context7" "mcp-snyk" "mcp-sequential-thinking")
-    :system '(:function
-              (lambda (_)
-                (alist-get 'java-springboot gptel-directives))
-              :append
-              "
-# Available MCP Tools
-
-- **Always** use tools provided by Serena MCP server to interact with code to make edits and answer questions regarding the current project to provide the best context
-- **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
-- **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
-- When needed, break down problems using sequential-thinking MCP server"))
-  (gptel-make-preset 'owasp
-    :description "Preset optimized for security review based on the OWASP Top 10."
-    :tools '("mcp-serena" "mcp-context7" "mcp-snyk" "mcp-sequential-thinking")
-    :system '(:function
-              (lambda (_)
-                (alist-get 'security-and-owasp gptel-directives))
-              :append
-              "
-# Available MCP Tools
-
-- **Always** use tools provided by Serena MCP server to interact with code to make edits and answer questions regarding the current project to provide the best context
-- **Always** use tools provided by Context7 MCP server to get the most up-to-date documentation for libraries
-- **Always** use tools provided by Snyk MCP server when making changes or updating dependencies to prevent security vulnerabilities from being introduced
-- When needed, break down problems using sequential-thinking MCP server"))
-  (gptel-make-preset 'agile
-    :description "Preset optimized for Agile planning with Jira and GitHub."
-    :tools '("mcp-atlassian" "mcp-github" "mcp-sequential-thinking")
-    :system '(:function
-              (lambda (_)
-                (alist-get 'atlassian-requirements-to-jira gptel-directives))
-              :append
-              "
-# Available MCP Tools
-
-- **Always** use tools provided by Atlassian MCP server to access information in Jira and Confluence
-- **Always** use tools provided by GitHub MCP server to interact with code, repos, pull requests, and issues in GitHub
-- When needed, break down problems using sequential-thinking MCP server"))
-  (gptel-make-preset 'web
-    :description "Preset optimized for Web search."
-    :tools '("mcp-duckduckgo" "mcp-fetch" "mcp-sequential-thinking")
-    :system '(:function
-              (lambda (_)
-                (alist-get 'web-search gptel-directives))
-              :append
-              "
-# Available MCP Tools
-
-- **Always** use tools provided by DuckDuckGo MCP server to perform search
-- **Always** use Fetch MCP server to retrieve data from specific URLs
-- **Always** break down research problems using sequential-thinking MCP server"))
   :hook
   (gptel-mode . (lambda ()
                   ;; choose tools interactively
