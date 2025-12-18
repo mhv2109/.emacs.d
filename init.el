@@ -784,7 +784,8 @@ otherwise add to start of list."
   ;; configure Copilot Chat (I get for free from work), uses OAuth
   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
         gptel-backend gptel-copilot-backend
-        gptel-model 'claude-sonnet-4.5)
+        gptel-model 'gpt-5-mini ;; best non-premium model
+        )
   ;; always open gptel in same window
   (add-to-list 'display-buffer-alist
                '((lambda (buffer-or-name &rest args)
