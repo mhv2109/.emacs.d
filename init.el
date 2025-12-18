@@ -839,7 +839,7 @@ otherwise add to start of list."
                      ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/sse"))) ;; Access to Jira and Confluence
                      ("snyk" . (:command "npx" :args ("-y" "snyk@latest" "mcp" "-t" "stdio"))) ;; dependency and static code analysis for security
                      ))
-  (jsonrpc-default-request-timeout 120) ;; some requests are very slow
+  (jsonrpc-default-request-timeout 300) ;; some requests are very slow
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
