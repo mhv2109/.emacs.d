@@ -846,6 +846,9 @@ otherwise add to start of list."
   (require 'gptel-integrations)
   ;; enable debug commands
   (setq gptel-expert-commands t)
+  ;; open mcp-hub in same window
+  (add-to-list 'display-buffer-alist
+             '("\\*Mcp-Hub\\*" (display-buffer-same-window)))
   ;; add presets
   :hook
   (gptel-mode . (lambda ()
