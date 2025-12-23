@@ -338,6 +338,56 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Focus on algorithmic improvements first
 - Consider using `testing.B` for benchmarks
 
+#### Using `go tool pprof` for LLM-friendly reports (CRITICAL)
+
+When generating profiles for consumption and analysis by LLM-based agents, follow these rules:
+
+- **Do not use UI flags**
+  - Do **NOT** use `-web` or `-http` – they start interactive UIs that are not suitable for static text analysis.
+
+- **Prefer deterministic, text-based output formats**
+  - Use `-text` or `-top` for high-level hot-spot summaries:
+    - `go tool pprof -text [options] <binary> <profile>`
+    - `go tool pprof -top -cum [options] <binary> <profile>`
+  - For call-graph structure in text form, use:
+    - `go tool pprof -tree [options] <binary> <profile>`
+  - For raw, lossless inspection when needed (larger but precise):
+    - `go tool pprof -raw <binary> <profile>`
+
+- **Always include binary + profile explicitly**
+  - Prefer explicit invocation over implicit HTTP collection so the agent sees both:
+    - Binary path (for symbolization/debugging context)
+    - Profile file path and type (cpu, heap, goroutine, mutex, etc.)
+  - Example (CPU profile):
+    - `go tool pprof -text ./cmd/myservice/myservice cpu.pprof`
+
+- **Control noise for clearer analysis**
+  - Limit output size so it is readable yet rich enough for LLMs:
+    - Use `-nodefraction` and `-edgefraction` to drop tiny nodes/edges (e.g. `-nodefraction=0.005 -edgefraction=0.001`).
+    - Use `-nodecount` to cap nodes in text graphs (e.g. `-nodecount=80`).
+  - Focus on problematic areas:
+    - `-focus` and `-show` to restrict to functions matching regexps.
+    - `-prune_from` / `-show_from` to trim uninteresting stack frames.
+
+- **Use consistent, repeatable commands in automation**
+  - Prefer stable, copy‑pasteable commands in scripts/Makefiles, so agents see the exact profiling recipe:
+    - Example: `go tool pprof -text -nodecount=80 -nodefraction=0.005 ./bin/server cpu.pprof`.
+  - Avoid interactive shell mode (no format argument) in automated contexts; always specify a format (`-text`, `-top`, `-tree`, etc.).
+
+- **Choose views appropriate to the profile type**
+  - CPU profiles:
+    - Primary: `-top -cum` and `-tree` to find hot functions and heavy call chains.
+  - Heap / allocation profiles (`-inuse_space`, `-alloc_space`, etc.):
+    - Use `-sample_index` or convenience flags (e.g. `-alloc_space`) with `-top -cum`.
+  - Contention / mutex / block profiles:
+    - Use `-top -cum` and `-tree` to highlight where contention originates.
+
+- **Store and share text reports alongside raw profiles**
+  - In CI or performance investigations, save both:
+    - The raw `.pprof` file (for future re-analysis).
+    - One or more text reports (`-text`, `-top -cum`, `-tree`) as `.txt` artifacts.
+  - This makes it easy for LLM agents to reason about performance without rerunning `pprof`.
+
 ## Testing
 
 ### Test Organization
