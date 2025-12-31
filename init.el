@@ -762,19 +762,14 @@ otherwise add to start of list."
   ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
         (alist-get 'org-mode gptel-response-prefix-alist) "** Response:\n\n")
-  ;; configure Ollama, if installed
-  (when (locate-file "ollama" exec-path exec-suffixes)
-    (setq gptel-ollama-backend (gptel-make-ollama "Ollama"
-                                 :host "localhost:11434"
-                                 :stream t
-                                 :models '(qwen3-coder:30b ;; coding assistant
-                                           qwen3:30b-a3b-instruct-2507-q4_K_M ;; general-purpose (non-thinking)
-                                           gpt-oss:20b ;; general-purpose (thinking)
-                                           mistral-nemo:12b ;; general-purpose (non-thinking)
-                                           gemma3n:e2b ;; for resource-constrained devices (no tools
-                                           llama3.2:3b ;; for resource-constrained devices (with tools)
-                                           )
-                                 :request-params '(:options (:num_ctx 8192)))))
+  ;; configure llama.cpp, if installed
+  (when (locate-file "llama-server" exec-path exec-suffixes)
+    (setq llama-cpp-backend (gptel-make-openai "llama.cpp"
+                              :host "localhost:8080"
+                              :stream t
+                              :protocol "http"
+                              :models '(gpt-oss:20b) ;; :models isn't used by llama.cpp backend, need to start server manually
+                              )))
   ;; configure Anthropic, if configured
   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
     (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
