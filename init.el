@@ -460,6 +460,15 @@ targets."
                    (and (string-match-p "\\.org\\'" buffer-name)
                         (string-match-p org-directory (buffer-file-name (get-buffer buffer-name)))))
                  (display-buffer-same-window)))
+  ;; display org-agenda in same window vs. closing others+splitting
+  (add-to-list 'display-buffer-alist
+               '("\\*Agenda Commands\\*" (display-buffer-same-window)))
+  (add-to-list 'display-buffer-alist
+               '("\\*Org Agenda\\*" (display-buffer-same-window)))
+  (add-to-list 'display-buffer-alist
+               '("\\*Org Select\\*" (display-buffer-same-window)))
+  (add-to-list 'display-buffer-alist
+               '("Calendar" (display-buffer-same-window))) ;; not technically org, but I usually use it w/ org
   :hook
   ;; disable electric-indent-mode for org (annoying with lists
   (org-mode . (lambda ()
@@ -974,12 +983,6 @@ other window."
 ;; See "Recommended Settings": https://www.masteringemacs.org/article/demystifying-emacs-window-manager
 (setq switch-to-buffer-in-dedicated-window 'pop
       switch-to-buffer-obey-display-actions t)
-
-;; display org-agenda in same window vs. closing others+splitting
-(add-to-list 'display-buffer-alist
-             '("\\*Agenda Commands\\*" (display-buffer-same-window)))
-(add-to-list 'display-buffer-alist
-             '("\\*Org Agenda\\*" (display-buffer-same-window)))
 
 ;;
 ;; Other customizations
