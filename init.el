@@ -768,7 +768,7 @@ otherwise add to start of list."
                               :host "localhost:8080"
                               :stream t
                               :protocol "http"
-                              :models '(gpt-oss:20b) ;; :models isn't used by llama.cpp backend, need to start server manually
+                              :models '(llama-server) ;; :models isn't used by llama.cpp backend, need to start server manually
                               )))
   ;; configure Anthropic, if configured
   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
