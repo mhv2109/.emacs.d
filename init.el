@@ -939,9 +939,14 @@ otherwise add to start of list."
                   ("https://inside.java/feed.xml" java tech)
                   ("https://feeds.feedburner.com/martinkl" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
-                  ("https://feeds.bbci.co.uk/news/world/rss.xml" news)
+                  ("https://feeds.bbci.co.uk/news/world/rss.xml" news world)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
-                  ("https://www.wcnc.com/feeds/syndication/rss/news" news clt)))
+                  ("https://www.wcnc.com/feeds/syndication/rss/news" news clt)
+                  ("https://news.kagi.com/world.xml" news world)
+                  ("https://news.kagi.com/usa.xml" news usa)
+                  ("https://news.kagi.com/business.xml" news business)
+                  ("https://news.kagi.com/tech.xml" news tech)
+                  ("https://news.kagi.com/science.xml" news science)))
   :config
   ;; function to open entries in another window: https://github.com/skeeto/elfeed/pull/383/commits/9c15ba2549f31a484953964e33114d7833348569
   (defun elfeed-entry-other-window ()
