@@ -906,6 +906,7 @@ otherwise add to start of list."
                   ("https://engineering.atspotify.com/feed" tech)
                   ("https://stackoverflow.blog/feed" tech)
                   ("https://news.ycombinator.com/rss" tech)
+                  ("https://feeds.feedburner.com/TheHackersNews" tech)
                   ("https://feed.infoq.com/" tech)
                   ("https://huggingface.co/blog/feed.xml" tech ai)
                   ;;("https://techcrunch.com/feed/" news tech)
