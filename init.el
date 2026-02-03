@@ -870,6 +870,7 @@ otherwise add to start of list."
 ;; RSS Reader: https://github.com/skeeto/elfeed
 (use-package elfeed
   :custom
+  (url-queue-timeout 30)
   (elfeed-search-title-max-width 120)
   (elfeed-search-filter "@1-days-ago +unread")
   (elfeed-feeds '(("https://aws.amazon.com/about-aws/whats-new/recent/feed/" aws tech)
@@ -887,7 +888,7 @@ otherwise add to start of list."
                   ("https://crawshaw.io/atom.xml" go tech)
                   ("https://jerf.org/iri/rss.xml" go tech)
                   ("https://peps.python.org/peps.rss" python tech)
-                  ("https://feeds.feedburner.com/PythonInsider" python tech)
+                  ("https://blog.python.org/feeds/posts/default" python tech)
                   ("https://www.python.org/downloads/feed.rss" python tech)
                   ("https://pythonspeed.com/atom.xml" python tech)
                   ;;("https://feeds.feedblitz.com/baeldung&x=1" java tech)
@@ -901,7 +902,6 @@ otherwise add to start of list."
                   ("https://netflixtechblog.com/feed" tech)
                   ;;("https://open.nytimes.com/feed" tech)
                   ;;("https://blogs.nvidia.com/blog/category/generative-ai/feed/" ai tech)
-                  ("https://shopify.engineering/blog.atom" tech)
                   ("https://slack.engineering/rss" tech)
                   ("https://engineering.atspotify.com/feed" tech)
                   ("https://stackoverflow.blog/feed" tech)
@@ -936,8 +936,10 @@ otherwise add to start of list."
                   ("https://developer.mozilla.org/en-US/blog/rss.xml" tech web)
                   ("https://lowendbox.com/feed/" tech)
                   ("https://kagifeedback.org/atom/t/release-notes" tech kagi)
+                  ("https://blog.kagi.com/rss.xml" tech kagi)
                   ("https://inside.java/feed.xml" java tech)
                   ("https://feeds.feedburner.com/martinkl" tech)
+                  ("https://www.jeffgeerling.com/blog.xml" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news world)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
@@ -967,7 +969,12 @@ other window."
   :bind
   (("C-c r" . elfeed)
    :map elfeed-search-mode-map
-   ("o" . elfeed-entry-other-window)))
+   ("o" . elfeed-entry-other-window))
+  :hook
+  ((elfeed-new-entry . (lambda (&rest _)
+                         ;; mark stories older than 1 week as read
+                         (elfeed-make-tagger :before "1 weeks ago"
+                                             :remove 'unread)))))
 
 ;;
 ;; Window and buffer management
