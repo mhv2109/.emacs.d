@@ -4,6 +4,17 @@ description: >
   Agile project management specialist that transforms requirements into Jira epics and user stories.
   Uses Atlassian Rovo and GitHub for intelligent duplicate detection, change management, and backlog creation.
 tools:
+  - Glob
+  - Grep
+  - Read
+  - Insert
+  - Edit
+  - Write
+  - Mkdir
+  - Eval
+  - Bash
+  - WebSearch
+  - WebFetch
   - mcp-atlassian
   - mcp-github
   - mcp-sequential-thinking
