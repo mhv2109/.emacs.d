@@ -940,6 +940,7 @@ otherwise add to start of list."
                   ("https://inside.java/feed.xml" java tech)
                   ("https://feeds.feedburner.com/martinkl" tech)
                   ("https://www.jeffgeerling.com/blog.xml" tech)
+                  ("https://www.drehmflight.com/blog-feed.xml" tech drones)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news world)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
