@@ -941,6 +941,8 @@ otherwise add to start of list."
                   ("https://feeds.feedburner.com/martinkl" tech)
                   ("https://www.jeffgeerling.com/blog.xml" tech)
                   ("https://www.drehmflight.com/blog-feed.xml" tech drones)
+                  ("https://fedoramagazine.org/feed/" tech fedora)
+                  ("https://ai.fedoraproject.org/feed/" tech ai fedora)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news world)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
