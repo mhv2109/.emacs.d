@@ -829,7 +829,6 @@ otherwise add to start of list."
                                                                "--security-opt" "label=disable"
                                                                "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
                                                                "mcp/markitdown:latest"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
-                     ("memory" . (:command "go" :args ("run" "github.com/mhv2109/memory-mcp@latest" "-memory-file-path" ,(concat (getenv "HOME") "/memory.db"))))
                      ("time" . (:command "docker" :args ("run" "-i" "--rm"
                                                          "mcp/time")))
                      ;; programming libraries, platforms, and tools
