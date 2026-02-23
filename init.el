@@ -894,16 +894,7 @@ all custom agents loaded from `gptel-agent-dirs'."
   :vc (:url "https://github.com/mhv2109/mcp.el.git" :rev "main") ;; custom fork w/ bugfix for Go MCP 'level=ERROR msg="error running server" error="invalid trailing data at the end of stream"'
   :custom
   ;; not sure why, but getting better results with mcp-remote vs. using :url
-  (mcp-hub-servers `(;; general
-                     ("sequential-thinking" . (:command "docker" :args ("run" "-i" "--rm" "mcp/sequentialthinking:latest"))) ;; break down complex tasks into steps
-                     ("markitdown" . (:command "docker" :args ("run" "-i" "--rm"
-                                                               ;; allow container to access mounted directories (potentially insecure, but limited to this container)
-                                                               "--security-opt" "label=disable"
-                                                               "-v" ,(concat (getenv "HOME") ":" (getenv "HOME")) ;; mount and limit access to my home directory
-                                                               "mcp/markitdown:latest"))) ;; convert files to markdown for text analysis -- uses uvx since it generally needs access to the filesystem
-                     ("time" . (:command "docker" :args ("run" "-i" "--rm"
-                                                         "mcp/time")))
-                     ;; programming libraries, platforms, and tools
+  (mcp-hub-servers `(;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
                      ("context7" . (:command "docker" :args ("run" "-i" "--rm"
