@@ -845,14 +845,33 @@ with a trailing slash)."
                    (try-completion prefix table))
           (list beg end table :exclusive 'no)))))
 
+  (defun gptel-agent--agent-capf ()
+    "CAPF for @agent-name completion in gptel-agent buffers.
+
+Completes the agent name after a leading @, preserving the @ itself.
+Candidates include the built-in gptel-agent/gptel-plan presets and
+all custom agents loaded from `gptel-agent-dirs'."
+    (let* ((end (point))
+           (beg (save-excursion
+                  (skip-chars-backward "a-zA-Z0-9_-")
+                  (point)))
+           (at-before (and (> beg (line-beginning-position))
+                           (eq (char-before beg) ?@))))
+      (when at-before
+        (let ((agents (append '("gptel-agent" "gptel-plan")
+                              (mapcar #'car gptel-agent--agents))))
+          (list beg end agents :exclusive 'no)))))
+
   (defun gptel-agent--setup-completion ()
-    "Enable TAB-triggered file/directory completion in gptel-agent buffers."
+    "Enable TAB-triggered file/directory and @agent-name completion in gptel-agent buffers."
     (when (string-prefix-p "*gptel-agent:" (buffer-name))
       (let* ((proj (project-current))
              (root (and proj (project-root proj))))
         ;; Current behavior of TAB is org-cycle, that falls back to completion-at-point
         ;;(local-set-key (kbd "TAB") #'completion-at-point)
         ;;(local-set-key (kbd "<tab>") #'completion-at-point)
+        (add-hook 'completion-at-point-functions
+                  #'gptel-agent--agent-capf nil t)
         (add-hook 'completion-at-point-functions
                   (gptel-agent--make-file-capf root) nil t))))
 
