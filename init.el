@@ -803,7 +803,60 @@ otherwise add to start of list."
   :after gptel
   :config
   (add-to-list 'gptel-agent-dirs (expand-file-name "agents/" user-emacs-directory))
-  (gptel-agent-update))
+  (gptel-agent-update)
+
+  ;; File/directory completion in *gptel-agent:* buffers on TAB (without prefixes).
+  ;; gptel-agent sessions are typically `gptel-mode' + `org-mode'.
+  (defun gptel-agent--project-files (root)
+    "Return list of project paths relative to ROOT, computed fresh on each call.
+
+This list includes both files and intermediate directories (directories end
+with a trailing slash)."
+    (let* ((proj (project-current nil root))
+           (files (when proj
+                    (mapcar (lambda (f) (file-relative-name f root))
+                            (project-files proj)))))
+      (when files
+        (let (dirs)
+          (dolist (f files)
+            (let ((d (file-name-directory f)))
+              (while (and d (not (string= d "")) (not (string= d "./")))
+                (unless (member d dirs) (push d dirs))
+                (setq d (file-name-directory (directory-file-name d))))))
+          (append (sort dirs #'string-lessp) (sort files #'string-lessp))))))
+
+  (defun gptel-agent--make-file-capf (root)
+    "Return a CAPF closure that completes project file/directory names relative to ROOT."
+    (lambda ()
+      (let* ((cands (and root (gptel-agent--project-files root)))
+             (tbl (if cands
+                      (completion-table-merge cands #'completion-file-name-table)
+                    #'completion-file-name-table))
+             (table (lambda (string pred action)
+                      (if (eq action 'metadata)
+                          '(metadata (category . file))
+                        (complete-with-action action tbl string pred))))
+             (bounds (or (bounds-of-thing-at-point 'filename)
+                         (bounds-of-thing-at-point 'symbol)))
+             (beg (car bounds))
+             (end (cdr bounds))
+             (prefix (and bounds (buffer-substring-no-properties beg end))))
+        (when (and prefix (> (length prefix) 0)
+                   (try-completion prefix table))
+          (list beg end table :exclusive 'no)))))
+
+  (defun gptel-agent--setup-completion ()
+    "Enable TAB-triggered file/directory completion in gptel-agent buffers."
+    (when (string-prefix-p "*gptel-agent:" (buffer-name))
+      (let* ((proj (project-current))
+             (root (and proj (project-root proj))))
+        ;; Current behavior of TAB is org-cycle, that falls back to completion-at-point
+        ;;(local-set-key (kbd "TAB") #'completion-at-point)
+        ;;(local-set-key (kbd "<tab>") #'completion-at-point)
+        (add-hook 'completion-at-point-functions
+                  (gptel-agent--make-file-capf root) nil t))))
+
+  (add-hook 'gptel-mode-hook #'gptel-agent--setup-completion))
 
 ;; Prompt management: https://github.com/jwiegley/gptel-prompts
 ;; Great source for prompts: https://github.com/github/awesome-copilot

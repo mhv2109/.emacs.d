@@ -51,4 +51,6 @@ ellama-sessions/
 forge-database.sqlite
 nov-places
 forge-*.sqlite
+.emacs.desktop
+.emacs.desktop.lock
 init-notes.org
