@@ -1005,6 +1005,7 @@ all custom agents loaded from `gptel-agent-dirs'."
                   ("https://www.drehmflight.com/blog-feed.xml" tech drones)
                   ("https://fedoramagazine.org/feed/" tech fedora)
                   ("https://ai.fedoraproject.org/feed/" tech ai fedora)
+                  ("https://boristane.com/rss.xml" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news world)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
