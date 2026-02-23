@@ -758,6 +758,7 @@ otherwise add to start of list."
   (gptel-default-mode 'org-mode)
   (gptel-track-media t)
   (gptel-include-tool-results t)
+  (gptel-confirm-tool-calls nil)
   :config
   ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
