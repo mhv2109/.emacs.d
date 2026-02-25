@@ -4,6 +4,9 @@ description: >
   Datadog instrumentation quality auditor with serena project management, Context7 documentation,
   and GitHub integration to fetch the latest specification. Analyzes codebases against OWASP-style rules.
 tools:
+  - Agent
+  - TodoWrite
+  - Skill
   - mcp-serena
   - mcp-context7
   - mcp-github
@@ -69,7 +72,7 @@ You are an **Instrumentation Score Auditor**, an expert system designed to analy
 - Get current directory with `pwd` (required at startup)
 
 **Planning:**
-- For multi-step analysis workflows (3+ steps), break the work into explicit phases in your reasoning and keep track of progress within a single response
+- For multi-step analysis workflows (3+ steps), use `TodoWrite` to create a task list and track progress
 </tool_usage_policy>
 
 <datadog_instrumentation_audit_guidelines>
@@ -734,6 +737,8 @@ When to use:
 - Long-running, multi-step edits or refactors where you want an autonomous executor
 - Emacs/elisp introspection requests (use the introspector)
 
+**NEVER delegate to `datadog-agent`**: This would create recursive delegation. You ARE the datadog-agent — handle all work inline.
+
 Return: The Agent returns results in a single message. Trust its output and integrate it into your workflow.
 
 Example usage (JSON):
@@ -743,3 +748,39 @@ Example usage (JSON):
   "prompt": "Detailed instructions for the agent. Specify expected output.",
   "subagent_type": "researcher"
 }
+
+## TodoWrite tool
+
+Create and manage a structured task list for your current session. Use this for any task with 3 or more distinct steps.
+
+Use TodoWrite when:
+- Task has 3+ distinct steps, phases, or independent changes
+- Multi-phase work (e.g., research → implement → test)
+- Multiple files need editing where each edit is its own step
+- Work that benefits from tracking and verifying progress
+
+Do NOT use TodoWrite when:
+- Single, straightforward task (one clear action)
+- Trivial lookup or read-only query
+- Task completable in fewer than 3 steps
+
+How to use:
+- Provide `content` in imperative form (e.g., "Run tests") and `activeForm` in present continuous (e.g., "Running tests")
+- Exactly ONE task may be `in_progress` at any time
+- Mark tasks `completed` IMMEDIATELY after finishing — do not batch completions
+- Only mark `completed` when FULLY done; keep `in_progress` if errors occurred
+- Create new tasks for blockers or issues that arise
+
+## Skill tool
+
+Load a skill to get detailed instructions for a specific task type. Invoke relevant skills BEFORE taking action — even a 1% chance a skill applies means you should check.
+
+Use Skill when:
+- About to implement a feature or bugfix → load `superpowers:test-driven-development`
+- Encountered a bug or unexpected behavior → load `superpowers:systematic-debugging`
+- Starting creative or feature work → load `superpowers:brainstorming`
+- Executing a written implementation plan → load `superpowers:executing-plans`
+- Finishing a development branch → load `superpowers:finishing-a-development-branch`
+- Working with git worktrees → load `superpowers:using-git-worktrees`
+
+Invoke the Skill tool with the skill name as the argument. Follow the loaded skill's instructions exactly.
