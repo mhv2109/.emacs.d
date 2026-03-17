@@ -429,13 +429,11 @@ targets."
   (let* ((org-dir (file-truename org-directory))
          (dailies-dir (concat org-dir "/dailies"))
          (resources-dir (concat org-dir "/resources"))
-         (projects-dir (concat org-dir "/projects"))
-         (areas-dir (concat org-dir "/areas")))
+         (projects-dir (concat org-dir "/projects")))
     (setq org-agenda-files (list org-dir
                                  dailies-dir
                                  resources-dir
-                                 projects-dir
-                                 areas-dir)))
+                                 projects-dir)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
@@ -509,11 +507,6 @@ targets."
                                                          "#+title: ${title}\n#+filetags: :projects:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("a" "area" plain "* ${title}\n%?"
-                                      :target (file+head "areas/${slug}.org"
-                                                         "#+title: ${title}\n#+filetags: :areas:\n")
-                                      :unnarrowed t
-                                      :empty-lines 1)
                                      ("r" "resource" plain "* ${title}\n%?"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources\n")
@@ -533,18 +526,7 @@ targets."
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources:\n")
                                       :unnarrowed t
-                                      :empty-lines 1))
-        org-roam-dailies-capture-templates '(("j" "journal" entry "* %?"
-                                              :target (file+head "%<%Y-%m-%d>_daily.org"
-                                                                 "#+title: %<%Y-%m-%d>\n")
-                                              :empty-lines 1
-                                              :unnarrowed t)
-                                             ("t" "todo" entry "* TODO %?"
-                                              :target (file+head "%<%Y-%m-%d>_daily.org"
-                                                                 "#+title: %<%Y-%m-%d>\n")
-                                              :empty-lines 1
-                                              :unnarrowed t)))
-
+                                      :empty-lines 1)))
   :config
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   (org-roam-db-autosync-mode)
