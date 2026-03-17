@@ -552,18 +552,6 @@ targets."
   :bind-keymap
   ("C-c n d" . org-roam-dailies-map))
 
-;; Full Text Search for org files: https://jblevins.org/projects/deft/
-;; Config adapted from: https://www.orgroam.com/manual.html#Full_002dtext-search-with-Deft
-(use-package deft
-  :bind ("<f9>" . deft)
-  :commands (deft)
-  :custom
-  (deft-recursive t)
-  (deft-use-filter-string-for-filename t)
-  (deft-default-extension "org")
-  (deft-directory org-roam-directory)
-  (deft-recursive-ignore-dir-regexp "\\(?:\\.\\|\\.\\.\\|archived\\)$"))
-
 ;; Read EPUB from emacs: https://depp.brause.cc/nov.el/
 (use-package nov
   :config
