@@ -514,17 +514,17 @@ targets."
                                       :empty-lines 1)
                                      ("b" "book (resource)" plain "* ${title}\n%?"
                                       :target (file+head "resources/${slug}.org"
-                                                         "#+title: ${title}\n#+author: ${author}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n#+filetags: :resources:\n")
+                                                         "#+title: ${title}\n#+author: ${author}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n#+filetags: :book:resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
                                      ("w" "website (resource, capture page)" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
                                       :target (file+head "resources/${slug}.org"
-                                                         "#+title: ${title}\n#+filetags: :resources:\n")
+                                                         "#+title: ${title}\n#+filetags: :website:resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
                                      ("l" "website (resource, link only)" plain "* ${title}\n\nLink: ${ref}\n%?"
                                       :target (file+head "resources/${slug}.org"
-                                                         "#+title: ${title}\n#+filetags: :resources:\n")
+                                                         "#+title: ${title}\n#+filetags: :website:resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)))
   :config
