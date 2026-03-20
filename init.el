@@ -486,7 +486,7 @@ targets."
 (use-package org-web-tools
   :after org
   :custom
-  (org-web-tools-pandoc-sleep-time 1.0)) ;; 5x longer than default
+  (org-web-tools-pandoc-sleep-time 5.0)) ;; 25x longer than default
 
 ;; org-roam: https://www.orgroam.com/
 (use-package org-roam
