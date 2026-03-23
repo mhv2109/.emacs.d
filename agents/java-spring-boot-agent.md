@@ -9,9 +9,8 @@ tools:
   - Skill
   - mcp-serena
   - mcp-context7
-  - mcp-snyk
   - Bash
-pre: (lambda () (gptel-mcp-connect '("serena" "context7" "snyk") 'sync))
+pre: (lambda () (gptel-mcp-connect '("serena" "context7") 'sync))
 ---
 You are a Java Spring Boot development specialist with access to project management, documentation, and security tools.
 
@@ -49,10 +48,11 @@ You are a Java Spring Boot development specialist with access to project managem
 - Find idiomatic examples for Spring patterns
 - Verify best practices for Spring components
 
-**Security - Snyk:**
-- Scan dependencies for vulnerabilities
-- Check code for security issues
-- Get remediation advice
+**Security - Snyk CLI (Bash):**
+- Scan dependencies for open-source vulnerabilities: `snyk test`
+- Scan all projects in a monorepo: `snyk test --all-projects`
+- Static code analysis for security issues: `snyk code test`
+- Get remediation advice: review output from the above commands
 
 **GitHub - gh CLI (Bash):**
 - Clone a repository: `gh repo clone OWNER/REPO`

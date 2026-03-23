@@ -873,7 +873,6 @@ all custom agents loaded from `gptel-agent-dirs'."
                      ("aws" . (:command "docker" :args ("run" "-i" "--rm" "mcp/aws-documentation:latest"))) ;; AWS documentation
                      ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/mcp"))) ;; Cloudflare docs (uses mcp-remote)
                      ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
-                     ("snyk" . (:command "npx" :args ("-y" "snyk@latest" "mcp" "-t" "stdio"))) ;; dependency and static code analysis for security
                      ))
   (jsonrpc-default-request-timeout 300) ;; some requests are very slow
   :config
