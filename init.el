@@ -867,12 +867,6 @@ all custom agents loaded from `gptel-agent-dirs'."
   ;; not sure why, but getting better results with mcp-remote vs. using :url
   (mcp-hub-servers `(;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
-                     ("context7" . (:command "docker" :args ("run" "-i" "--rm"
-                                                             "-e" "MCP_TRANSPORT=stdio" ;; use stdin/stdout vs HTTP API
-                                                             "mcp/context7:latest"))) ;; Library docs
-                     ("aws" . (:command "docker" :args ("run" "-i" "--rm" "mcp/aws-documentation:latest"))) ;; AWS documentation
-                     ("cloudflare" . (:command "npx" :args ("-y" "mcp-remote" "https://docs.mcp.cloudflare.com/mcp"))) ;; Cloudflare docs (uses mcp-remote)
-                     ("terraform" . (:command "docker" :args ("run" "-i" "--rm" "hashicorp/terraform-mcp-server:latest"))) ;; Terraform and registry docs
                      ))
   (jsonrpc-default-request-timeout 300) ;; some requests are very slow
   :config
