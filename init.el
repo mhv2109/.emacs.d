@@ -867,7 +867,6 @@ all custom agents loaded from `gptel-agent-dirs'."
   ;; not sure why, but getting better results with mcp-remote vs. using :url
   (mcp-hub-servers `(;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
-                     ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
                      ("context7" . (:command "docker" :args ("run" "-i" "--rm"
                                                              "-e" "MCP_TRANSPORT=stdio" ;; use stdin/stdout vs HTTP API
                                                              "mcp/context7:latest"))) ;; Library docs
