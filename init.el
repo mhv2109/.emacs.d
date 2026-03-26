@@ -99,7 +99,7 @@
 
 (use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
   :config
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'doom-one-light t))
 
 ;; Syntax highlighting, built-in
 (use-package flymake
