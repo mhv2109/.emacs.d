@@ -429,11 +429,13 @@ targets."
   (let* ((org-dir (file-truename org-directory))
          (dailies-dir (concat org-dir "/dailies"))
          (resources-dir (concat org-dir "/resources"))
-         (projects-dir (concat org-dir "/projects")))
+         (projects-dir (concat org-dir "/projects"))
+         (areas-dir (concat org-dir "/areas")))
     (setq org-agenda-files (list org-dir
                                  dailies-dir
                                  resources-dir
-                                 projects-dir)))
+                                 projects-dir
+                                 areas-dir)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
@@ -507,6 +509,11 @@ targets."
                                                          "#+title: ${title}\n#+filetags: :projects:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
+                                     ("a" "area" plain "* ${title}\n%?"
+                                      :target (file+head "areas/${slug}.org"
+                                                         "#+title: ${title}\n#+filetags: :areas:\n")
+                                      :unnarrowed t
+                                      :empty-lines 1)
                                      ("r" "resource" plain "* ${title}\n%?"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :resources\n")
@@ -525,6 +532,11 @@ targets."
                                      ("l" "website (resource, link only)" plain "* ${title}\n\nLink: ${ref}\n%?"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :website:resources:\n")
+                                      :unnarrowed t
+                                      :empty-lines 1)
+                                     ("i" "person (area)" plain "* ${title}\n%?"
+                                      :target (file+head "areas/${slug}.org"
+                                                         "#+title: ${title}\n#+company: ${company}\n#+filetags: :person:areas:\n")
                                       :unnarrowed t
                                       :empty-lines 1)))
   :config
