@@ -776,7 +776,8 @@ otherwise add to start of list."
                                      :stream t
                                      :key api-key
                                      :models '(openrouter/free
-                                               openrouter/auto))))
+                                               openrouter/auto
+                                               z-ai/glm-5.1))))
   ;; configure Copilot Chat (I get for free from work), uses OAuth
   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
         gptel-backend gptel-copilot-backend
