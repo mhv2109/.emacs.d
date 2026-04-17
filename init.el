@@ -768,6 +768,15 @@ otherwise add to start of list."
                                                                     ("anthropic-beta" . "prompt-caching-2024-07-31"))))
                                              :request-params '(:thinking (:type "enabled" :budget_tokens 32000)
                                                                          :max_tokens 64000))))
+  ;; configure OpenRouter, if configured
+  (when-let (api-key (getenv "OPENROUTER_API_KEY"))
+    (setq gptel-openrouter-backend (gptel-make-openai "OpenRouter"
+                                     :host "openrouter.ai"
+                                     :endpoint "/api/v1/chat/completions"
+                                     :stream t
+                                     :key api-key
+                                     :models '(openrouter/free
+                                               openrouter/auto))))
   ;; configure Copilot Chat (I get for free from work), uses OAuth
   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
         gptel-backend gptel-copilot-backend
