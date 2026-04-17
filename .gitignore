@@ -54,3 +54,4 @@ forge-*.sqlite
 .emacs.desktop
 .emacs.desktop.lock
 init-notes.org
+.gptel/

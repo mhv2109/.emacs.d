@@ -868,7 +868,11 @@ all custom agents loaded from `gptel-agent-dirs'."
         (add-hook 'completion-at-point-functions
                   (gptel-agent--make-file-capf root) nil t))))
 
-  (add-hook 'gptel-mode-hook #'gptel-agent--setup-completion))
+  (add-hook 'gptel-mode-hook #'gptel-agent--setup-completion)
+
+  ;; Session save/load for gptel-agent chats
+  (load (expand-file-name "gptel-agent-session.el" user-emacs-directory))
+  (gptel-agent-session-setup))
 
 ;; Prompt management: https://github.com/jwiegley/gptel-prompts
 ;; Great source for prompts: https://github.com/github/awesome-copilot
