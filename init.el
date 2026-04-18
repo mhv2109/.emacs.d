@@ -836,15 +836,7 @@ with a trailing slash)."
              (prefix (and bounds (buffer-substring-no-properties beg end))))
         (when (and prefix (> (length prefix) 0)
                    (try-completion prefix table))
-          (list beg end table
-                :exclusive 'no
-                ;; Wrap the completed filename as an org file: link
-                :exit-function
-                (lambda (str _status)
-                  (when (and str (not (string-match-p "^\\[\\[file:" str)))
-                    (let ((link (concat "[[file:" str "]]")))
-                      (delete-region (point) (- (point) (length str)))
-                      (insert link)))))))))
+          (list beg end table :exclusive 'no)))))
 
   (defun gptel-agent--agent-capf ()
     "CAPF for @agent-name completion in gptel-agent buffers.
