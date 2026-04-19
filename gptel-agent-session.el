@@ -141,7 +141,11 @@ Added to `gptel-save-state-hook' so it runs alongside gptel's own state save."
     (org-with-wide-buffer
      (goto-char (point-min))
      (let ((pt (point-min)))
-       (org-entry-put pt "GPTEL_AGENT_PROJECT_DIR" default-directory)
+       ;; Save project root (parent of .gptel/) derived from session file location
+      (org-entry-put pt "GPTEL_AGENT_PROJECT_DIR"
+                     (file-name-directory
+                      (directory-file-name
+                       (file-name-directory buffer-file-name))))
        (when gptel--preset
          (org-entry-put pt "GPTEL_AGENT_PRESET" (symbol-name gptel--preset)))
        (when gptel-agent--todos
@@ -174,23 +178,27 @@ Folds both #+begin_tool...#+end_tool and #+begin_reasoning...#+end_reasoning blo
 
 (defun gptel-agent-session--restore-agent-state ()
   "Restore gptel-agent-specific state from Org properties after loading a session.
-This runs after `gptel--restore-state' has already handled standard gptel state."
-  (when (and (gptel-agent-buffer-p) buffer-file-name)
+This runs after `gptel--restore-state' has already handled standard gptel state.
+
+Note: We don't check `gptel-agent-buffer-p' here because the buffer
+hasn't been renamed yet when this is called from
+`gptel-agent-session--setup-loaded-buffer'."
+  (when buffer-file-name
     (org-with-wide-buffer
      (goto-char (point-min))
      (let ((pt (point-min)))
        ;; Restore project directory
        (let* ((saved-dir (org-entry-get pt "GPTEL_AGENT_PROJECT_DIR"))
               (derived-dir (when (and buffer-file-name (stringp buffer-file-name))
-                             (let ((dir (file-name-directory buffer-file-name)))
-                               (when dir (file-name-directory dir))))))
+                             (file-name-directory
+                              (directory-file-name buffer-file-name)))))
          (cond
           ((and saved-dir (file-directory-p saved-dir))
            (setq default-directory saved-dir))
           ((and derived-dir (file-directory-p derived-dir))
            (setq default-directory derived-dir))
           ((and saved-dir (not (file-directory-p saved-dir)))
-           (message "Warning: Saved project dir %s is invalid, using %s instead" 
+           (message "Warning: Saved project dir %s is invalid, using %s instead"
                     saved-dir default-directory))))
        ;; Restore agent preset (re-apply with buffer-local setter)
        (when-let* ((preset-str (org-entry-get pt "GPTEL_AGENT_PRESET"))
