@@ -745,6 +745,14 @@ otherwise add to start of list."
   (gptel-include-tool-results t)
   (gptel-confirm-tool-calls nil)
   :config
+  ;; Prevent GUI freezes from synchronous URL requests.
+  ;; The Copilot backend (gptel-gh.el) renews OAuth tokens via
+  ;; url-retrieve-synchronously, which blocks indefinitely if the
+  ;; server is slow or unreachable.
+  (define-advice url-retrieve-synchronously
+      (:around (orig-fn url &optional silent inhibit-cookies timeout) default-timeout)
+    "Add a default 30-second timeout to prevent GUI freezes."
+    (funcall orig-fn url silent inhibit-cookies (or timeout 30)))
   ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
         (alist-get 'org-mode gptel-response-prefix-alist) "** Response:\n\n")
