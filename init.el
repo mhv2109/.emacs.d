@@ -634,10 +634,13 @@ otherwise add to start of list."
                                            go-ts-mode
                                            terraform-mode
                                            terraform-ts-mode) major-mode)
-                     (condition-case nil
-                         (eglot-code-action-organize-imports 1)
-                       (error nil))
-                     (eglot-format-buffer)))))
+                     (let ((jsonrpc-default-request-timeout 5))
+                       (condition-case nil
+                           (eglot-code-action-organize-imports 1)
+                         (error nil))
+                       (condition-case nil
+                           (eglot-format-buffer)
+                         (error nil)))))))
 
 ;; Debug Adapter Protocol: https://github.com/svaante/dape
 (use-package dape
