@@ -897,12 +897,28 @@ all custom agents loaded from `gptel-agent-dirs'."
   (mcp-hub-servers `(;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ))
-  (jsonrpc-default-request-timeout 300) ;; some requests are very slow
   :config
   (require 'mcp-hub)
   (require 'gptel-integrations)
   ;; enable debug commands
   (setq gptel-expert-commands t)
+  ;; Scope the long jsonrpc timeout to MCP connections only.
+  ;; The default (10s) is kept for eglot to prevent GUI freezes
+  ;; when an LSP server becomes unresponsive.
+  (defun mcp--longer-jsonrpc-timeout-a (orig-fn conn method params &rest args)
+    "Use a longer jsonrpc timeout for non-eglot (MCP) connections."
+    (let ((jsonrpc-default-request-timeout
+           (if (ignore-errors (cl-typep conn 'eglot-lsp-server))
+               jsonrpc-default-request-timeout
+             300)))
+      (apply orig-fn conn method params args)))
+  (advice-add 'jsonrpc-request :around #'mcp--longer-jsonrpc-timeout-a)
+  ;; Log MCP jsonrpc requests to *Messages* for diagnosing freezes
+  (defun mcp--log-jsonrpc-request-a (conn method &rest _)
+    "Log non-eglot jsonrpc requests for freeze diagnosis."
+    (unless (ignore-errors (cl-typep conn 'eglot-lsp-server))
+      (message "[jsonrpc %s] → %s" (jsonrpc-name conn) method)))
+  (advice-add 'jsonrpc-request :before #'mcp--log-jsonrpc-request-a)
   ;; open mcp-hub in same window
   (add-to-list 'display-buffer-alist
              '("\\*Mcp-Hub\\*" (display-buffer-same-window)))
