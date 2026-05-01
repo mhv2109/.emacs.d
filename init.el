@@ -904,7 +904,7 @@ all custom agents loaded from `gptel-agent-dirs'."
   (mcp-hub-servers `(;; programming libraries, platforms, and tools
                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
                      ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
-                     ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/sse"))) ;; Access to Jira and Confluence, requires NodeJS + npx
+                     ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/mcp"))) ;; Access to Jira and Confluence, requires NodeJS + npx -- uses 'mcp-remote' to gracefully handle SSO
                      ("context7" . ,(let ((lst '(:url "https://mcp.context7.com/mcp"))
                                           (token (getenv "CONTEXT7_API_KEY")))
                                       (if token
