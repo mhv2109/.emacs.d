@@ -35,9 +35,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
- '(package-selected-packages '(flymake-golangci))
+ '(package-selected-packages '(agent-shell))
  '(package-vc-selected-packages
-   '((flymake-golangci :url
+   '((agent-shell :url "https://github.com/xenodium/agent-shell.git")
+     (flymake-golangci :url
                        "https://github.com/storvik/flymake-golangci.git")
      (mcp :url "https://github.com/mhv2109/mcp.el.git")
      (gptel-prompts :url
@@ -730,7 +731,7 @@ otherwise add to start of list."
 ;; https://github.com/xenodium/agent-shell
 ;; https://agentclientprotocol.com/get-started/introduction
 (use-package agent-shell
-  :ensure t)
+  :vc (:url "https://github.com/xenodium/agent-shell.git" :rev "d48c239")) ;; pin to workaround this issue: https://github.com/xenodium/agent-shell/issues/563
 
 ;; LLM Chat client: https://github.com/karthink/gptel
 ;; (use-package gptel
