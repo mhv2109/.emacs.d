@@ -35,24 +35,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
- '(package-selected-packages
-   '(auto-package-update corfu counsel dape deft dockerfile-mode
-                         doom-themes eldoc-box elfeed embark-consult
-                         exec-path-from-shell fish-mode
-                         flymake-golangci forge gcmh git-link go-mode
-                         gotest gptel-agent gptel-commit gptel-prompts
-                         hotfuzz lua-mode marginalia mcp nov ob-go
-                         org-remark org-roam org-web-tools paredit
-                         protobuf-mode pyvenv-auto rainbow-delimiters
-                         rg terraform-mode treesit-auto
-                         typescript-mode ultra-scroll vline vterm
-                         yaml-mode yasnippet))
+ '(package-selected-packages '(flymake-golangci))
  '(package-vc-selected-packages
-   '((mcp :url "https://github.com/mhv2109/mcp.el.git")
+   '((flymake-golangci :url
+                       "https://github.com/storvik/flymake-golangci.git")
+     (mcp :url "https://github.com/mhv2109/mcp.el.git")
      (gptel-prompts :url
                     "https://github.com/jwiegley/gptel-prompts.git")
-     (flymake-golangci :url
-                       "https://github.com/storvik/flymake-golangci.git")
      (macher :url "https://github.com/kmontag/macher.git")
      (aider :url "https://github.com/tninja/aider.el")))
  '(warning-suppress-log-types '((comp)))
@@ -737,214 +726,224 @@ otherwise add to start of list."
 ;; AI
 ;;
 
+;; Ingtegrate with AI Agents via ACP
+;; https://github.com/xenodium/agent-shell
+;; https://agentclientprotocol.com/get-started/introduction
+(use-package agent-shell
+  :ensure t)
+
 ;; LLM Chat client: https://github.com/karthink/gptel
-(use-package gptel
-  :custom
-  (gptel-default-mode 'org-mode)
-  (gptel-track-media t)
-  (gptel-include-tool-results t)
-  (gptel-confirm-tool-calls nil)
-  :config
-  ;; Prevent GUI freezes from synchronous URL requests.
-  ;; The Copilot backend (gptel-gh.el) renews OAuth tokens via
-  ;; url-retrieve-synchronously, which blocks indefinitely if the
-  ;; server is slow or unreachable.
-  (define-advice url-retrieve-synchronously
-      (:around (orig-fn url &optional silent inhibit-cookies timeout) default-timeout)
-    "Add a default 30-second timeout to prevent GUI freezes."
-    (funcall orig-fn url silent inhibit-cookies (or timeout 30)))
-  ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
-  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
-        (alist-get 'org-mode gptel-response-prefix-alist) "** Response:\n\n")
-  ;; configure llama.cpp, if installed
-  (when (locate-file "llama-server" exec-path exec-suffixes)
-    (setq llama-cpp-backend (gptel-make-openai "llama.cpp"
-                              :host "localhost:8080"
-                              :stream t
-                              :protocol "http"
-                              :models '(llama-server) ;; :models isn't used by llama.cpp backend, need to start server manually
-                              )))
-  ;; configure Anthropic, if configured
-  (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
-    (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
-                                    :stream t
-                                    :key api-key)
-          gptel-anthropic-thinking-backend (gptel-make-anthropic "Claude-thinking"
-                                             :stream t
-                                             :key api-key
-                                             :header (lambda () (when-let* ((key (gptel--get-api-key)))
-                                                                  `(("x-api-key" . ,key)
-                                                                    ("anthropic-beta" . "pdfs-2024-09-25")
-                                                                    ("anthropic-beta" . "output-128k-2025-02-19")
-                                                                    ("anthropic-beta" . "prompt-caching-2024-07-31"))))
-                                             :request-params '(:thinking (:type "enabled" :budget_tokens 32000)
-                                                                         :max_tokens 64000))))
-  ;; configure OpenRouter, if configured
-  (when-let (api-key (getenv "OPENROUTER_API_KEY"))
-    (setq gptel-openrouter-backend (gptel-make-openai "OpenRouter"
-                                     :host "openrouter.ai"
-                                     :endpoint "/api/v1/chat/completions"
-                                     :stream t
-                                     :key api-key
-                                     :models '(openrouter/free
-                                               openrouter/auto
-                                               z-ai/glm-5.1))))
-  ;; configure Copilot Chat (I get for free from work), uses OAuth
-  (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
-        gptel-backend gptel-copilot-backend
-        gptel-model 'gpt-5-mini ;; best non-premium model
-        )
-  ;; always open gptel in same window
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name &rest args)
-                   (buffer-local-value 'gptel-mode (get-buffer buffer-or-name)))
-                 (display-buffer-same-window)))
-  :bind
-  (("C-c g" . gptel-menu)))
+;; (use-package gptel
+;;   :custom
+;;   (gptel-default-mode 'org-mode)
+;;   (gptel-track-media t)
+;;   (gptel-include-tool-results t)
+;;   (gptel-confirm-tool-calls nil)
+;;   :config
+;;   ;; Prevent GUI freezes from synchronous URL requests.
+;;   ;; The Copilot backend (gptel-gh.el) renews OAuth tokens via
+;;   ;; url-retrieve-synchronously, which blocks indefinitely if the
+;;   ;; server is slow or unreachable.
+;;   (define-advice url-retrieve-synchronously
+;;       (:around (orig-fn url &optional silent inhibit-cookies timeout) default-timeout)
+;;     "Add a default 30-second timeout to prevent GUI freezes."
+;;     (funcall orig-fn url silent inhibit-cookies (or timeout 30)))
+;;   ;; configuration for making chat more legible: https://github.com/karthink/gptel?tab=readme-ov-file#additional-configuration
+;;   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* User:\n\n"
+;;         (alist-get 'org-mode gptel-response-prefix-alist) "** Response:\n\n")
+;;   ;; configure llama.cpp, if installed
+;;   (when (locate-file "llama-server" exec-path exec-suffixes)
+;;     (setq llama-cpp-backend (gptel-make-openai "llama.cpp"
+;;                               :host "localhost:8080"
+;;                               :stream t
+;;                               :protocol "http"
+;;                               :models '(llama-server) ;; :models isn't used by llama.cpp backend, need to start server manually
+;;                               )))
+;;   ;; configure Anthropic, if configured
+;;   (when-let (api-key (getenv "ANTHROPIC_API_KEY"))
+;;     (setq gptel-anthropic-backend (gptel-make-anthropic "Claude"
+;;                                     :stream t
+;;                                     :key api-key)
+;;           gptel-anthropic-thinking-backend (gptel-make-anthropic "Claude-thinking"
+;;                                              :stream t
+;;                                              :key api-key
+;;                                              :header (lambda () (when-let* ((key (gptel--get-api-key)))
+;;                                                                   `(("x-api-key" . ,key)
+;;                                                                     ("anthropic-beta" . "pdfs-2024-09-25")
+;;                                                                     ("anthropic-beta" . "output-128k-2025-02-19")
+;;                                                                     ("anthropic-beta" . "prompt-caching-2024-07-31"))))
+;;                                              :request-params '(:thinking (:type "enabled" :budget_tokens 32000)
+;;                                                                          :max_tokens 64000))))
+;;   ;; configure OpenRouter, if configured
+;;   (when-let (api-key (getenv "OPENROUTER_API_KEY"))
+;;     (setq gptel-openrouter-backend (gptel-make-openai "OpenRouter"
+;;                                      :host "openrouter.ai"
+;;                                      :endpoint "/api/v1/chat/completions"
+;;                                      :stream t
+;;                                      :key api-key
+;;                                      :models '(openrouter/free
+;;                                                openrouter/auto
+;;                                                z-ai/glm-5.1))))
+;;   ;; configure Copilot Chat (I get for free from work), uses OAuth
+;;   (setq gptel-copilot-backend (gptel-make-gh-copilot "Copilot")
+;;         gptel-backend gptel-copilot-backend
+;;         gptel-model 'gpt-5-mini ;; best non-premium model
+;;         )
+;;   ;; always open gptel in same window
+;;   (add-to-list 'display-buffer-alist
+;;                '((lambda (buffer-or-name &rest args)
+;;                    (buffer-local-value 'gptel-mode (get-buffer buffer-or-name)))
+;;                  (display-buffer-same-window)))
+;;   :bind
+;;   (("C-c g" . gptel-menu)))
 
 ;; Tools and prompts to use gptel "agentically": https://github.com/karthink/gptel-agent
-(use-package gptel-agent
-  :after gptel
-  :config
-  (add-to-list 'gptel-agent-dirs (expand-file-name "agents/" user-emacs-directory))
-  (gptel-agent-update)
+;; (use-package gptel-agent
+;;   :after gptel
+;;   :config
+;;   (let ((skill-dir (expand-file-name "skills/" user-emacs-directory)))
+;;     (unless (file-directory-p skill-dir)
+;;       (make-directory skill-dir t))
+;;     (add-to-list 'gptel-agent-skill-dirs skill-dir t))
+;;   (add-to-list 'gptel-agent-dirs (expand-file-name "agents/" user-emacs-directory))
+;;   (gptel-agent-update)
 
-  ;; File/directory completion in *gptel-agent:* buffers on TAB (without prefixes).
-  ;; gptel-agent sessions are typically `gptel-mode' + `org-mode'.
-  (defun gptel-agent--project-files (root)
-    "Return list of project paths relative to ROOT, computed fresh on each call.
+;;   ;; File/directory completion in *gptel-agent:* buffers on TAB (without prefixes).
+;;   ;; gptel-agent sessions are typically `gptel-mode' + `org-mode'.
+;;   (defun gptel-agent--project-files (root)
+;;     "Return list of project paths relative to ROOT, computed fresh on each call.
 
-This list includes both files and intermediate directories (directories end
-with a trailing slash)."
-    (let* ((proj (project-current nil root))
-           (files (when proj
-                    (mapcar (lambda (f) (file-relative-name f root))
-                            (project-files proj)))))
-      (when files
-        (let (dirs)
-          (dolist (f files)
-            (let ((d (file-name-directory f)))
-              (while (and d (not (string= d "")) (not (string= d "./")))
-                (unless (member d dirs) (push d dirs))
-                (setq d (file-name-directory (directory-file-name d))))))
-          (append (sort dirs #'string-lessp) (sort files #'string-lessp))))))
+;; This list includes both files and intermediate directories (directories end
+;; with a trailing slash)."
+;;     (let* ((proj (project-current nil root))
+;;            (files (when proj
+;;                     (mapcar (lambda (f) (file-relative-name f root))
+;;                             (project-files proj)))))
+;;       (when files
+;;         (let (dirs)
+;;           (dolist (f files)
+;;             (let ((d (file-name-directory f)))
+;;               (while (and d (not (string= d "")) (not (string= d "./")))
+;;                 (unless (member d dirs) (push d dirs))
+;;                 (setq d (file-name-directory (directory-file-name d))))))
+;;           (append (sort dirs #'string-lessp) (sort files #'string-lessp))))))
 
-  (defun gptel-agent--make-file-capf (root)
-    "Return a CAPF closure that completes project file/directory names relative to ROOT."
-    (lambda ()
-      (let* ((cands (and root (gptel-agent--project-files root)))
-             (tbl (if cands
-                      (completion-table-merge cands #'completion-file-name-table)
-                    #'completion-file-name-table))
-             (table (lambda (string pred action)
-                      (if (eq action 'metadata)
-                          '(metadata (category . file))
-                        (complete-with-action action tbl string pred))))
-             (bounds (or (bounds-of-thing-at-point 'filename)
-                         (bounds-of-thing-at-point 'symbol)))
-             (beg (car bounds))
-             (end (cdr bounds))
-             (prefix (and bounds (buffer-substring-no-properties beg end))))
-        (when (and prefix (> (length prefix) 0)
-                   (try-completion prefix table))
-          (list beg end table :exclusive 'no)))))
+;;   (defun gptel-agent--make-file-capf (root)
+;;     "Return a CAPF closure that completes project file/directory names relative to ROOT."
+;;     (lambda ()
+;;       (let* ((cands (and root (gptel-agent--project-files root)))
+;;              (tbl (if cands
+;;                       (completion-table-merge cands #'completion-file-name-table)
+;;                     #'completion-file-name-table))
+;;              (table (lambda (string pred action)
+;;                       (if (eq action 'metadata)
+;;                           '(metadata (category . file))
+;;                         (complete-with-action action tbl string pred))))
+;;              (bounds (or (bounds-of-thing-at-point 'filename)
+;;                          (bounds-of-thing-at-point 'symbol)))
+;;              (beg (car bounds))
+;;              (end (cdr bounds))
+;;              (prefix (and bounds (buffer-substring-no-properties beg end))))
+;;         (when (and prefix (> (length prefix) 0)
+;;                    (try-completion prefix table))
+;;           (list beg end table :exclusive 'no)))))
 
-  (defun gptel-agent--agent-capf ()
-    "CAPF for @agent-name completion in gptel-agent buffers.
+;;   (defun gptel-agent--agent-capf ()
+;;     "CAPF for @agent-name completion in gptel-agent buffers.
 
-Completes the agent name after a leading @, preserving the @ itself.
-Candidates include the built-in gptel-agent/gptel-plan presets and
-all custom agents loaded from `gptel-agent-dirs'."
-    (let* ((end (point))
-           (beg (save-excursion
-                  (skip-chars-backward "a-zA-Z0-9_-")
-                  (point)))
-           (at-before (and (> beg (line-beginning-position))
-                           (eq (char-before beg) ?@))))
-      (when at-before
-        (let ((agents (append '("gptel-agent" "gptel-plan")
-                              (mapcar #'car gptel-agent--agents))))
-          (list beg end agents :exclusive 'no)))))
+;; Completes the agent name after a leading @, preserving the @ itself.
+;; Candidates include the built-in gptel-agent/gptel-plan presets and
+;; all custom agents loaded from `gptel-agent-dirs'."
+;;     (let* ((end (point))
+;;            (beg (save-excursion
+;;                   (skip-chars-backward "a-zA-Z0-9_-")
+;;                   (point)))
+;;            (at-before (and (> beg (line-beginning-position))
+;;                            (eq (char-before beg) ?@))))
+;;       (when at-before
+;;         (let ((agents (append '("gptel-agent" "gptel-plan")
+;;                               (mapcar #'car gptel-agent--agents))))
+;;           (list beg end agents :exclusive 'no)))))
 
-  (defun gptel-agent--setup-completion ()
-    "Enable TAB-triggered file/directory and @agent-name completion in gptel-agent buffers."
-    (when (string-prefix-p "*gptel-agent:" (buffer-name))
-      (let* ((proj (project-current))
-             (root (and proj (project-root proj))))
-        ;; Current behavior of TAB is org-cycle, that falls back to completion-at-point
-        ;;(local-set-key (kbd "TAB") #'completion-at-point)
-        ;;(local-set-key (kbd "<tab>") #'completion-at-point)
-        (add-hook 'completion-at-point-functions
-                  #'gptel-agent--agent-capf nil t)
-        (add-hook 'completion-at-point-functions
-                  (gptel-agent--make-file-capf root) nil t))))
+;;   (defun gptel-agent--setup-completion ()
+;;     "Enable TAB-triggered file/directory and @agent-name completion in gptel-agent buffers."
+;;     (when (string-prefix-p "*gptel-agent:" (buffer-name))
+;;       (let* ((proj (project-current))
+;;              (root (and proj (project-root proj))))
+;;         ;; Current behavior of TAB is org-cycle, that falls back to completion-at-point
+;;         ;;(local-set-key (kbd "TAB") #'completion-at-point)
+;;         ;;(local-set-key (kbd "<tab>") #'completion-at-point)
+;;         (add-hook 'completion-at-point-functions
+;;                   #'gptel-agent--agent-capf nil t)
+;;         (add-hook 'completion-at-point-functions
+;;                   (gptel-agent--make-file-capf root) nil t))))
 
-  (add-hook 'gptel-mode-hook #'gptel-agent--setup-completion)
+;;   (add-hook 'gptel-mode-hook #'gptel-agent--setup-completion)
 
-  ;; Session save/load for gptel-agent chats
-  (load (expand-file-name "gptel-agent-session.el" user-emacs-directory))
-  (gptel-agent-session-setup))
+;;   ;; Session save/load for gptel-agent chats
+;;   (load (expand-file-name "gptel-agent-session.el" user-emacs-directory))
+;;   (gptel-agent-session-setup))
 
 ;; Prompt management: https://github.com/jwiegley/gptel-prompts
 ;; Great source for prompts: https://github.com/github/awesome-copilot
-(use-package gptel-prompts
-  :after gptel
-  :demand t
-  :vc (:url "https://github.com/jwiegley/gptel-prompts.git" :rev :newest)
-  :config
-  (gptel-prompts-update)
-  ;; Ensure prompts are updated if prompt files change
-  (gptel-prompts-add-update-watchers))
+;; (use-package gptel-prompts
+;;   :after gptel
+;;   :demand t
+;;   :vc (:url "https://github.com/jwiegley/gptel-prompts.git" :rev :newest)
+;;   :config
+;;   (gptel-prompts-update)
+;;   ;; Ensure prompts are updated if prompt files change
+;;   (gptel-prompts-add-update-watchers))
 
-;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
-(use-package mcp
-  :if (version<= "30.1" emacs-version)
-  :vc (:url "https://github.com/mhv2109/mcp.el.git" :rev "main") ;; custom fork w/ bugfix for Go MCP 'level=ERROR msg="error running server" error="invalid trailing data at the end of stream"'
-  :custom
-  (mcp-hub-servers `(;; programming libraries, platforms, and tools
-                     ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
-                     ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
-                     ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/mcp"))) ;; Access to Jira and Confluence, requires NodeJS + npx -- uses 'mcp-remote' to gracefully handle SSO
-                     ("context7" . ,(let ((lst '(:url "https://mcp.context7.com/mcp"))
-                                          (token (getenv "CONTEXT7_API_KEY")))
-                                      (if token
-                                          (plist-put lst :token token)
-                                        lst))) ;; code docs, optionally adding token, if present
-                     ))
-  :config
-  (require 'mcp-hub)
-  (require 'gptel-integrations)
-  ;; enable debug commands
-  (setq gptel-expert-commands t)
-  ;; Scope the long jsonrpc timeout to MCP connections only.
-  ;; The default (10s) is kept for eglot to prevent GUI freezes
-  ;; when an LSP server becomes unresponsive.
-  (defun mcp--longer-jsonrpc-timeout-a (orig-fn conn method params &rest args)
-    "Use a longer jsonrpc timeout for non-eglot (MCP) connections."
-    (let ((jsonrpc-default-request-timeout
-           (if (ignore-errors (cl-typep conn 'eglot-lsp-server))
-               jsonrpc-default-request-timeout
-             300)))
-      (apply orig-fn conn method params args)))
-  (advice-add 'jsonrpc-request :around #'mcp--longer-jsonrpc-timeout-a)
-  ;; Log MCP jsonrpc requests to *Messages* for diagnosing freezes
-  (defun mcp--log-jsonrpc-request-a (conn method &rest _)
-    "Log non-eglot jsonrpc requests for freeze diagnosis."
-    (unless (ignore-errors (cl-typep conn 'eglot-lsp-server))
-      (message "[jsonrpc %s] → %s" (jsonrpc-name conn) method)))
-  (advice-add 'jsonrpc-request :before #'mcp--log-jsonrpc-request-a)
-  ;; open mcp-hub in same window
-  (add-to-list 'display-buffer-alist
-             '("\\*Mcp-Hub\\*" (display-buffer-same-window)))
-  ;; add presets
-  :hook
-  (gptel-mode . (lambda ()
-                  ;; choose tools interactively
-                  (gptel-mcp-connect nil nil t))))
+;; ;; Integrate with MCP servers: https://github.com/lizqwerscott/mcp.el
+;; (use-package mcp
+;;   :if (version<= "30.1" emacs-version)
+;;   :vc (:url "https://github.com/mhv2109/mcp.el.git" :rev "main") ;; custom fork w/ bugfix for Go MCP 'level=ERROR msg="error running server" error="invalid trailing data at the end of stream"'
+;;   :custom
+;;   (mcp-hub-servers `(;; programming libraries, platforms, and tools
+;;                      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server" "--transport" "stdio" "--enable-web-dashboard" "false"))) ;; coding agent toolkit implemented as MCP server: https://github.com/oraios/serena (Docker image doesn't really work well, this MCP is blessed by Cybersecurity)
+;;                      ("github" . (:command "go" :args ("run" "github.com/github/github-mcp-server/cmd/github-mcp-server@latest" "stdio"))) ;; rquires go + GITHUB_PERSONAL_ACCESS_TOKEN env var
+;;                      ("atlassian" . (:command "npx" :args ("-y" "mcp-remote" "https://mcp.atlassian.com/v1/mcp"))) ;; Access to Jira and Confluence, requires NodeJS + npx
+;;                      ("context7" . ,(let ((lst '(:url "https://mcp.context7.com/mcp"))
+;;                                           (token (getenv "CONTEXT7_API_KEY")))
+;;                                       (if token
+;;                                           (plist-put lst :token token)
+;;                                         lst))) ;; code docs, optionally adding token, if present
+;;                      ("calibre" . (:url "http://127.0.0.1:7823/mcp"))))
+;;   :config
+;;   (require 'mcp-hub)
+;;   (require 'gptel-integrations)
+;;   ;; enable debug commands
+;;   (setq gptel-expert-commands t)
+;;   ;; Scope the long jsonrpc timeout to MCP connections only.
+;;   ;; The default (10s) is kept for eglot to prevent GUI freezes
+;;   ;; when an LSP server becomes unresponsive.
+;;   (defun mcp--longer-jsonrpc-timeout-a (orig-fn conn method params &rest args)
+;;     "Use a longer jsonrpc timeout for non-eglot (MCP) connections."
+;;     (let ((jsonrpc-default-request-timeout
+;;            (if (ignore-errors (cl-typep conn 'eglot-lsp-server))
+;;                jsonrpc-default-request-timeout
+;;              300)))
+;;       (apply orig-fn conn method params args)))
+;;   (advice-add 'jsonrpc-request :around #'mcp--longer-jsonrpc-timeout-a)
+;;   ;; Log MCP jsonrpc requests to *Messages* for diagnosing freezes
+;;   (defun mcp--log-jsonrpc-request-a (conn method &rest _)
+;;     "Log non-eglot jsonrpc requests for freeze diagnosis."
+;;     (unless (ignore-errors (cl-typep conn 'eglot-lsp-server))
+;;       (message "[jsonrpc %s] → %s" (jsonrpc-name conn) method)))
+;;   (advice-add 'jsonrpc-request :before #'mcp--log-jsonrpc-request-a)
+;;   ;; open mcp-hub in same window
+;;   (add-to-list 'display-buffer-alist
+;;              '("\\*Mcp-Hub\\*" (display-buffer-same-window)))
+;;   ;; add presets
+;;   :hook
+;;   (gptel-mode . (lambda ()
+;;                   ;; choose tools interactively
+;;                   (gptel-mcp-connect nil nil t))))
 
-;; AI-generated commit messages with gptel: https://github.com/lakkiy/gptel-commit
-(use-package gptel-commit
-  :after gptel)
+;; ;; AI-generated commit messages with gptel: https://github.com/lakkiy/gptel-commit
+;; (use-package gptel-commit
+;;   :after gptel)
 
 ;;
 ;; Misc.
