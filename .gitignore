@@ -56,3 +56,4 @@ forge-*.sqlite
 init-notes.org
 .gptel/
 agent/
+/.agent-shell/
