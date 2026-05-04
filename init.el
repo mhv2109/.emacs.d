@@ -35,16 +35,22 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
- '(package-selected-packages '(agent-shell))
+ '(package-selected-packages
+   '(auto-package-update corfu counsel dape dockerfile-mode
+                         doom-themes editorconfig eldoc-box elfeed
+                         embark embark-consult exec-path-from-shell
+                         fish-mode forge gcmh git-link go-mode gotest
+                         hotfuzz ivy lua-mode magit marginalia
+                         markdown-mode nov ob-go org org-remark
+                         org-roam org-web-tools paredit protobuf-mode
+                         pyvenv pyvenv-auto rainbow-delimiters rg
+                         terraform-mode treesit-auto typescript-mode
+                         ultra-scroll use-package use-package-ensure
+                         vline vterm which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((agent-shell :url "https://github.com/xenodium/agent-shell.git")
      (flymake-golangci :url
-                       "https://github.com/storvik/flymake-golangci.git")
-     (mcp :url "https://github.com/mhv2109/mcp.el.git")
-     (gptel-prompts :url
-                    "https://github.com/jwiegley/gptel-prompts.git")
-     (macher :url "https://github.com/kmontag/macher.git")
-     (aider :url "https://github.com/tninja/aider.el")))
+                       "https://github.com/storvik/flymake-golangci.git")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
