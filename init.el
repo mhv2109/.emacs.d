@@ -737,7 +737,11 @@ otherwise add to start of list."
 ;; https://github.com/xenodium/agent-shell
 ;; https://agentclientprotocol.com/get-started/introduction
 (use-package agent-shell
-  :vc (:url "https://github.com/xenodium/agent-shell.git" :rev "d48c239")) ;; pin to workaround this issue: https://github.com/xenodium/agent-shell/issues/563
+  :vc (:url "https://github.com/xenodium/agent-shell.git" :rev "d48c239")  ;; pin to workaround this issue: https://github.com/xenodium/agent-shell/issues/563
+  :hook (agent-shell-mode . (lambda ()
+                              (require 'server)
+                              (unless (server-running-p)
+                                (server-start)))))
 
 ;;
 ;; Misc.
