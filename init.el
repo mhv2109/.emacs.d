@@ -847,6 +847,7 @@ otherwise add to start of list."
                   ("https://staysaasy.com/feed.xml" tech management)
                   ("https://shkspr.mobi/blog/feed/atom" tech management)
                   ("https://www.bleepingcomputer.com/feed/" tech)
+                  ("https://daniel.haxx.se/blog/feed/" tech)
                   ("https://abcnews.go.com/abcnews/topstories" news)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news world)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
