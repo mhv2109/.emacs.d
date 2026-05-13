@@ -36,17 +36,16 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(auto-package-update corfu counsel dape dockerfile-mode
-                         doom-themes editorconfig eldoc-box elfeed
-                         embark embark-consult exec-path-from-shell
-                         fish-mode forge gcmh git-link go-mode gotest
-                         hotfuzz ivy lua-mode magit marginalia
-                         markdown-mode nov ob-go org org-remark
-                         org-roam org-web-tools paredit protobuf-mode
-                         pyvenv pyvenv-auto rainbow-delimiters rg
-                         terraform-mode treesit-auto typescript-mode
-                         ultra-scroll use-package use-package-ensure
-                         vline vterm which-key yaml-mode yasnippet))
+   '(agent-shell auto-package-update corfu counsel dape dockerfile-mode
+                 doom-themes editorconfig eldoc-box elfeed embark
+                 embark-consult exec-path-from-shell fish-mode forge
+                 gcmh git-link go-mode gotest hotfuzz ivy lua-mode
+                 magit marginalia markdown-mode nov ob-go org
+                 org-remark org-roam org-web-tools paredit
+                 protobuf-mode pyvenv pyvenv-auto rainbow-delimiters
+                 rg terraform-mode treesit-auto typescript-mode
+                 ultra-scroll use-package use-package-ensure vline
+                 vterm which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((agent-shell :url "https://github.com/xenodium/agent-shell.git")
      (flymake-golangci :url
@@ -737,7 +736,6 @@ otherwise add to start of list."
 ;; https://github.com/xenodium/agent-shell
 ;; https://agentclientprotocol.com/get-started/introduction
 (use-package agent-shell
-  :vc (:url "https://github.com/xenodium/agent-shell.git" :rev "d48c239")  ;; pin to workaround this issue: https://github.com/xenodium/agent-shell/issues/563
   :hook (agent-shell-mode . (lambda ()
                               (require 'server)
                               (unless (server-running-p)
