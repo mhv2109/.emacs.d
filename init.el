@@ -944,6 +944,9 @@ other window."
 ;; show line numbers
 (global-display-line-numbers-mode t)
 
+;; show column numbers in status bar
+(setq column-number-mode t)
+
 ;; add closing brackets & parens
 (electric-pair-mode t)
 
