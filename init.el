@@ -365,7 +365,11 @@ targets."
 ;; markdown-mode: https://jblevins.org/projects/markdown-mode/
 (use-package markdown-mode
   :ensure t
-  :mode ("README\\.md\\'" . gfm-mode))
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init
+  (if-let ((found (executable-find "pandoc")))
+      (setq markdown-command (concat found " --quiet -f gfm -s"))
+    (message "'pandoc' not found, markdown rendering not available.")))
 
 ;; lua editing: https://github.com/immerrr/lua-mode
 (use-package lua-mode)
