@@ -352,7 +352,13 @@ targets."
     (when-let ((found (executable-find "ipython")))
       (setq python-shell-interpreter found
             python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " (file-name-directory user-init-file) "autoload.ipy"))))
-  (set-python-shell-interpreter-ipython))
+  (set-python-shell-interpreter-ipython)
+
+  ;; open python shell in same window
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-name action)
+                   (string-match-p "*Python*" buffer-name))
+                 (display-buffer-same-window))))
 
 (use-package pyvenv
   :after python
