@@ -38,14 +38,15 @@
  '(package-selected-packages
    '(agent-shell auto-package-update corfu counsel dape dockerfile-mode
                  doom-themes editorconfig eldoc-box elfeed embark
-                 embark-consult exec-path-from-shell fish-mode forge
-                 gcmh git-link go-mode gotest hotfuzz ivy lua-mode
-                 magit marginalia markdown-mode nov ob-go org
-                 org-remark org-roam org-web-tools paredit
-                 protobuf-mode pyvenv pyvenv-auto rainbow-delimiters
-                 rg terraform-mode treesit-auto typescript-mode
-                 ultra-scroll use-package use-package-ensure vline
-                 vterm which-key yaml-mode yasnippet))
+                 embark-consult exec-path-from-shell fish-mode
+                 flymake-golangci forge gcmh git-link go-mode gotest
+                 hotfuzz ivy lua-mode magit marginalia markdown-mode
+                 mcp nov ob-go org org-remark org-roam org-web-tools
+                 paredit protobuf-mode pyvenv pyvenv-auto
+                 rainbow-delimiters rg terraform-mode treesit-auto
+                 typescript-mode ultra-scroll use-package
+                 use-package-ensure vline vterm which-key yaml-mode
+                 yasnippet))
  '(package-vc-selected-packages
    '((agent-shell :url "https://github.com/xenodium/agent-shell.git")
      (flymake-golangci :url
@@ -426,15 +427,21 @@ targets."
   :config
   ;; setup org-agenda
   (let* ((org-dir (file-truename org-directory))
-         (dailies-dir (concat org-dir "/dailies"))
-         (resources-dir (concat org-dir "/resources"))
-         (projects-dir (concat org-dir "/projects"))
-         (areas-dir (concat org-dir "/areas")))
-    (setq org-agenda-files (list org-dir
-                                 dailies-dir
-                                 resources-dir
-                                 projects-dir
-                                 areas-dir)))
+         (archived-dir (expand-file-name "archived/" org-dir))
+         (agenda-dirs
+          (cons org-dir
+                (seq-filter
+                 #'file-directory-p
+                 (directory-files-recursively org-dir ".*" t)))))
+    (setq org-agenda-files
+          (seq-remove
+           (lambda (dir)
+             (let* ((normalized-dir (file-truename dir))
+                    (relative-dir (file-relative-name normalized-dir org-dir)))
+               (or (file-in-directory-p normalized-dir archived-dir)
+                   (and (not (string= relative-dir "."))
+                        (string-match-p "\\(?:^\\|/\\)\\.[^/]+" relative-dir)))))
+           agenda-dirs)))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
