@@ -349,7 +349,7 @@ targets."
   (defun set-python-shell-interpreter-ipython ()
     "If ipython is available, configure `python-shell-interpreter' to use it with autoloads."
     (interactive)
-    (when-let ((found (executable-find "ipython")))
+    (when-let ((found (locate-file "ipython" (reverse exec-path) exec-suffixes 1))) ;; don't use `executable-find' because I want to use local ipython bin first
       (setq python-shell-interpreter found
             python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " (file-name-directory user-init-file) "autoload.ipy"))))
   (set-python-shell-interpreter-ipython)
