@@ -579,7 +579,12 @@ targets."
 ;; Read EPUB from emacs: https://depp.brause.cc/nov.el/
 (use-package nov
   :config
-  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
+  ;; open ebook in same window
+  (add-to-list 'display-buffer-alist
+             '("\\.\\(epub\\|pdf\\|mobi\\|azw3\\|djvu\\)\\'"
+               (display-buffer-same-window))))
 
 ;; Highlight and annotate text and org files: https://github.com/nobiot/org-remark
 (use-package org-remark
