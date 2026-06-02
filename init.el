@@ -758,6 +758,9 @@ otherwise add to start of list."
 ;; https://github.com/xenodium/agent-shell
 ;; https://agentclientprotocol.com/get-started/introduction
 (use-package agent-shell
+  :custom
+  (agent-shell-github-acp-command '("copilot" "--acp" "--allow-all-tools"))
+  (agent-shell-cursor-acp-command '("cursor-agent-acp" "-t" "120000"))
   :hook (agent-shell-mode . (lambda ()
                               (require 'server)
                               (unless (server-running-p)
