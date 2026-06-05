@@ -790,6 +790,7 @@ otherwise add to start of list."
                   ("https://benhoyt.com/writings/rss.xml" go tech)
                   ("https://crawshaw.io/atom.xml" go tech)
                   ("https://jerf.org/iri/rss.xml" go tech)
+                  ("https://www.alexedwards.net/static/feed.rss" go tech)
                   ("https://peps.python.org/peps.rss" python tech)
                   ("https://blog.python.org/feeds/posts/default" python tech)
                   ("https://www.python.org/downloads/feed.rss" python tech)
