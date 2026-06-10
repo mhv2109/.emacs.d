@@ -41,10 +41,10 @@
                  embark-consult exec-path-from-shell fish-mode
                  flymake-golangci forge gcmh git-link go-mode gotest
                  hotfuzz ivy lua-mode magit marginalia markdown-mode
-                 mcp nov ob-go org org-remark org-roam org-web-tools
-                 paredit protobuf-mode pyvenv pyvenv-auto
-                 rainbow-delimiters rg terraform-mode treesit-auto
-                 typescript-mode ultra-scroll use-package
+                 mcp mermaid-mode nov ob-go ob-mermaid org org-remark
+                 org-roam org-web-tools paredit protobuf-mode pyvenv
+                 pyvenv-auto rainbow-delimiters rg terraform-mode
+                 treesit-auto typescript-mode ultra-scroll use-package
                  use-package-ensure vline vterm which-key yaml-mode
                  yasnippet))
  '(package-vc-selected-packages
@@ -381,6 +381,10 @@ targets."
 ;; lua editing: https://github.com/immerrr/lua-mode
 (use-package lua-mode)
 
+;; Mermaid diagrams: https://github.com/abrochard/mermaid-mode
+(use-package mermaid-mode
+  :mode ("\\.mmd\\'" "\\.mermaid\\'"))
+
 ;;
 ;; Treesitter
 ;;
@@ -452,7 +456,8 @@ targets."
    'org-babel-load-languages
    '((python . t)
      (shell . t)
-     (go . t)))
+     (go . t)
+     (mermaid . t)))
   ;; make bolded text appear red
   (add-to-list 'org-emphasis-alist
                '("*" (:foreground "red")))
@@ -494,6 +499,10 @@ targets."
   :ensure nil)
 
 (use-package ob-go ;; org-babel support for Go: https://github.com/pope/ob-go
+  :after org)
+
+;; Mermaid diagrams in org-mode: https://github.com/arnm/ob-mermaid
+(use-package ob-mermaid
   :after org)
 
 ;; retrieve web pages as org files: https://github.com/alphapapa/org-web-tools
