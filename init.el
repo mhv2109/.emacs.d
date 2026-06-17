@@ -1039,6 +1039,12 @@ other window."
 ;; allow undo + redo of window layout changes with C-c <left> and C-c <right>
 (winner-mode 1)
 
+;; undelete frames with M-x undelete-frame
+(undelete-frame-mode 1)
+
+;; remember window configurations used in every tab
+(tab-bar-history-mode 1)
+
 ;; General "improved" defaults from: https://git.sr.ht/~technomancy/better-defaults
 ;; See also: https://idiomdrottning.org/bad-emacs-defaults (I don't agree with _everything_ there)
 (unless (memq window-system '(mac ns)) ;; Disable menu bar on everything but mac
