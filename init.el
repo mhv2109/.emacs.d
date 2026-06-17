@@ -48,7 +48,8 @@
                  ultra-scroll use-package use-package-ensure vline
                  vterm which-key yaml-mode yasnippet))
  '(package-vc-selected-packages
-   '((agent-shell :url "https://github.com/xenodium/agent-shell.git")
+   '((agent-shell :url "https://github.com/mhv2109/agent-shell.git"
+                  :branch "cursor-official-acp")
      (flymake-golangci :url
                        "https://github.com/storvik/flymake-golangci.git")))
  '(warning-suppress-log-types '((comp)))
@@ -766,13 +767,13 @@ otherwise add to start of list."
 ;; AI
 ;;
 
-;; Ingtegrate with AI Agents via ACP
-;; https://github.com/xenodium/agent-shell
+;; Integrate with AI Agents via ACP
+;; https://github.com/mhv2109/agent-shell/tree/cursor-official-acp
 ;; https://agentclientprotocol.com/get-started/introduction
 (use-package agent-shell
   :custom
   (agent-shell-github-acp-command '("copilot" "--acp" "--allow-all-tools"))
-  (agent-shell-cursor-acp-command '("cursor-agent-acp" "-t" "120000"))
+  (agent-shell-cursor-acp-command '("agent" "acp"))
   :hook (agent-shell-mode . (lambda ()
                               (require 'server)
                               (unless (server-running-p)
