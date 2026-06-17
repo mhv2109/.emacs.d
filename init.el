@@ -846,6 +846,7 @@ otherwise add to start of list."
                   ("https://funcall.blogspot.com/feeds/posts/default" tech lisp)
                   ("https://blog.christianposta.com/feed.xml" tech)
                   ("https://lobste.rs/rss" tech)
+                  ("https://bubbles.town/feed" tech)
                   ("https://antirez.com/rss" tech)
                   ("https://github.blog/feed/" tech github)
                   ("https://brianchambers.substack.com/feed" tech cfa)
