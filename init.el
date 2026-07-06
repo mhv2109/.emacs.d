@@ -44,9 +44,10 @@
                  markdown-mode mcp mermaid-mode nov ob-go ob-mermaid
                  org org-remark org-roam org-web-tools paredit
                  protobuf-mode pyvenv pyvenv-auto rainbow-delimiters
-                 rg terraform-mode treesit-auto typescript-mode
-                 ultra-scroll use-package use-package-ensure vline
-                 vterm which-key yaml-mode yasnippet))
+                 rg terraform-mode treemacs treesit-auto
+                 typescript-mode ultra-scroll use-package
+                 use-package-ensure vline vterm which-key yaml-mode
+                 yasnippet))
  '(package-vc-selected-packages
    '((agent-shell :url "https://github.com/mhv2109/agent-shell.git"
                   :branch "cursor-official-acp")
@@ -249,6 +250,12 @@ targets."
 ;; smoother scrolling: https://github.com/jdtsmith/ultra-scroll
 (use-package ultra-scroll
   :config (ultra-scroll-mode 1))
+
+;; file tree explorer: https://github.com/Alexander-Miller/treemacs
+(use-package treemacs
+  :bind
+  (:map global-map
+        ("<f8>" . treemacs)))
 
 ;;
 ;; Git
