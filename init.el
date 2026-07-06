@@ -49,8 +49,7 @@
                  use-package-ensure vline vterm which-key yaml-mode
                  yasnippet))
  '(package-vc-selected-packages
-   '((agent-shell :url "https://github.com/mhv2109/agent-shell.git"
-                  :branch "cursor-official-acp")
+   '((agent-shell :url "https://github.com/xenodium/agent-shell.git")
      (flymake-golangci :url
                        "https://github.com/storvik/flymake-golangci.git")))
  '(warning-suppress-log-types '((comp)))
@@ -775,12 +774,13 @@ otherwise add to start of list."
 ;;
 
 ;; Integrate with AI Agents via ACP
-;; https://github.com/mhv2109/agent-shell/tree/cursor-official-acp
 ;; https://agentclientprotocol.com/get-started/introduction
 (use-package agent-shell
+  :vc (:url "https://github.com/xenodium/agent-shell.git"
+       :rev "c91b20c29e5512fc7dc340d22c265b9ff377b741")
   :custom
   (agent-shell-github-acp-command '("copilot" "--acp" "--allow-all-tools"))
-  (agent-shell-cursor-acp-command '("agent" "acp"))
+  (agent-shell-cursor-acp-command '("agent" "acp" "--yolo" "--trust"))
   :hook (agent-shell-mode . (lambda ()
                               (require 'server)
                               (unless (server-running-p)
