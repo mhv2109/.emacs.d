@@ -252,6 +252,11 @@ targets."
 
 ;; file tree explorer: https://github.com/Alexander-Miller/treemacs
 (use-package treemacs
+  :custom
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-project-follow-mode t)
+  (treemacs-file-event-delay 500)
   :bind
   (:map global-map
         ("<f8>" . treemacs)))
