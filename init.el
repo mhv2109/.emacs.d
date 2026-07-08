@@ -94,9 +94,11 @@
 ;; UI
 ;;
 
+(set-face-attribute 'default nil :height 140) ;; set font to 14pt
+
 (use-package doom-themes ;; Themes from doomacs: https://github.com/doomemacs/themes
   :config
-  (load-theme 'doom-one-light t))
+  (load-theme 'doom-solarized-light t))
 
 ;; Syntax highlighting, built-in
 (use-package flymake
