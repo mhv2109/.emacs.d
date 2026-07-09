@@ -1025,30 +1025,40 @@ other window."
 
 ;; quickly swap from horizontal to vertical split & vice-versa
 ;; copied from here: https://stackoverflow.com/questions/14881020/emacs-shortcut-to-switch-from-a-horizontal-split-to-a-vertical-split-in-one-move
+;; adapted to work with treemacs
 (defun toggle-window-split ()
   (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-         (next-win-buffer (window-buffer (next-window)))
-         (this-win-edges (window-edges (selected-window)))
-         (next-win-edges (window-edges (next-window)))
-         (this-win-2nd (not (and (<= (car this-win-edges)
-                     (car next-win-edges))
-                     (<= (cadr this-win-edges)
-                     (cadr next-win-edges)))))
-         (splitter
-          (if (= (car this-win-edges)
-             (car (window-edges (next-window))))
-          'split-window-horizontally
-        'split-window-vertically)))
-    (delete-other-windows)
-    (let ((first-win (selected-window)))
-      (funcall splitter)
-      (if this-win-2nd (other-window 1))
-      (set-window-buffer (selected-window) this-win-buffer)
-      (set-window-buffer (next-window) next-win-buffer)
-      (select-window first-win)
-      (if this-win-2nd (other-window 1))))))
+  (let* ((content-windows
+          (seq-remove (lambda (w)
+                        (and (fboundp 'treemacs-is-treemacs-window?)
+                             (treemacs-is-treemacs-window? w)))
+                      (window-list)))
+         (n (length content-windows)))
+    (when (= n 2)
+      (let* ((this-win (if (memq (selected-window) content-windows)
+                           (selected-window)
+                           (car content-windows)))
+             (other-win (car (seq-remove (lambda (w) (eq w this-win)) content-windows)))
+             (this-buf (window-buffer this-win))
+             (other-buf (window-buffer other-win))
+             (this-edges (window-edges this-win))
+             (other-edges (window-edges other-win))
+             (this-is-2nd (not (and (<= (car this-edges) (car other-edges))
+                                    (<= (cadr this-edges) (cadr other-edges)))))
+             (splitter (if (= (car this-edges) (car other-edges))
+                           'split-window-horizontally
+                           'split-window-vertically)))
+        (delete-window other-win)
+        (select-window this-win)
+        (let ((new-win (funcall splitter)))
+          (if this-is-2nd
+              (progn
+                (set-window-buffer this-win other-buf)
+                (set-window-buffer new-win this-buf)
+                (select-window new-win))
+              (set-window-buffer this-win this-buf)
+              (set-window-buffer new-win other-buf)
+              (select-window this-win)))))))
 
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 
