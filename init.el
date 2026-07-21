@@ -37,21 +37,20 @@
  '(auth-source-save-behavior nil)
  '(package-selected-packages
    '(agent-shell auto-package-update cider corfu counsel dape
-                 dockerfile-mode doom-themes editorconfig eldoc-box
-                 elfeed embark embark-consult exec-path-from-shell
-                 fish-mode flymake-golangci forge gcmh git-link
-                 go-mode gotest hotfuzz ivy lua-mode magit marginalia
-                 markdown-mode mcp mermaid-mode nov ob-go ob-mermaid
-                 org org-remark org-roam org-web-tools paredit
-                 protobuf-mode pyvenv pyvenv-auto rainbow-delimiters
-                 rg terraform-mode treemacs treesit-auto
-                 typescript-mode ultra-scroll use-package
-                 use-package-ensure vline vterm which-key yaml-mode
-                 yasnippet))
+		 dockerfile-mode doom-themes editorconfig eldoc-box
+		 elfeed embark embark-consult exec-path-from-shell
+		 fish-mode flymake-golangci forge gcmh git-link
+		 go-mode gotest hotfuzz ivy lua-mode magit marginalia
+		 markdown-mode mcp mermaid-mode nov ob-go ob-mermaid
+		 org org-remark org-roam org-web-tools paredit
+		 protobuf-mode pyvenv pyvenv-auto rainbow-delimiters
+		 rg terraform-mode treemacs treesit-auto
+		 typescript-mode ultra-scroll use-package
+		 use-package-ensure vline vterm which-key yaml-mode
+		 yasnippet))
  '(package-vc-selected-packages
-   '((agent-shell :url "https://github.com/xenodium/agent-shell.git")
-     (flymake-golangci :url
-                       "https://github.com/storvik/flymake-golangci.git")))
+   '((flymake-golangci :url
+		       "https://github.com/storvik/flymake-golangci.git")))
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode))))
 (custom-set-faces
@@ -783,8 +782,6 @@ otherwise add to start of list."
 ;; Integrate with AI Agents via ACP
 ;; https://agentclientprotocol.com/get-started/introduction
 (use-package agent-shell
-  :vc (:url "https://github.com/xenodium/agent-shell.git"
-       :rev "c91b20c29e5512fc7dc340d22c265b9ff377b741")
   :custom
   (agent-shell-github-acp-command '("copilot" "--acp" "--allow-all-tools"))
   (agent-shell-cursor-acp-command '("agent" "acp" "--yolo" "--trust"))
