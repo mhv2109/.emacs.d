@@ -1119,6 +1119,26 @@ other window."
 ;; allow commands in minibuffer
 (setq enable-recursive-minibuffers t)
 
+;; persist minibuffer history across restarts (pairs with ivy/counsel)
+(savehist-mode 1)
+
+;; repeat the last key of a repeatable command without the prefix,
+;; e.g. C-x o o o instead of C-x o C-x o C-x o
+(repeat-mode 1)
+
+;; right-click context menus, including flyspell corrections
+(context-menu-mode 1)
+
+;; with two dired windows, default copy/move target is the other window
+(setq dired-dwim-target t)
+
+;; ~/org is a symlink and org-roam resolves everything through file-truename,
+;; so the "follow symlink?" prompt is pure friction
+(setq vc-follow-symlinks t)
+
+;; single space ends a sentence; fixes M-a/M-e and fill in prose buffers
+(setq sentence-end-double-space nil)
+
 ;; Delete trailing whitespace and trailing empty line from files.
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
