@@ -10,7 +10,10 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 
 ### Configuration Structure
 
-- **Single-file configuration**: All configuration lives in `init.el` (1073 lines)
+- **Single-file configuration**: All configuration lives in `init.el` (~1175 lines)
+- **Custom-managed settings**: `custom-file` points at `custom.el`, which is gitignored
+  machine state. Never hand-edit it and never put durable config there — it belongs in
+  `init.el`.
 - **Package management**: Uses `use-package` with `:ensure t` set globally for automatic package installation from MELPA, MELPA-stable, and GNU ELPA
 - **Lexical scoping**: Configuration uses `lexical-binding: t` throughout
 - **Conditional loading**: Extensive use of `:if`, `:after`, and `:hook` to load packages conditionally and lazily
@@ -35,22 +38,19 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 ### Major Subsystems
 
 #### LSP + Debugging (eglot + dape)
-- **eglot** (built-in): LSP client, configured to auto-start for prog-mode/org-mode/markdown-mode
+- **eglot** (built-in): LSP client, configured to auto-start for prog-mode
 - **dape**: Debug Adapter Protocol client with custom configurations for Go (dlv), TypeScript/JavaScript (Jest), and Java (jdtls)
 - Auto-formatting on save for Go and Terraform via `eglot-code-action-organize-imports` and `eglot-format-buffer`
 
-#### AI Integration (gptel + MCP)
-- **gptel**: LLM chat client with multiple backends (Ollama, Anthropic Claude, GitHub Copilot)
-- **mcp.el** (Emacs 30.1+): Model Context Protocol integration with containerized servers:
-  - General: fetch, duckduckgo, sequential-thinking, markitdown, filesystem
-  - Programming: serena (coding agent), context7 (library docs), AWS/Cloudflare/Terraform docs
-- **gptel-commit**: AI-generated commit messages
-- Interactive tool selection via `gptel-mcp-connect`
+#### AI Integration (agent-shell)
+- **agent-shell**: Talks to AI agents over ACP (Agent Client Protocol). Configured for the
+  GitHub Copilot CLI (`copilot --acp`) and the Cursor CLI (`agent acp`).
+- Starts an Emacs server on `agent-shell-mode` if one isn't already running, so agents can
+  call back in via `emacsclient`.
 
 #### Org-mode + Knowledge Management
 - **org-roam**: Zettelkasten-style note-taking with custom capture templates for projects, areas, resources, books, and websites
 - **Directory structure**: Flat organization under `org-directory` with subdirectories: `dailies/`, `resources/`, `projects/`, `areas/`, `data/` (attachments), `archived/`
-- **deft**: Full-text search across org files
 - **org-remark**: Highlighting and annotations for org, Info, EWW, and EPUB files
 - **org-babel**: Enabled for Python, shell, and Go code execution
 
@@ -58,7 +58,8 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 - **magit**: Primary Git interface (same-window display by default)
 - **forge**: GitHub/GitLab integration
 - **git-link**: Generate permalinks to current position in repository
-- **smerge-mode**: Built-in merge conflict resolution
+- **smerge-mode**: Built-in merge conflict resolution, enabled from `find-file-hook` only
+  for files that actually contain conflict markers
 
 #### Language-Specific Tooling
 
@@ -92,10 +93,11 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 - **Completion**: corfu (manual, TAB-triggered), hotfuzz (fuzzy matching)
 - **Minibuffer**: ivy + counsel + marginalia
 - **Context actions**: embark (integrates with which-key for discoverable keybindings)
-- **Navigation**: projectile (C-c p prefix), neotree integration, swiper for search
+- **Navigation**: built-in `project.el`, treemacs file tree (`<f8>`), swiper for search
 - **Scrolling**: ultra-scroll for smooth pixel-perfect scrolling
 - **Terminal**: vterm (libvterm-based)
-- **Theme**: doom-gruvbox
+- **Search**: rg (ripgrep)
+- **Theme**: doom-solarized-light, 14pt
 
 ## Development Commands
 
@@ -107,10 +109,32 @@ emacs  # GUI
 emacs -nw  # Terminal
 ```
 
-Byte-compile init.el to check for errors (optional):
+Check init.el for errors. An Emacs server is normally running, so use `emacsclient` rather
+than spawning a second Emacs. Note `emacs-lisp-mode` in the parens check — without it,
+`check-parens` uses the default syntax table and reports apostrophes in comments as
+unbalanced quotes.
+
 ```bash
-emacs --batch -f batch-byte-compile init.el
+# Parens balance
+emacsclient --eval '
+(with-temp-buffer
+  (insert-file-contents "~/.emacs.d/init.el")
+  (emacs-lisp-mode)
+  (condition-case e (progn (check-parens) "OK")
+    (error (format "%S at line %d" e (line-number-at-pos)))))'
+
+# Byte-compile, writing the .elc somewhere harmless
+emacsclient --eval '
+(progn
+  (setq byte-compile-dest-file-function (lambda (_) "/tmp/init-check.elc"))
+  (byte-compile-file "~/.emacs.d/init.el")
+  (setq byte-compile-dest-file-function nil)
+  (with-current-buffer "*Compile-Log*" (buffer-string)))'
 ```
+
+Expected byte-compile output is **one** warning, not zero: `org-remark-create` (org-remark
+1.3.0) interpolates unescaped single quotes into the docstring it generates. That warning is
+upstream and cannot be fixed from this config.
 
 Profile startup time:
 ```elisp
@@ -130,6 +154,10 @@ Install a new package (use-package will auto-install on next restart if added to
 ```elisp
 M-x package-install RET package-name
 ```
+
+`package-quickstart` is enabled, so package autoloads are precomputed into a single file.
+**Run `M-x package-quickstart-refresh` after installing or removing any package**, otherwise
+the change won't be picked up at the next startup.
 
 ### Language-Specific Testing
 
@@ -168,10 +196,13 @@ C-c C-v b                   ;; Execute entire buffer
 ### Custom Functions
 Helper functions are defined inline within init.el:
 - `copy-buffer-file-path`: Copy current buffer's file path to kill ring
-- `copy-projectile-project-path`: Copy project root to kill ring
+- `copy-project-path`: Copy project root to kill ring (via `project-root`)
 - `set-python-shell-interpreter-ipython`: Configure ipython as Python shell
 - `toggle-window-split`: Switch between horizontal and vertical splits
 - `load-if-exists`: Conditionally load files if they exist
+- `smerge-mode-if-conflicted`: Enable smerge only when conflict markers are present
+- `add-server-program-if-found`: Macro adding an entry to `eglot-server-programs` when the
+  executable exists. `command` is anaphorically bound to its absolute path inside the body.
 
 ### Package Installation Patterns
 **Standard packages** (from MELPA):
@@ -196,14 +227,9 @@ Helper functions are defined inline within init.el:
 - `treesit-auto` handles automatic installation of grammars
 - Custom recipes for Go (pinned to v0.19.1) and fish
 - Treesitter modes automatically remap from standard modes (e.g., go-mode → go-ts-mode)
-
-### MCP Server Management
-MCP servers run in Docker containers or via npx/uvx. To modify MCP configuration:
-1. Edit `mcp-hub-servers` alist in init.el
-2. Restart Emacs or `M-x mcp-hub-restart-server RET server-name`
-3. Use `M-x gptel-mcp-connect` to select tools interactively in gptel buffers
-
-Note: The `serena` MCP server must use `uvx` (not Docker) to access filesystem properly.
+- **Custom recipes must be registered before `global-treesit-auto-mode`.** Enabling the mode
+  snapshots `treesit-auto-recipe-list` into `treesit-auto-langs`; anything added afterwards
+  is silently ignored.
 
 ## Common Customizations
 
@@ -252,7 +278,8 @@ Or add to `~/.emacs.d/secrets.el.gpg`:
 ## Important Notes
 
 - **Performance**: `gcmh` (GC Magic Hack) is enabled to reduce GC pauses
-- **Warning suppression**: Warnings are suppressed (`warning-minimum-level :emergency`) - be cautious when debugging
+- **Warning suppression**: `warning-minimum-level` is `:error`, with targeted suppression via
+  `warning-suppress-log-types`. Warnings below that still land in `*Warnings*`
 - **Max eval depth**: Set to 10000 to handle deep Java dependency trees
 - **Trailing whitespace**: Automatically deleted on save for all files
 - **Auto-revert**: Enabled globally - buffers automatically refresh when files change on disk
