@@ -36,6 +36,7 @@ workspace/
 .last-package-update-day
 secrets.el.gpg
 secrets.el
+custom.el
 tree-sitter/
 image-dired/
 url/
