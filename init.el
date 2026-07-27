@@ -19,7 +19,6 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-pinned-packages '(use-package . "melpa-stable") t)
 
 ;; Load and activate emacs packages. Do this first so that the
 ;; packages are loaded before you start trying to modify them.
@@ -134,10 +133,6 @@
   :config
   (editorconfig-mode 1))
 
-;; horizontal and vertical line highlighting
-;; super slow
-(use-package vline)
-
 ;; search w/ ripgrep: https://rgel.readthedocs.io/en/latest/index.html
 (use-package rg)
 
@@ -175,6 +170,9 @@
    ("C-h B" . embark-bindings))
   :config
   ;; see: https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
+  ;; FRAGILE: depends on which-key private API (`which-key--show-keymap',
+  ;; `which-key--hide-popup-ignore-command'). Check this block first if embark
+  ;; or which-key breaks after an upgrade.
   (defun embark-which-key-indicator ()
     "An embark indicator that displays keymaps using which-key.
 The which-key help message will show the type and value of the
@@ -204,7 +202,8 @@ targets."
           embark-isearch-highlight-indicator))
 
   (defun embark-hide-which-key-indicator (fn &rest args)
-    "Hide the which-key indicator immediately when using the completing-read prompter."
+    "Hide the which-key indicator when using the completing-read prompter.
+FN is applied to ARGS with `embark-which-key-indicator' removed."
     (which-key--hide-popup-ignore-command)
     (let ((embark-indicators
            (remq #'embark-which-key-indicator embark-indicators)))
@@ -217,10 +216,10 @@ targets."
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-(use-package uniquify ;; Overrides Emacs’ default mechanism for making buffer names unique, from: https://git.sr.ht/~technomancy/better-defaults
-  :ensure nil
-  :config
-  (setq uniquify-buffer-name-style 'forward))
+;; Overrides Emacs' default mechanism for making buffer names unique, from:
+;; https://git.sr.ht/~technomancy/better-defaults
+;; uniquify is preloaded, so no use-package wrapper is needed.
+(setq uniquify-buffer-name-style 'forward)
 
 ;; Highlight key combos for incomplete commands: https://github.com/justbur/emacs-which-key
 (use-package which-key
@@ -269,10 +268,20 @@ targets."
 (use-package git-link
  :after magit)
 
-;; Handle diff3 in the editor
+;; Handle diff3 in the editor. Enable only for files that actually contain
+;; conflict markers rather than every prog-mode buffer.
 (use-package smerge-mode
   :ensure nil ;; built-in
-  :hook (prog-mode))
+  ;; :init, not :config -- the hook fires before smerge-mode itself is loaded,
+  ;; so the function has to exist at startup. `smerge-mode' is autoloaded.
+  :init
+  (defun smerge-mode-if-conflicted ()
+    "Enable `smerge-mode' if the buffer contains conflict markers."
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^<<<<<<< " nil t)
+        (smerge-mode 1))))
+  :hook (find-file . smerge-mode-if-conflicted))
 
 ;;
 ;; Major+minor modes
@@ -347,7 +356,7 @@ targets."
   (python-indent-offset 4)
   :config
   (defun set-python-shell-interpreter-ipython ()
-    "If ipython is available, configure `python-shell-interpreter' to use it with autoloads."
+    "Point `python-shell-interpreter' at ipython, with autoloads, if available."
     (interactive)
     (when-let ((found (locate-file "ipython" (reverse exec-path) exec-suffixes 1))) ;; don't use `executable-find' because I want to use local ipython bin first
       (setq python-shell-interpreter found
@@ -371,7 +380,6 @@ targets."
 
 ;; markdown-mode: https://jblevins.org/projects/markdown-mode/
 (use-package markdown-mode
-  :ensure t
   :mode ("README\\.md\\'" . gfm-mode)
   :init
   (if-let ((found (executable-find "pandoc")))
@@ -671,7 +679,9 @@ front.  Does nothing but log when EXEC is not found."
                                `((sql-mode) ,command "up" "--method" "stdio"))
 
   :hook
-  ((prog-mode org-mode markdown-mode) . eglot-ensure) ;; try LSP for all prog mode
+  ;; prog-mode only: no server is configured for org or markdown, so including
+  ;; them just ran a failing server lookup on every file opened.
+  (prog-mode . eglot-ensure)
   (before-save . (lambda ()
                    ;; autoformatting only behaves well for certain modes
                    ;; TODO: having trouble configuring typescript-language-server
@@ -1125,7 +1135,10 @@ other window."
 ;; more gracefully handle files with long lines
 (global-so-long-mode 1)
 
-;; I know this is bad, but...
-(setq warning-minimum-level :emergency)
+;; Suppress warning *popups*, but still record them in *Warnings* -- a blanket
+;; :emergency here previously hid native-comp failures, package load errors and
+;; eglot server crashes. Targeted suppression lives with `warning-suppress-log-types'
+;; near the top of this file.
+(setq warning-minimum-level :error)
 
 ;;; init.el ends here
