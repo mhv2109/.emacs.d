@@ -7,6 +7,14 @@
 
 (setq max-lisp-eval-depth 10000) ;; This is covering up a deeper problem, but hasn't been an issue on my hardware. Blame our Java dependency management.
 
+;; Keep Custom out of this file. Anything that calls `customize-save-variable'
+;; -- M-x customize, but also package.el maintaining `package-selected-packages'
+;; -- rewrites its block in place, which means it would otherwise churn this
+;; version-controlled file. custom.el is machine state and is gitignored;
+;; settings meant to be durable belong in init.el explicitly.
+;; Set before `package-initialize', which writes package-selected-packages.
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -29,36 +37,15 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(auth-source-save-behavior nil)
- '(package-selected-packages
-   '(agent-shell auto-package-update cider corfu counsel dape
-		 dockerfile-mode doom-themes editorconfig eldoc-box
-		 elfeed embark embark-consult exec-path-from-shell
-		 fish-mode flymake-golangci forge gcmh git-link
-		 go-mode gotest hotfuzz ivy lua-mode magit marginalia
-		 markdown-mode mcp mermaid-mode nov ob-go ob-mermaid
-		 org org-remark org-roam org-web-tools paredit
-		 protobuf-mode pyvenv pyvenv-auto rainbow-delimiters
-		 rg terraform-mode treemacs treesit-auto
-		 typescript-mode ultra-scroll use-package
-		 use-package-ensure vline vterm which-key yaml-mode
-		 yasnippet))
- '(package-vc-selected-packages
-   '((flymake-golangci :url
-		       "https://github.com/storvik/flymake-golangci.git")))
- '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((lsp-mode))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Settings that used to live in the Custom block above, kept here deliberately
+;; so they stay under version control. `package-selected-packages' and
+;; `package-vc-selected-packages' were intentionally *not* carried over: both are
+;; machine state that package.el rewrites, and the vc recipe is already declared
+;; on the `flymake-golangci' use-package form below.
+(setq auth-source-save-behavior nil
+      ;; native-comp warnings are noise; this is the targeted version of the
+      ;; blanket `warning-minimum-level' suppression further down.
+      warning-suppress-log-types '((comp)))
 
 ;;
 ;; Package customizations
@@ -495,10 +482,16 @@ targets."
   ;; configure archival (absolute)
   (setq org-archive-location (concat (file-truename org-directory) "/archived/%s::"))
   ;; open org in ~/org directory in same window
+  ;; NOTE: guard on `buffer-file-name' -- a buffer named *.org need not be
+  ;; visiting a file (indirect and export buffers), and `string-match-p' on nil
+  ;; signals. Compare with `file-in-directory-p' against the resolved path
+  ;; rather than matching org-directory as a regexp; ~/org is a symlink.
   (add-to-list 'display-buffer-alist
-               '((lambda (buffer-name action)
-                   (and (string-match-p "\\.org\\'" buffer-name)
-                        (string-match-p org-directory (buffer-file-name (get-buffer buffer-name)))))
+               '((lambda (buffer-name _action)
+                   (when-let* (((string-match-p "\\.org\\'" buffer-name))
+                               (buffer (get-buffer buffer-name))
+                               (file (buffer-file-name buffer)))
+                     (file-in-directory-p file (file-truename org-directory))))
                  (display-buffer-same-window)))
   ;; display org-agenda in same window vs. closing others+splitting
   (add-to-list 'display-buffer-alist
@@ -660,14 +653,17 @@ targets."
   ;; (fset #'jsonrpc--log-event #'ignore)
 
   (defmacro add-server-program-if-found (exec append &rest forms)
-    "If EXEC is in `exec-path', bind COMMAND and add FORMS to
-EGLOT-SERVER-PROGRAMS. If APPEND is truthy, add to end of list,
-otherwise add to start of list."
-    `(if-let ((command (locate-file ,exec exec-path exec-suffixes 1)))
+    "Add FORMS to `eglot-server-programs' when EXEC is on `exec-path'.
+
+FORMS is evaluated with `command' anaphorically bound to the absolute
+path of EXEC, so it can be spliced into the server invocation.  If
+APPEND is non-nil the entry goes to the end of the list, otherwise the
+front.  Does nothing but log when EXEC is not found."
+    `(if-let* ((command (locate-file ,exec exec-path exec-suffixes 1)))
          (add-to-list
           'eglot-server-programs
           ,@forms ,append)
-       (message "EXEC not found, not adding to EGLOT-SERVER-PROGRAMS: %s" ,exec)))
+       (message "Not adding to eglot-server-programs, %s not found" ,exec)))
 
   (add-server-program-if-found "autotools-language-server" t
                                `((makefile-mode makefile-bsdmake-mode) ,command))
@@ -763,7 +759,6 @@ otherwise add to start of list."
                            (if file
                                `["--runInBand" "--no-coverage" ,file]
                              (user-error "No file found"))))
-                 :outputCapture "console"
                  :sourceMapRenames t
                  :pauseForSourceMap nil
                  :autoAttachChildProcesses t
@@ -828,7 +823,6 @@ otherwise add to start of list."
                   ("https://pythonspeed.com/atom.xml" python tech)
                   ;;("https://feeds.feedblitz.com/baeldung&x=1" java tech)
                   ;;("https://spring.io/blog.atom" java spring tech)
-                  ("http://research.swtch.com/feed.atom" tech)
                   ("https://www.ardanlabs.com/blog/index.xml" tech)
                   ("https://engineering.fb.com/feed/" tech)
                   ("https://github.blog/engineering.atom" tech)
@@ -959,8 +953,8 @@ other window."
 (defun copy-buffer-file-path ()
   "Copy the current buffer's file path to the kill ring."
   (interactive)
-  (if-let ((filename (buffer-file-name))
-           (filename-absolute (expand-file-name filename)))
+  (if-let* ((filename (buffer-file-name))
+            (filename-absolute (expand-file-name filename)))
       (progn
         (kill-new filename-absolute)
         (message "Copied to kill ring: %s" filename-absolute))
@@ -969,9 +963,8 @@ other window."
 (defun copy-project-path ()
   "Copy the current project's root directory to the kill ring."
   (interactive)
-  (if-let ((current (project-current))
-           (project-root (car (last current)))
-           (project-root-absolute (expand-file-name project-root)))
+  (if-let* ((current (project-current))
+            (project-root-absolute (expand-file-name (project-root current))))
       (progn
         (kill-new project-root-absolute)
         (message "Project root copied to kill ring: %s" project-root-absolute))
@@ -1018,6 +1011,10 @@ other window."
 	(load-file expanded)))
 
 (load-if-exists "~/.emacs.d/secrets.el.gpg")
+
+;; Load Custom's own settings (see `custom-file' at the top of this file).
+;; Loaded late so anything set explicitly in init.el wins.
+(load-if-exists custom-file)
 
 ;; Auto-refresh dired on file change
 (add-hook 'dired-mode-hook 'auto-revert-mode)
