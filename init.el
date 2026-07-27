@@ -20,6 +20,11 @@
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
 
+;; Precompute all package autoloads into a single byte-compiled file rather
+;; than walking every elpa/ subdirectory at startup. Run
+;; M-x package-quickstart-refresh after installing or removing packages.
+(setq package-quickstart t)
+
 ;; Load and activate emacs packages. Do this first so that the
 ;; packages are loaded before you start trying to modify them.
 ;; This also sets the load path.
@@ -69,6 +74,10 @@
 ;; https://github.com/purcell/exec-path-from-shell
 (use-package exec-path-from-shell
   :if (or (memq window-system '(mac ns x)) (daemonp))
+  :custom
+  ;; Login shell only. The default includes -i, which sources interactive fish
+  ;; config on every startup for no benefit here.
+  (exec-path-from-shell-arguments '("-l"))
   :config (exec-path-from-shell-initialize))
 
 ;; Garbage Collector Magic Hack: https://github.com/emacsmirror/gcmh
@@ -301,9 +310,11 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   ((text-mode . flyspell-mode)   ;; spellcheck prose
    (prog-mode . flyspell-prog-mode))) ;; spellcheck comments and strings only
 
+;; Hook the minor mode into editing buffers rather than using yas-global-mode,
+;; which loads all of yasnippet at startup. Same practical coverage -- org-mode
+;; derives from text-mode -- without the eager load.
 (use-package yasnippet
-  :config
-  (yas-global-mode 1))
+  :hook ((prog-mode text-mode) . yas-minor-mode))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
 (use-package yaml-mode
