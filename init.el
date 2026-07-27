@@ -800,7 +800,7 @@ otherwise add to start of list."
   (url-queue-timeout 30)
   (elfeed-search-title-max-width 120)
   (elfeed-search-filter "@1-days-ago +unread")
-  (elfeed-feeds '(("https://aws.amazon.com/about-aws/whats-new/recent/feed/" aws tech)
+  (elfeed-feeds '(("https://aws.amazon.com/about-aws/whats-new/recent/feed/" aws tech firehose)
                   ("https://aws.amazon.com/blogs/aws/feed/" aws tech)
                   ("https://blog.cloudflare.com/rss" cloudflare tech)
                   ("https://www.docker.com/feed/" docker tech)
@@ -833,8 +833,8 @@ otherwise add to start of list."
                   ("https://slack.engineering/rss" tech)
                   ("https://engineering.atspotify.com/feed" tech)
                   ("https://stackoverflow.blog/feed" tech)
-                  ("https://news.ycombinator.com/rss" tech)
-                  ("https://feeds.feedburner.com/TheHackersNews" tech)
+                  ("https://news.ycombinator.com/rss" tech firehose)
+                  ("https://feeds.feedburner.com/TheHackersNews" tech firehose)
                   ("https://feed.infoq.com/" tech)
                   ("https://huggingface.co/blog/feed.xml" tech ai)
                   ;;("https://techcrunch.com/feed/" news tech)
@@ -857,8 +857,8 @@ otherwise add to start of list."
                   ("https://www.seangoedecke.com/rss.xml" tech)
                   ("https://funcall.blogspot.com/feeds/posts/default" tech lisp)
                   ("https://blog.christianposta.com/feed.xml" tech)
-                  ("https://lobste.rs/rss" tech)
-                  ("https://bubbles.town/feed" tech)
+                  ("https://lobste.rs/rss" tech firehose)
+                  ("https://bubbles.town/feed" tech firehose)
                   ("https://antirez.com/rss" tech)
                   ("https://github.blog/feed/" tech github)
                   ("https://brianchambers.substack.com/feed" tech cfa)
@@ -898,15 +898,15 @@ otherwise add to start of list."
                   ("https://www.bleepingcomputer.com/feed/" tech)
                   ("https://daniel.haxx.se/blog/feed/" tech)
                   ("https://www.wheresyoured.at/rss/" tech)
-                  ("https://abcnews.go.com/abcnews/topstories" news)
-                  ("https://feeds.bbci.co.uk/news/world/rss.xml" news world)
-                  ("https://moxie.foxnews.com/google-publisher/latest.xml" news)
-                  ("https://www.wcnc.com/feeds/syndication/rss/news" news clt)
-                  ("https://news.kagi.com/world.xml" news world)
-                  ("https://news.kagi.com/usa.xml" news usa)
-                  ("https://news.kagi.com/business.xml" news business)
-                  ("https://news.kagi.com/tech.xml" news tech)
-                  ("https://news.kagi.com/science.xml" news science)))
+                  ("https://abcnews.go.com/abcnews/topstories" news firehose)
+                  ("https://feeds.bbci.co.uk/news/world/rss.xml" news world firehose)
+                  ("https://moxie.foxnews.com/google-publisher/latest.xml" news firehose)
+                  ("https://www.wcnc.com/feeds/syndication/rss/news" news clt firehose)
+                  ("https://news.kagi.com/world.xml" news world firehose)
+                  ("https://news.kagi.com/usa.xml" news usa firehose)
+                  ("https://news.kagi.com/business.xml" news business firehose)
+                  ("https://news.kagi.com/tech.xml" news tech firehose)
+                  ("https://news.kagi.com/science.xml" news science firehose)))
   :config
   ;; function to open entries in another window: https://github.com/skeeto/elfeed/pull/383/commits/9c15ba2549f31a484953964e33114d7833348569
   (defun elfeed-entry-other-window ()
@@ -927,12 +927,7 @@ other window."
   :bind
   (("C-c r" . elfeed)
    :map elfeed-search-mode-map
-   ("o" . elfeed-entry-other-window))
-  :hook
-  ((elfeed-new-entry . (lambda (&rest _)
-                         ;; mark stories older than 1 week as read
-                         (elfeed-make-tagger :before "1 weeks ago"
-                                             :remove 'unread)))))
+   ("o" . elfeed-entry-other-window)))
 
 ;;
 ;; Window and buffer management
