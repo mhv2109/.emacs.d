@@ -37,6 +37,7 @@ workspace/
 secrets.el.gpg
 secrets.el
 custom.el
+package-quickstart.el
 tree-sitter/
 image-dired/
 url/
