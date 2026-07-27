@@ -127,7 +127,9 @@
         ([escape] . corfu-quit))
   :init
   (global-corfu-mode)
-  (corfu-popupinfo-mode nil))
+  ;; explicitly off: conflicts with eldoc-box (see below). A nil argument would
+  ;; *toggle* the mode on, so disable with -1.
+  (corfu-popupinfo-mode -1))
 
 ;; Display eldoc in a childframe: https://github.com/casouri/eldoc-box
 (use-package eldoc-box
@@ -290,20 +292,18 @@ targets."
 ;;
 
 ;; spellchecking
-(use-package flyspell-mode
+;; NOTE: the feature is `flyspell'; `flyspell-mode' and `flyspell-prog-mode' are
+;; commands, not features, so they must not be used as `use-package' names.
+(use-package flyspell
   :ensure nil
+  :custom
+  (flyspell-issue-message-flag nil) ;; allegedly improves performance
   :config
   (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
   (define-key flyspell-mouse-map [mouse-3] #'undefined)
-  (setq flyspell-issue-message-flag nil) ;; allegedly improves performance
   :hook
-  (text-mode))
-
-(use-package flyspell-prog-mode
-  :ensure nil
-  :after flyspell-mode
-  :hook
-  (prog-mode))
+  ((text-mode . flyspell-mode)   ;; spellcheck prose
+   (prog-mode . flyspell-prog-mode))) ;; spellcheck comments and strings only
 
 (use-package yasnippet
   :config
@@ -410,8 +410,13 @@ targets."
            (treesit-available-p))
   :config
   (setq treesit-auto-install t)
-  (global-treesit-auto-mode)
-  ;; custom recipes
+
+  ;; Custom recipes MUST be registered before `global-treesit-auto-mode', which
+  ;; snapshots `treesit-auto-recipe-list' into `treesit-auto-langs' when enabled.
+  ;; Drop the stock Go recipe first so we don't end up with two.
+  (setq treesit-auto-recipe-list
+        (seq-remove (lambda (r) (eq (treesit-auto-recipe-lang r) 'go))
+                    treesit-auto-recipe-list))
   ;; having issues with newer versions of libtree-sitter-go on linux
   (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
                                           :lang 'go
@@ -423,7 +428,9 @@ targets."
                                           :ext  "\\.go\\'"))
   (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
                                           :lang 'fish
-                                          :url "https://github.com/ram02z/tree-sitter-fish")))
+                                          :url "https://github.com/ram02z/tree-sitter-fish"))
+
+  (global-treesit-auto-mode))
 (use-package go-ts-mode
   :ensure nil
   :after treesit-auto
@@ -1076,8 +1083,14 @@ other window."
       require-final-newline t
       visible-bell t
       load-prefer-newer t
-      backup-by-copying t
-      show-trailing-whitespace t)
+      backup-by-copying t)
+
+;; Highlight trailing whitespace, but only where it matters. NOTE: this variable
+;; becomes buffer-local as soon as it is set, so a plain `setq' here would only
+;; ever affect whichever buffer happened to be current while init.el loaded.
+;; `delete-trailing-whitespace' on `before-save-hook' does the actual cleanup;
+;; this is just the visual cue.
+(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace t)))
 
 ;; don't litter directory with backups and autosaves
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
