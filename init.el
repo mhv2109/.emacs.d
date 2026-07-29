@@ -97,7 +97,10 @@
 ;; Syntax highlighting, built-in
 (use-package flymake
   :ensure nil
-  :hook ((prog-mode text-mode) . flymake-mode))
+  ;; NOTE: prog-mode only -- there is no flymake backend for org/markdown/text here,
+  ;; so hooking text-mode only costs time (notably when org-agenda opens every file
+  ;; in `org-agenda-files').
+  :hook (prog-mode . flymake-mode))
 
 ;; autocomplete using corfu-mode: https://github.com/minad/corfu
 (use-package corfu
@@ -413,6 +416,17 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
 
 ;; Org mode: https://orgmode.org/
 (use-package org
+  ;; NOTE: `:preface', not `:config' -- `:hook' below references this function, and
+  ;; use-package would otherwise generate an autoload for it pointing at `org.el',
+  ;; where it does not live.
+  :preface
+  (defun org-align-tables-on-save ()
+    "Arrange for org tables in the current buffer to be realigned before each save.
+Installs a buffer-local `before-save-hook'; a global one would run
+`org-table-map-tables' in every buffer of every mode on every save."
+    (add-hook 'before-save-hook
+              (lambda () (org-table-map-tables #'org-table-align t))
+              nil t))
   :init
   (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED") ;; Update TODO states
         org-log-done t
@@ -423,22 +437,26 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
         org-attach-use-inheritance t)
   :config
   ;; setup org-agenda
+  ;; NOTE: recurse only under an explicit set of roots. Org re-expands every
+  ;; directory entry on each call to `org-agenda-files' and agenda generation calls
+  ;; it repeatedly, so entry count matters; walking all of `org-directory' produced
+  ;; ~220 entries, 186 of them under `data/' (the org-attach store, which holds no
+  ;; TODOs). Roots must be recursed rather than listed flat -- `areas/' nests
+  ;; per-person and per-meeting subdirectories two deep. `data/', `archived/' and
+  ;; dot-directories are excluded by never being roots. A new top-level directory
+  ;; must be added to `agenda-roots' by hand.
   (let* ((org-dir (file-truename org-directory))
-         (archived-dir (expand-file-name "archived/" org-dir))
-         (agenda-dirs
-          (cons org-dir
-                (seq-filter
-                 #'file-directory-p
-                 (directory-files-recursively org-dir ".*" t)))))
+         (agenda-roots '("projects" "areas" "dailies" "resources")))
     (setq org-agenda-files
-          (seq-remove
-           (lambda (dir)
-             (let* ((normalized-dir (file-truename dir))
-                    (relative-dir (file-relative-name normalized-dir org-dir)))
-               (or (file-in-directory-p normalized-dir archived-dir)
-                   (and (not (string= relative-dir "."))
-                        (string-match-p "\\(?:^\\|/\\)\\.[^/]+" relative-dir)))))
-           agenda-dirs)))
+          (cons org-dir
+                (mapcan
+                 (lambda (root)
+                   (let ((dir (expand-file-name root org-dir)))
+                     (when (file-directory-p dir)
+                       (cons dir
+                             (seq-filter #'file-directory-p
+                                         (directory-files-recursively dir "" t))))))
+                 agenda-roots))))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
@@ -484,8 +502,7 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   (org-mode . (lambda ()
                 (electric-indent-local-mode -1)))
   ;; auto-format all tables on save
-  (before-save . (lambda ()
-                   (org-table-map-tables 'org-table-align))))
+  (org-mode . org-align-tables-on-save))
 
 (use-package ox-md ;; markdown backend for org-mode
   :after org
