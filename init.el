@@ -146,7 +146,8 @@
   (editorconfig-mode 1))
 
 ;; search w/ ripgrep: https://rgel.readthedocs.io/en/latest/index.html
-(use-package rg)
+(use-package rg
+  :commands (rg rg-menu rg-dwim rg-literal rg-project))
 
 ;; minibuffer autocomplete config
 ;; https://github.com/abo-abo/swiper
@@ -245,29 +246,40 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
         completion-ignore-case t))
 
 ;; better integrated terminal: https://github.com/akermu/emacs-libvterm
-(use-package vterm)
+(use-package vterm
+  :commands (vterm vterm-other-window))
 
 ;; smoother scrolling: https://github.com/jdtsmith/ultra-scroll
 (use-package ultra-scroll
   :config (ultra-scroll-mode 1))
 
 ;; file tree explorer: https://github.com/Alexander-Miller/treemacs
+;; NOTE: the three *-mode entries are mode calls in `:config', not `:custom'.
+;; `customize-set-variable' on a minor-mode symbol loads the file defining it,
+;; which defeated the `:bind' deferral (treemacs-follow-mode alone was ~0.12s).
 (use-package treemacs
   :custom
-  (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t)
-  (treemacs-project-follow-mode t)
   (treemacs-file-event-delay 500)
   :bind
   (:map global-map
-        ("<f8>" . treemacs)))
+        ("<f8>" . treemacs))
+  :config
+  (treemacs-follow-mode 1)
+  (treemacs-filewatch-mode 1)
+  (treemacs-project-follow-mode 1))
 
 ;;
 ;; Git
 ;;
 
 ;; Git integration
+;; NOTE: `:bind' is what makes this deferred. Without an autoload-generating
+;; keyword, use-package loaded magit at startup and `forge' followed it via
+;; `:after' -- together ~1.4s, plus emacsql/closql, for something not needed
+;; until the first git command.
 (use-package magit
+  :bind (("C-x g" . magit-status)
+         ("C-x M-g" . magit-dispatch))
   :config
   (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1) ;; open magit buffer in same window: https://magit.vc/manual/magit/Switching-Buffers.html#index-magit_002ddisplay_002dbuffer_002dfunction
   )
@@ -277,8 +289,10 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   :after magit)
 
 ;; GitHub Permalink at Point (what I was using github.el for):
+;; NOTE: `:commands', not `:after magit' -- these are useful without magit
+;; loaded, and magit itself is deferred now.
 (use-package git-link
- :after magit)
+  :commands (git-link git-link-commit git-link-homepage))
 
 ;; Handle diff3 in the editor. Enable only for files that actually contain
 ;; conflict markers rather than every prog-mode buffer.
@@ -302,16 +316,28 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
 ;; spellchecking
 ;; NOTE: the feature is `flyspell'; `flyspell-mode' and `flyspell-prog-mode' are
 ;; commands, not features, so they must not be used as `use-package' names.
+;; NOTE: the hooks are guarded on `buffer-file-name'. Without the guard,
+;; `*scratch*' (lisp-interaction-mode, hence prog-mode) turned flyspell on during
+;; startup, which spawns an ispell subprocess before the first frame is drawn.
+;; Spellchecking a non-file buffer was never the intent anyway.
 (use-package flyspell
   :ensure nil
+  :defer t
   :custom
   (flyspell-issue-message-flag nil) ;; allegedly improves performance
+  :preface
+  (defun flyspell-mode-if-file ()
+    "Enable `flyspell-mode' when the buffer is visiting a file."
+    (when buffer-file-name (flyspell-mode 1)))
+  (defun flyspell-prog-mode-if-file ()
+    "Enable `flyspell-prog-mode' when the buffer is visiting a file."
+    (when buffer-file-name (flyspell-prog-mode)))
   :config
   (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
   (define-key flyspell-mouse-map [mouse-3] #'undefined)
   :hook
-  ((text-mode . flyspell-mode)   ;; spellcheck prose
-   (prog-mode . flyspell-prog-mode))) ;; spellcheck comments and strings only
+  ((text-mode . flyspell-mode-if-file)   ;; spellcheck prose
+   (prog-mode . flyspell-prog-mode-if-file))) ;; spellcheck comments and strings only
 
 ;; Hook the minor mode into editing buffers rather than using yas-global-mode,
 ;; which loads all of yasnippet at startup. Same practical coverage -- org-mode
@@ -320,17 +346,20 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   :hook ((prog-mode text-mode) . yas-minor-mode))
 
 ;; major mode for working with YAML files: https://github.com/yoshiki/yaml-mode
+;; NOTE: every language mode below uses `:mode'/`:interpreter' rather than
+;; `:config' + `add-to-list'. Same file associations, but the package only loads
+;; when a matching file is opened instead of at startup.
 (use-package yaml-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
-  (add-hook 'yaml-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
+  :mode ("\\.ya?ml\\'" "\\.yml\\'")
+  :hook (yaml-mode . (lambda () (setq tab-width 2 standard-indent 2))))
 
 ;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
-(use-package go-mode)
+(use-package go-mode
+  :mode "\\.go\\'")
 
 ;; quickly run Go unit tests:
-(use-package gotest)
+(use-package gotest
+  :after go-mode)
 
 ;; integrate flymake and golangci-lint: https://github.com/storvik/flymake-golangci
 (use-package flymake-golangci
@@ -343,13 +372,16 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
          ))
 
 ;; major mode for typescript: https://github.com/emacs-typescript/typescript.el
-(use-package typescript-mode)
+(use-package typescript-mode
+  :mode "\\.ts\\'")
 
 (use-package dockerfile-mode ;; Syntax highlighting for Dockerfiles: https://github.com/spotify/dockerfile-mode
-  )
+  ;; matches Dockerfile, Dockerfile.dev, path/to/Dockerfile, *.dockerfile
+  :mode ("\\.dockerfile\\'" "\\(?:\\`\\|/\\)Dockerfile\\(?:\\.[^/]*\\)?\\'"))
 
 (use-package fish-mode ;; https://github.com/wwwjfy/emacs-fish
-  )
+  :mode "\\.fish\\'"
+  :interpreter "fish")
 
 (use-package paredit ;; Lisp programming conveniences: http://paredit.org/
   :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode clojure-mode cider-repl-mode) . paredit-mode))
@@ -358,25 +390,31 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   :hook ((prog-mode) . rainbow-delimiters-mode))
 
 (use-package terraform-mode ;; Major mode for Hashicorp Terraform: https://github.com/hcl-emacs/terraform-mode
-  )
+  :mode ("\\.tf\\'" "\\.tfvars\\'"))
 
 ;; protobuf support
-(use-package protobuf-mode)
+(use-package protobuf-mode
+  :mode "\\.proto\\'")
 
 ;; customize built-in python.el
 (use-package python
   :ensure nil
+  :defer t
   :custom
   (python-indent-offset 4)
-  :config
+  ;; NOTE: `:preface', not `:config' -- `pyvenv' below and M-x both need this
+  ;; function to exist before python.el is loaded, and python.el is deferred now.
+  :preface
   (defun set-python-shell-interpreter-ipython ()
     "Point `python-shell-interpreter' at ipython, with autoloads, if available."
     (interactive)
     (when-let ((found (locate-file "ipython" (reverse exec-path) exec-suffixes 1))) ;; don't use `executable-find' because I want to use local ipython bin first
       (setq python-shell-interpreter found
-            python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " (file-name-directory user-init-file) "autoload.ipy"))))
+            python-shell-interpreter-args (concat "--no-confirm-exit --simple-prompt --InteractiveShell.display_page=True --InteractiveShell.autosuggestions_provider=None -i " user-emacs-directory "autoload.ipy"))))
+  :init
+  ;; only sets variables, so it is safe (and cheap) to run before python loads
   (set-python-shell-interpreter-ipython)
-
+  :config
   ;; open python shell in same window
   (add-to-list 'display-buffer-alist
                '((lambda (buffer-name action)
@@ -401,14 +439,20 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
     (message "'pandoc' not found, markdown rendering not available.")))
 
 ;; lua editing: https://github.com/immerrr/lua-mode
-(use-package lua-mode)
+(use-package lua-mode
+  :mode "\\.lua\\'"
+  :interpreter "lua")
 
 ;; Mermaid diagrams: https://github.com/abrochard/mermaid-mode
 (use-package mermaid-mode
   :mode ("\\.mmd\\'" "\\.mermaid\\'"))
 
 ;; Clojure development: https://cider.mx/
-(use-package cider)
+;; NOTE: deferred -- cider pulls `clojure-mode' plus its own client/repl/eldoc
+;; stack (~0.7s). `clojure-mode' has its own `auto-mode-alist' autoloads, so
+;; .clj files still open in the right major mode without cider loaded.
+(use-package cider
+  :commands (cider cider-jack-in cider-connect cider-jack-in-clj&cljs))
 
 ;;
 ;; Org mode
@@ -428,6 +472,16 @@ Installs a buffer-local `before-save-hook'; a global one would run
               (lambda () (org-table-map-tables #'org-table-align t))
               nil t))
   :init
+  ;; NOTE: both of these must be set before org loads -- org consults them at
+  ;; load time. The defaults are expensive: `ol-gnus' drags in the whole Gnus
+  ;; tree (~0.8s) for link types I don't use, and the default export backends
+  ;; pull `ox-odt' and `ox-icalendar'. `ox-md' is kept because it is explicitly
+  ;; configured below, and it derives from `ox-html', so html stays too.
+  ;; `ol-eww' is deliberately absent: it requires `eww', which requires `mm-url',
+  ;; which drags in Gnus (~0.5s on the first org file opened). It is loaded from
+  ;; `:config' below once eww is actually in use instead.
+  (setq org-modules '(ol-docview ol-info ol-doi)
+        org-export-backends '(ascii html latex md))
   (setq org-todo-keywords '("TODO" "IN PROGRESS" "|" "DONE" "DEFERRED" "DELEGATED") ;; Update TODO states
         org-log-done t
         org-preview-latex-default-process 'dvisvgm
@@ -436,6 +490,9 @@ Installs a buffer-local `before-save-hook'; a global one would run
         org-startup-with-inline-images t
         org-attach-use-inheritance t)
   :config
+  ;; org link support for EWW buffers, without paying for eww/Gnus up front.
+  ;; Runs immediately if eww is already loaded, otherwise on first eww use.
+  (with-eval-after-load 'eww (require 'ol-eww))
   ;; setup org-agenda
   ;; NOTE: recurse only under an explicit set of roots. Org re-expands every
   ;; directory entry on each call to `org-agenda-files' and agenda generation calls
@@ -516,17 +573,29 @@ Installs a buffer-local `before-save-hook'; a global one would run
   :after org)
 
 ;; retrieve web pages as org files: https://github.com/alphapapa/org-web-tools
+;; NOTE: `:commands', not `:after org' -- this package pulls in `eww'/`shr' and
+;; (transitively) Gnus, so loading it with org made every org file open pay for
+;; it. The org-roam "w" capture template requires it on demand instead.
 (use-package org-web-tools
-  :after org
+  :commands (org-web-tools-insert-link-for-url
+             org-web-tools-insert-web-page-as-entry
+             org-web-tools-read-url-as-org
+             org-web-tools-convert-links-to-page-entries)
   :custom
   (org-web-tools-pandoc-sleep-time 5.0)) ;; 25x longer than default
 
 ;; org-roam: https://www.orgroam.com/
+;; NOTE: `:defer t' + `:bind', not `:after (org org-web-tools)'. With org itself
+;; deferred, `:after' meant the C-c n bindings below did not exist until
+;; something else happened to load org first. org-roam requires org on load, and
+;; the "w" capture template's `org-web-tools--url-as-readable-org' is required
+;; explicitly in `:config' since it is not autoloaded.
 (use-package org-roam
-  :after (org org-web-tools)
+  :defer t
   :init
-  (setq org-roam-directory (file-truename org-directory) ;; file-truename required since ~/org is often a symlink
-        org-roam-file-exclude-regexp '("data/" "archived/" "#recycle/") ;; exclude special directories
+  ;; NOTE: `org-roam-directory' is set in `:config', not here -- `org-directory'
+  ;; is defined by org.el, which is no longer loaded when this `:init' runs.
+  (setq org-roam-file-exclude-regexp '("data/" "archived/" "#recycle/") ;; exclude special directories
         org-roam-dailies-directory "dailies/"
         org-roam-completion-everywhere t ;; automatically autocomplete links for notes
         ;; Templates include a top-level heading so we can attach files using org-attach, which doesn't seem to work without a heading
@@ -555,7 +624,10 @@ Installs a buffer-local `before-save-hook'; a global one would run
                                                          "#+title: ${title}\n#+author: ${author}\n#+edition: ${edition}\n#+publisher: ${publisher}\n#+year: ${year}\n#+created: %U\n#+filetags: :book:resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
-                                     ("w" "website (resource, capture page)" plain "%(org-web-tools--url-as-readable-org \"${ref}\")"
+                                     ;; NOTE: `require' inline -- `org-web-tools'
+                                     ;; is deferred and this is a private
+                                     ;; function, so it has no autoload.
+                                     ("w" "website (resource, capture page)" plain "%(progn (require 'org-web-tools) (org-web-tools--url-as-readable-org \"${ref}\"))"
                                       :target (file+head "resources/${slug}.org"
                                                          "#+title: ${title}\n#+filetags: :website:resources:\n")
                                       :unnarrowed t
@@ -571,6 +643,9 @@ Installs a buffer-local `before-save-hook'; a global one would run
                                       :unnarrowed t
                                       :empty-lines 1)))
   :config
+  ;; file-truename required since ~/org is often a symlink. Set before
+  ;; `org-roam-db-autosync-mode', which reads it.
+  (setq org-roam-directory (file-truename org-directory))
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   (org-roam-db-autosync-mode)
 
@@ -596,21 +671,35 @@ Installs a buffer-local `before-save-hook'; a global one would run
   ("C-c n d" . org-roam-dailies-map))
 
 ;; Read EPUB from emacs: https://depp.brause.cc/nov.el/
+;; NOTE: `:mode', not `:config' + `auto-mode-alist'. nov requires `org' at load
+;; time, so an eagerly loaded nov was the single most expensive thing in startup
+;; (~1.2s, most of it org and org's module chain). The display rule needs no
+;; nov symbols, so it is set unconditionally below.
 (use-package nov
-  :config
-  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  :mode ("\\.epub\\'" . nov-mode))
 
-  ;; open ebook in same window
-  (add-to-list 'display-buffer-alist
+;; open ebook in same window
+(add-to-list 'display-buffer-alist
              '("\\.\\(epub\\|pdf\\|mobi\\|azw3\\|djvu\\)\\'"
-               (display-buffer-same-window))))
+               (display-buffer-same-window)))
 
 ;; Highlight and annotate text and org files: https://github.com/nobiot/org-remark
-(use-package org-remark
-  :after org
-  :hook after-init
+;; NOTE: split into two forms deliberately. `org-remark-global-tracking' requires
+;; nothing, while `org-remark' itself requires `org' and `org-id'. Only the
+;; tracking half is loaded at startup: its `find-file-hook' entry
+;; (`org-remark-auto-on') requires `org-remark' on demand, the first time a file
+;; that actually has marginal notes is opened. The previous `:hook after-init'
+;; forced the whole thing -- and org with it -- on every startup.
+(use-package org-remark-global-tracking
+  :ensure org-remark
   :custom
   (org-remark-notes-file-name #'org-remark-notes-file-name-function) ;; since my ~/org is a flat structure with a lot of files, keep notes separate
+  :config
+  ;; automatically enable org-remark when a file with notes is opened
+  (org-remark-global-tracking-mode +1))
+
+(use-package org-remark
+  :defer t
   :bind
   (("C-c m m" . org-remark-mark)
    ("C-c m l" . org-remark-mark-line)
@@ -621,17 +710,16 @@ Installs a buffer-local `before-save-hook'; a global one would run
    ("C-c m r" . org-remark-remove)
    ("C-c m d" . org-remark-delete))
   :config
-  ;; automatically enable org-remark when file opened
-  (org-remark-global-tracking-mode +1)
-  ;; Selectively keep or comment out the following if you want to use
-  ;; extensions for Info-mode, EWW, and NOV.el (EPUB) respectively.
-  (use-package org-remark-info :ensure org-remark :after info :config (org-remark-info-mode +1))
-  (use-package org-remark-eww  :ensure org-remark :after eww  :config (org-remark-eww-mode +1))
-  (use-package org-remark-nov  :ensure org-remark :after nov  :config (org-remark-nov-mode +1))
   ;; add magenta highlighter
   (org-remark-create "magenta-highlighter"
                      '(:background "dark magenta")
                      '(CATEGORY "important")))
+
+;; Extensions for Info-mode, EWW, and NOV.el (EPUB) respectively. Each is
+;; `:after' its host mode, so none of them load until that mode is used.
+(use-package org-remark-info :ensure org-remark :after info :config (org-remark-info-mode +1))
+(use-package org-remark-eww  :ensure org-remark :after eww  :config (org-remark-eww-mode +1))
+(use-package org-remark-nov  :ensure org-remark :after nov  :config (org-remark-nov-mode +1))
 
 ;;
 ;; LSP: eglot+dape
@@ -639,13 +727,20 @@ Installs a buffer-local `before-save-hook'; a global one would run
 
 (use-package eglot
   :ensure nil
+  :defer t ;; loaded by the `prog-mode' hook below
   :custom
   ;; (eglot-events-buffer-size 0)          ;; disable eglot events buffer
   (eldoc-echo-area-prefer-doc-buffer t) ;; prefer eldoc buffer, if visible
-  :config
-  ;; suppress logging
-  ;; (fset #'jsonrpc--log-event #'ignore)
-
+  ;; NOTE: `:preface' -- `dape' expands this macro in its own `:config', so it
+  ;; has to exist whether or not eglot itself has loaded yet, and the hook
+  ;; function has to be autoload-free for `:hook' to keep eglot deferred.
+  :preface
+  (defun eglot-ensure-if-file ()
+    "Start eglot for the current buffer if it is visiting a file.
+Guarded because `*scratch*' is `lisp-interaction-mode', hence prog-mode:
+an unguarded `eglot-ensure' there loaded eglot (and dape via `:after')
+during startup to look up a server for a buffer that has no file."
+    (when buffer-file-name (eglot-ensure)))
   (defmacro add-server-program-if-found (exec append &rest forms)
     "Add FORMS to `eglot-server-programs' when EXEC is on `exec-path'.
 
@@ -658,16 +753,18 @@ front.  Does nothing but log when EXEC is not found."
           'eglot-server-programs
           ,@forms ,append)
        (message "Not adding to eglot-server-programs, %s not found" ,exec)))
-
+  :config
+  ;; NOTE: these calls stay in `:config', not `:preface'. use-package wraps
+  ;; `:preface' in `eval-and-compile', which macro-expands the body eagerly at
+  ;; load time -- before `eglot-server-programs' exists.
   (add-server-program-if-found "autotools-language-server" t
                                `((makefile-mode makefile-bsdmake-mode) ,command))
   (add-server-program-if-found "sql-language-server" t
                                `((sql-mode) ,command "up" "--method" "stdio"))
-
   :hook
   ;; prog-mode only: no server is configured for org or markdown, so including
   ;; them just ran a failing server lookup on every file opened.
-  (prog-mode . eglot-ensure)
+  (prog-mode . eglot-ensure-if-file)
   (before-save . (lambda ()
                    ;; autoformatting only behaves well for certain modes
                    ;; TODO: having trouble configuring typescript-language-server
@@ -779,10 +876,18 @@ front.  Does nothing but log when EXEC is not found."
 
 ;; Integrate with AI Agents via ACP
 ;; https://agentclientprotocol.com/get-started/introduction
+;; NOTE: the command variables are set in `:config', not `:custom'.
+;; `customize-set-variable' loads the file that defines the defcustom, so
+;; `:custom' here pulled all of agent-shell (~0.65s) into every startup.
+;; `:commands' keeps it deferred until an agent is actually started.
 (use-package agent-shell
-  :custom
-  (agent-shell-github-acp-command '("copilot" "--acp" "--allow-all-tools"))
-  (agent-shell-cursor-acp-command '("agent" "acp" "--yolo" "--trust"))
+  :commands (agent-shell
+             agent-shell-toggle
+             agent-shell-github-start-copilot
+             agent-shell-cursor-start-agent)
+  :config
+  (setq agent-shell-github-acp-command '("copilot" "--acp" "--allow-all-tools")
+        agent-shell-cursor-acp-command '("agent" "acp" "--yolo" "--trust"))
   :hook (agent-shell-mode . (lambda ()
                               (require 'server)
                               (unless (server-running-p)
@@ -969,6 +1074,7 @@ other window."
 ;; configure TRAMP: https://www.gnu.org/software/tramp/
 (use-package tramp
   :ensure nil ;; included with Emacs
+  :defer t ;; autoloaded by the remote file name handler
   :config
   ;; Add remote path to TRAMP path
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
@@ -1006,7 +1112,13 @@ other window."
               (exists (file-exists-p expanded)))
 	(load-file expanded)))
 
-(load-if-exists "~/.emacs.d/secrets.el.gpg")
+;; early-init.el nils out `file-name-handler-alist' for the duration of startup;
+;; decrypting this file needs the epa handler back, and `emacs-startup-hook' has
+;; not run yet at this point. Rebind rather than depend on load order.
+(let ((file-name-handler-alist (if (boundp 'early-init--file-name-handler-alist)
+                                   early-init--file-name-handler-alist
+                                 file-name-handler-alist)))
+  (load-if-exists "~/.emacs.d/secrets.el.gpg"))
 
 ;; Load Custom's own settings (see `custom-file' at the top of this file).
 ;; Loaded late so anything set explicitly in init.el wins.
@@ -1131,8 +1243,10 @@ other window."
 ;; Render PDFs more legibly @ 300dpi
 (setq doc-view-resolution 300)
 
-;; Enable smooth scrolling pixel-by-pixel vs line-by-line
-(pixel-scroll-mode +1)
+;; Smooth pixel-by-pixel scrolling is owned by `ultra-scroll' (above), which
+;; drives `pixel-scroll-precision-mode'. `pixel-scroll-mode' is the older,
+;; incompatible implementation -- enabling both made them fight over
+;; `mwheel-scroll'. Settings below are still honoured by the precision mode.
 (setq pixel-dead-time 0
       pixel-resolution-fine-flag t
       mouse-wheel-scroll-amount '(1)
