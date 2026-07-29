@@ -408,48 +408,6 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
 (use-package cider)
 
 ;;
-;; Treesitter
-;;
-
-(use-package treesit-auto ;; Automatically install + setup treesitter modes: https://github.com/renzmann/treesit-auto
-  :if (and (fboundp 'treesit-available-p)
-           (treesit-available-p))
-  :config
-  (setq treesit-auto-install t)
-
-  ;; Custom recipes MUST be registered before `global-treesit-auto-mode', which
-  ;; snapshots `treesit-auto-recipe-list' into `treesit-auto-langs' when enabled.
-  ;; Drop the stock Go recipe first so we don't end up with two.
-  (setq treesit-auto-recipe-list
-        (seq-remove (lambda (r) (eq (treesit-auto-recipe-lang r) 'go))
-                    treesit-auto-recipe-list))
-  ;; having issues with newer versions of libtree-sitter-go on linux
-  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-                                          :lang 'go
-                                          :ts-mode 'go-ts-mode
-                                          :remap 'go-mode
-                                          :requires 'gomod
-                                          :url "https://github.com/tree-sitter/tree-sitter-go"
-                                          :revision "v0.19.1"
-                                          :ext  "\\.go\\'"))
-  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-                                          :lang 'fish
-                                          :url "https://github.com/ram02z/tree-sitter-fish"))
-
-  (global-treesit-auto-mode))
-(use-package go-ts-mode
-  :ensure nil
-  :after treesit-auto
-  :custom
-  (go-ts-mode-indent-offset 4))
-
-(use-package yaml-ts-mode
-  :ensure nil
-  :after treesit-auto
-  :config
-  (add-hook 'yaml-ts-mode-hook (lambda () (setq tab-width 2 standard-indent 2))))
-
-;;
 ;; Org mode
 ;;
 
