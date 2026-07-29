@@ -10,7 +10,11 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 
 ### Configuration Structure
 
-- **Single-file configuration**: All configuration lives in `init.el` (~1175 lines)
+- **Single-file configuration**: All configuration lives in `init.el` (~1200 lines)
+- **`early-init.el`**: The one exception to the single-file rule, and only because Emacs
+  loads it before package.el and before the first frame exists. It holds startup-only
+  tuning: GC threshold during init, `file-name-handler-alist` suppression, and frame chrome
+  in `default-frame-alist`. Nothing that could live in `init.el` belongs here.
 - **Custom-managed settings**: `custom-file` points at `custom.el`, which is gitignored
   machine state. Never hand-edit it and never put durable config there — it belongs in
   `init.el`.
@@ -236,11 +240,11 @@ Helper functions are defined inline within init.el:
 ### Adding a New Language Mode
 ```elisp
 (use-package language-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.ext\\'" . language-mode))
-  :hook
-  (language-mode . eglot-ensure))  ;; Enable LSP
+  :mode "\\.ext\\'")  ;; NOT :config + add-to-list -- that loads the mode at startup
 ```
+LSP comes for free: `eglot-ensure-if-file` is already on `prog-mode-hook`, so any mode
+deriving from `prog-mode` is covered. Only add a `:hook` if the mode is not a `prog-mode`
+derivative.
 
 ### Adding a New LSP Server
 ```elisp
@@ -277,7 +281,22 @@ Or add to `~/.emacs.d/secrets.el.gpg`:
 
 ## Important Notes
 
-- **Performance**: `gcmh` (GC Magic Hack) is enabled to reduce GC pauses
+- **Performance**: `gcmh` (GC Magic Hack) is enabled to reduce GC pauses. Startup is ~1.1s;
+  it was 7.2s before nearly everything was deferred. Rules that keep it there:
+  - A `use-package` form with only `:config`/`:custom` **loads at startup**. Deferral needs
+    `:bind`, `:hook`, `:commands`, `:mode` or `:after`. Verify with
+    `use-package-compute-statistics` + `M-x use-package-report`, not by inspection.
+  - `:custom` on a *minor-mode symbol* loads the file defining it (this defeated treemacs'
+    `:bind`). Use mode calls in `:config` instead. `:custom` on a defcustom whose package
+    is heavy has the same effect — set those in `:config`.
+  - Global `prog-mode`/`text-mode` hooks fire on `*scratch*` during startup. `eglot-ensure`
+    and `flyspell-prog-mode` are therefore guarded on `buffer-file-name`; an unguarded hook
+    pulled in eglot, dape and an ispell subprocess before the first frame.
+  - `org-modules` and `org-export-backends` are trimmed in org's `:init` (they are read at
+    org load time). `ol-eww` in particular drags in Gnus, so it loads from
+    `with-eval-after-load 'eww` instead.
+  - `org-remark` is split: only `org-remark-global-tracking` loads eagerly, and it requires
+    the heavy half on demand from `find-file-hook`.
 - **Warning suppression**: `warning-minimum-level` is `:error`, with targeted suppression via
   `warning-suppress-log-types`. Warnings below that still land in `*Warnings*`
 - **Max eval depth**: Set to 10000 to handle deep Java dependency trees
