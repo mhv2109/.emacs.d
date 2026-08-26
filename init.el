@@ -1000,6 +1000,7 @@ front.  Does nothing but log when EXEC is not found."
                   ("https://www.bleepingcomputer.com/feed/" tech)
                   ("https://daniel.haxx.se/blog/feed/" tech)
                   ("https://www.wheresyoured.at/rss/" tech)
+                  ("https://www.lighthousenewsletter.com/feed" tech ai)
                   ("https://abcnews.go.com/abcnews/topstories" news firehose)
                   ("https://feeds.bbci.co.uk/news/world/rss.xml" news world firehose)
                   ("https://moxie.foxnews.com/google-publisher/latest.xml" news firehose)
