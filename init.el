@@ -637,6 +637,14 @@ Installs a buffer-local `before-save-hook'; a global one would run
                                                          "#+title: ${title}\n#+filetags: :website:resources:\n")
                                       :unnarrowed t
                                       :empty-lines 1)
+                                     ;; Recipe template: prompts interactively for
+                                     ;; servings/prep/cook via the ${...} fill-ins,
+                                     ;; skeleton with Ingredients/Instructions.
+                                     ("R" "recipe (resource)" plain "* ${title}\n%?\n** Ingredients\n- [ ] \n** Instructions\n1. "
+                                      :target (file+head "resources/${slug}.org"
+                                                         "#+title: ${title}\n#+servings: ${servings}\n#+prep_time: ${prep time}\n#+cook_time: ${cook time}\n#+created: %U\n#+filetags: :recipe:resources:\n")
+                                      :unnarrowed t
+                                      :empty-lines 1)
                                      ("i" "person (area)" plain "* ${title}\n%?"
                                       :target (file+head "areas/${slug}.org"
                                                          "#+title: ${title}\n#+company: ${company}\n#+filetags: :person:areas:\n")
