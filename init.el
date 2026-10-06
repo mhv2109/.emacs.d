@@ -447,13 +447,6 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
 (use-package mermaid-mode
   :mode ("\\.mmd\\'" "\\.mermaid\\'"))
 
-;; Clojure development: https://cider.mx/
-;; NOTE: deferred -- cider pulls `clojure-mode' plus its own client/repl/eldoc
-;; stack (~0.7s). `clojure-mode' has its own `auto-mode-alist' autoloads, so
-;; .clj files still open in the right major mode without cider loaded.
-(use-package cider
-  :commands (cider cider-jack-in cider-connect cider-jack-in-clj&cljs))
-
 ;;
 ;; Org mode
 ;;
