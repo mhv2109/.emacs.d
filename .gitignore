@@ -60,3 +60,4 @@ init-notes.org
 agent/
 /.agent-shell/
 history
+agent-recall/

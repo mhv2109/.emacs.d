@@ -894,6 +894,21 @@ front.  Does nothing but log when EXEC is not found."
                               (unless (server-running-p)
                                 (server-start)))))
 
+;; Search, browse, and resume agent-shell transcripts: https://github.com/mrx-xo/agent-recall
+;; NOTE: `:hook', not `:config' -- keeps agent-recall deferred until an
+;; agent-shell buffer's major mode actually activates, matching how agent-shell
+;; itself stays out of startup.
+(use-package agent-recall
+  :hook (agent-shell-mode . agent-recall-track-sessions)
+  :config
+  ;; scan the whole home directory for `.agent-shell/transcripts/' dirs, not
+  ;; just a fixed set of project roots. Slower to index, but matches intent.
+  (setq agent-recall-search-paths '("~"))
+  ;; counsel-rg gives live-filtering search, but needs ripgrep on PATH; fall
+  ;; back to the dependency-free default otherwise.
+  (when (executable-find "rg")
+    (setq agent-recall-search-function 'counsel-rg)))
+
 ;;
 ;; Misc.
 ;;
