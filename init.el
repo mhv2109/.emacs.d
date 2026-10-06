@@ -909,6 +909,13 @@ front.  Does nothing but log when EXEC is not found."
   (when (executable-find "rg")
     (setq agent-recall-search-function 'counsel-rg)))
 
+;; Tabulated-list buffer manager for agent-shell: https://github.com/jethrokuan/agent-shell-manager
+;; NOTE: not on MELPA, so installed via `:vc'. `:commands' keeps it out of
+;; startup until `agent-shell-manager-toggle' is actually invoked.
+(use-package agent-shell-manager
+  :vc (:url "https://github.com/jethrokuan/agent-shell-manager.git" :rev :newest)
+  :commands (agent-shell-manager-toggle))
+
 ;;
 ;; Misc.
 ;;
