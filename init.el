@@ -588,7 +588,7 @@ Installs a buffer-local `before-save-hook'; a global one would run
   :init
   ;; NOTE: `org-roam-directory' is set in `:config', not here -- `org-directory'
   ;; is defined by org.el, which is no longer loaded when this `:init' runs.
-  (setq org-roam-file-exclude-regexp '("data/" "archived/" "#recycle/") ;; exclude special directories
+  (setq org-roam-file-exclude-regexp '("data/" "archived/" "#recycle/" "docs/superpowers/fixtures/") ;; exclude special directories and skill-test fixtures
         org-roam-dailies-directory "dailies/"
         org-roam-completion-everywhere t ;; automatically autocomplete links for notes
         ;; Templates include a top-level heading so we can attach files using org-attach, which doesn't seem to work without a heading
