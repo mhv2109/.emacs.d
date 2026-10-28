@@ -353,6 +353,18 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   :mode ("\\.ya?ml\\'" "\\.yml\\'")
   :hook (yaml-mode . (lambda () (setq tab-width 2 standard-indent 2))))
 
+;; major mode for Rust: https://github.com/rust-lang/rust-mode
+;; With `rust-mode-treesitter-derive' set, this package derives `rust-mode'
+;; from the built-in `rust-ts-mode' (needs the rust grammar, see AGENTS.md), so
+;; .rs files get treesitter fontification plus the package extras (cargo compile
+;; commands, rust-rustfmt).  The default is nil (derive from `prog-mode').
+(use-package rust-mode
+  :mode "\\.rs\\'"
+  ;; Read when rust-mode.el loads to pick the parent mode, so it must be set
+  ;; before the load: :init, not :custom/:config.
+  :init (setq rust-mode-treesitter-derive t)
+  :hook (rust-mode . (lambda () (setq tab-width 4 standard-indent 4))))
+
 ;; major mode for working with Golang: https://github.com/dominikh/go-mode.el
 (use-package go-mode
   :mode "\\.go\\'")
@@ -762,6 +774,9 @@ front.  Does nothing but log when EXEC is not found."
                                `((makefile-mode makefile-bsdmake-mode) ,command))
   (add-server-program-if-found "sql-language-server" t
                                `((sql-mode) ,command "up" "--method" "stdio"))
+  ;; Rust: eglot ships ((rust-ts-mode rust-mode) "rust-analyzer") built-in;
+  ;; nothing to register.  eglot-ensure-if-file below covers .rs files once
+  ;; rust-analyzer is on `exec-path' (inherited from the login shell PATH).
   :hook
   ;; prog-mode only: no server is configured for org or markdown, so including
   ;; them just ran a failing server lookup on every file opened.

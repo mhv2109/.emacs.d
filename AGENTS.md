@@ -43,7 +43,7 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 
 #### LSP + Debugging (eglot + dape)
 - **eglot** (built-in): LSP client, configured to auto-start for prog-mode
-- **dape**: Debug Adapter Protocol client with custom configurations for Go (dlv), TypeScript/JavaScript (Jest), and Java (jdtls)
+- **dape**: Debug Adapter Protocol client with custom configurations for Go (dlv), TypeScript/JavaScript (Jest), and Java (jdtls). Rust uses dape's built-in `lldb-dap` config (no custom entry) — see "Language-Specific Tooling" for the adapter binary.
 - Auto-formatting on save for Go and Terraform via `eglot-code-action-organize-imports` and `eglot-format-buffer`
 
 #### AI Integration (agent-shell)
@@ -68,7 +68,7 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 #### Language-Specific Tooling
 
 **Go**:
-- go-mode / go-ts-mode (treesitter, pinned to v0.19.1 due to Linux compatibility)
+- go-mode / go-ts-mode
 - flymake-golangci: golangci-lint integration
 - gotest: Quick test execution
 - eglot + gopls (auto-configured)
@@ -86,6 +86,13 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 **Java**:
 - eglot + jdtls with Lombok support via javaagent
 - dape integration with java-debug-server-plugin
+
+**Rust**:
+- **rust-mode** (rust-lang MELPA): `rust-mode-treesitter-derive` defaults to nil, which makes `rust-mode` derive from `prog-mode` with no treesitter. `init.el` sets it to `t` in `:init` (it is read when `rust-mode.el` loads, so `:custom`/`:config` is too late), so `rust-mode` derives from the built-in `rust-ts-mode` and needs the rust grammar (see "Treesitter"). Adds cargo compile commands and rustfmt integration
+- **eglot**: ships `((rust-ts-mode rust-mode) "rust-analyzer")` built-in — no registration needed; `eglot-ensure-if-file` on `prog-mode-hook` covers `.rs` files once `rust-analyzer` is on `exec-path`
+- **PATH**: `~/.cargo/bin` (rust-analyzer, cargo) and the keg-only Homebrew `lldb`/`llvm` bin dir (`lldb-dap`; may be only in `/opt/homebrew/opt/lldb/bin`) must be on the *login shell* PATH. `init.el` does not add them; exec-path-from-shell inherits them
+- **dape**: uses the built-in `lldb-dap` config, which already matches `rust-mode`/`rust-ts-mode`. Breakpoints bind by the debug-info source path, so open files by their real path: `/tmp/x` is `/private/tmp/x` on macOS and a breakpoint set via the `/tmp` path will not hit (projects under `~` are unaffected)
+- Indentation: `tab-width`/`standard-indent` 4 via a `rust-mode` hook
 
 **Others**:
 - yaml-mode / yaml-ts-mode (tab-width: 2)
@@ -227,13 +234,16 @@ Helper functions are defined inline within init.el:
 ```
 
 ### Treesitter
-- Requires Emacs with treesitter support (`treesit-available-p`)
-- `treesit-auto` handles automatic installation of grammars
-- Custom recipes for Go (pinned to v0.19.1) and fish
-- Treesitter modes automatically remap from standard modes (e.g., go-mode → go-ts-mode)
-- **Custom recipes must be registered before `global-treesit-auto-mode`.** Enabling the mode
-  snapshots `treesit-auto-recipe-list` into `treesit-auto-langs`; anything added afterwards
-  is silently ignored.
+- Requires Emacs with treesitter support (`treesit-available-p`); Emacs 31.1 has it
+- **No `treesit-auto`**: grammars are compiled manually into `~/.emacs.d/tree-sitter/` (Emacs's standard grammar directory). For a language LANG:
+  ```bash
+  git clone --depth 1 --branch <tag> https://github.com/tree-sitter/tree-sitter-LANG
+  cc -O2 -I src -fPIC -shared src/parser.c src/scanner.c \
+     -o ~/.emacs.d/tree-sitter/libtree-sitter-LANG.dylib
+  ```
+  (`(treesit-install-language-grammar 'LANG)` works too, but requires a `treesit-language-source-alist` entry — it is empty by default.)
+- Currently installed: rust (v0.23.3). Verify with `(treesit-language-available-p 'LANG)`
+- **No mode remapping**: without treesit-auto there is no automatic go-mode → go-ts-style remap; `.rs` files open in `rust-mode`, which is treesitter-backed only because `init.el` sets `rust-mode-treesitter-derive` (`rust-mode-treesitter.el` then derives it from `rust-ts-mode`)
 
 ## Common Customizations
 
