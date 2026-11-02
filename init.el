@@ -914,6 +914,8 @@ front.  Does nothing but log when EXEC is not found."
              agent-shell-toggle
              agent-shell-github-start-copilot
              agent-shell-cursor-start-agent)
+  :custom
+  (agent-shell-context-sources nil) ;; no automatic DWIM context (inserting stuff into the agent-shell buffer, very annoying)
   :config
   (setq agent-shell-github-acp-command '("copilot" "--acp" "--allow-all-tools")
         agent-shell-cursor-acp-command '("agent" "acp" "--yolo" "--trust"))
