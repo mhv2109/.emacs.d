@@ -288,6 +288,19 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
 (use-package forge
   :after magit)
 
+;; Show PR comments in buffer: https://github.com/gkfabs/tether
+(use-package tether
+  :after (magit forge)
+  :vc (:url "https://github.com/gkfabs/tether.git" :rev :newest)
+  :hook (after-init . global-tether-mode)
+  ;; Don't put a prefix map in the command position of :bind: for a
+  ;; deferred package use-package generates (autoload #'tether-prefix-map
+  ;; "tether" nil t) guarded by fboundp -- nil for defvar-keymaps, so
+  ;; pressing the key autoloads tether.elc and errors with "failed to
+  ;; define function tether-prefix-map". Bind the keymap object after load.
+  :config
+  (define-key tether-mode-map (kbd "C-c t") tether-prefix-map))
+
 ;; GitHub Permalink at Point (what I was using github.el for):
 ;; NOTE: `:commands', not `:after magit' -- these are useful without magit
 ;; loaded, and magit itself is deferred now.
