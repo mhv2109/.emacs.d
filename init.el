@@ -460,8 +460,34 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   :mode ("README\\.md\\'" . gfm-mode)
   :init
   (if-let ((found (executable-find "pandoc")))
-      (setq markdown-command (concat found " --quiet -f gfm -s"))
-    (message "'pandoc' not found, markdown rendering not available.")))
+      ;; No -s: markdown-mode only adds `markdown-xhtml-header-content' to
+      ;; fragments, not to standalone documents.
+      (setq markdown-command (list found "--quiet" "--from=gfm" "--to=html5"
+                                   "--syntax-highlighting=none"))
+    (message "'pandoc' not found, markdown rendering not available."))
+  ;; Render ```mermaid fences in the browser preview. Pinned to an exact version
+  ;; with an SRI hash (mermaid's ESM build lazy-loads chunks, which SRI cannot
+  ;; cover, so this uses the single-file build). To upgrade, re-hash the file:
+  ;;   curl -fsS https://cdn.jsdelivr.net/npm/mermaid@VER/dist/mermaid.min.js \
+  ;;     | openssl dgst -sha384 -binary | openssl base64 -A
+  ;; pandoc emits <pre class="mermaid"><code>, cmark <pre><code class="language-mermaid">;
+  ;; mermaid needs the diagram source as the text of the <pre> itself.
+  (setq markdown-xhtml-header-content "
+<script src=\"https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.min.js\"
+        integrity=\"sha384-HHW54r639fK42Ip0coGF3mz8oSiGn0eEoWNTLs75X7H63pLSDBa0Tqs0RwGmLlXE\"
+        crossorigin=\"anonymous\"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('pre.mermaid > code, pre > code.language-mermaid').forEach((code) => {
+    const pre = code.parentElement;
+    pre.className = 'mermaid';
+    pre.textContent = code.textContent;
+  });
+  mermaid.initialize({ startOnLoad: false, theme: 'default' });
+  mermaid.run();
+});
+</script>
+"))
 
 ;; lua editing: https://github.com/immerrr/lua-mode
 (use-package lua-mode
