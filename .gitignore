@@ -4,7 +4,7 @@ places
 .recentf
 ido.last
 cider-history
-projectile-bookmarks.eld
+*.eld
 projectile.cache
 auto-save-list
 melpa-stable
