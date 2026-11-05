@@ -106,7 +106,7 @@ This is a personal Emacs configuration repository (`~/.emacs.d`) using a single-
 - **Context actions**: embark (integrates with which-key for discoverable keybindings)
 - **Navigation**: built-in `project.el`, treemacs file tree (`<f8>`), swiper for search
 - **Scrolling**: ultra-scroll for smooth pixel-perfect scrolling
-- **Terminal**: vterm (libvterm-based)
+- **Terminal**: ghostel (libghostty-based; `C-s` is `consult-line` in semi-char mode, elsewhere swiper)
 - **Search**: rg (ripgrep)
 - **Theme**: doom-solarized-light, 14pt
 

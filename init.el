@@ -245,9 +245,22 @@ FN is applied to ARGS with `embark-which-key-indicator' removed."
   (setq completion-styles '(hotfuzz)
         completion-ignore-case t))
 
-;; better integrated terminal: https://github.com/akermu/emacs-libvterm
-(use-package vterm
-  :commands (vterm vterm-other-window))
+;; libghostty-backed terminal: https://github.com/dakra/ghostel
+;; The first `M-x ghostel' offers to download a prebuilt native module.
+(use-package ghostel
+  :commands (ghostel ghostel-other)
+  :bind (:map ghostel-semi-char-mode-map
+         ("C-s" . consult-line)))
+
+;; Consult pickers for ghostel buffers, with previews:
+;; https://github.com/dakra/ghostel/tree/main/extensions/consult-ghostel
+(use-package consult-ghostel
+  :config (consult-ghostel-mode)
+  :bind (("C-x m" . consult-ghostel)
+         :map project-prefix-map
+         ("m" . consult-ghostel-project)
+         :map ghostel-semi-char-mode-map
+         ("C-c h" . consult-ghostel-history)))
 
 ;; smoother scrolling: https://github.com/jdtsmith/ultra-scroll
 (use-package ultra-scroll
